@@ -53,15 +53,6 @@ final class ParentPage {
 				'settings_page' => 'lw-site-manager',
 				'github'        => 'https://github.com/lwplugins/lw-site-manager',
 			],
-			'lw-s3'           => [
-				'name'          => 'LW S3',
-				'description'   => __( 'S3 media offload for Kubernetes.', 'lw-lms' ),
-				'icon'          => 'dashicons-cloud-upload',
-				'icon_color'    => '#ff9900',
-				'constant'      => 'LW_S3_VERSION',
-				'settings_page' => 'lw-plugins',
-				'github'        => 'https://github.com/lwplugins/lw-s3',
-			],
 			'lw-memberships'  => [
 				'name'          => 'LW Memberships',
 				'description'   => __( 'Membership system with WooCommerce.', 'lw-lms' ),
