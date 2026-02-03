@@ -1,6 +1,6 @@
 # LW LMS
 
-> **This plugin is under active development and is not recommended for production use.**
+> **!! This plugin is under active development and is not recommended for production use. !!**
 
 Lightweight LMS plugin for WordPress - courses, lessons, and progress tracking without the bloat.
 
