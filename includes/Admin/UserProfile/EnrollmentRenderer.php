@@ -141,7 +141,10 @@ final class EnrollmentRenderer {
 		echo '<div class="lw-lms-add-enrollment-fields">';
 
 		// Course dropdown.
-		echo '<select name="lw_lms_grant_course_id">';
+		echo '<label for="lw_lms_grant_course_id"><strong>';
+		echo esc_html__( 'Course:', 'lw-lms' );
+		echo '</strong></label> ';
+		echo '<select name="lw_lms_grant_course_id" id="lw_lms_grant_course_id">';
 		echo '<option value="">' . esc_html__( '-- Select Course --', 'lw-lms' ) . '</option>';
 		foreach ( $courses as $course ) {
 			echo '<option value="' . esc_attr( (string) $course->ID ) . '">';
@@ -151,9 +154,11 @@ final class EnrollmentRenderer {
 		echo '</select>';
 
 		// Expiry date.
-		echo '<input type="date" name="lw_lms_grant_expires" placeholder="';
-		echo esc_attr__( 'Expiry date (optional)', 'lw-lms' );
-		echo '">';
+		echo '<label for="lw_lms_grant_expires"><strong>';
+		echo esc_html__( 'Expires:', 'lw-lms' );
+		echo '</strong></label> ';
+		echo '<input type="date" name="lw_lms_grant_expires" id="lw_lms_grant_expires">';
+		echo '<span class="description">' . esc_html__( '(optional, empty = lifetime)', 'lw-lms' ) . '</span>';
 
 		echo '</div></div>';
 	}
