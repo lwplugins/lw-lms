@@ -1,0 +1,279 @@
+/**
+ * LW LMS Admin Styles
+ */
+
+/* Settings Page */
+.lw-lms-settings {
+	display: flex;
+	margin-top: 20px;
+}
+
+.lw-lms-tabs {
+	width: 200px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px 0 0 4px;
+}
+
+.lw-lms-tabs li {
+	margin: 0;
+}
+
+.lw-lms-tabs li a {
+	display: flex;
+	align-items: center;
+	padding: 12px 16px;
+	text-decoration: none;
+	color: #1d2327;
+	border-bottom: 1px solid #ccd0d4;
+}
+
+.lw-lms-tabs li:last-child a {
+	border-bottom: none;
+}
+
+.lw-lms-tabs li a:hover {
+	background: #f0f0f1;
+}
+
+.lw-lms-tabs li a.active {
+	background: #2271b1;
+	color: #fff;
+}
+
+.lw-lms-tabs li a .dashicons {
+	margin-right: 8px;
+}
+
+.lw-lms-tab-content {
+	flex: 1;
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-left: none;
+	border-radius: 0 4px 4px 0;
+	padding: 20px;
+}
+
+.lw-lms-tab-panel {
+	display: none;
+}
+
+.lw-lms-tab-panel.active {
+	display: block;
+}
+
+/* Course Builder */
+.lw-lms-course-builder {
+	padding: 15px;
+}
+
+.lw-lms-toolbar {
+	margin-bottom: 15px;
+}
+
+.lw-lms-toolbar .button {
+	margin-right: 8px;
+}
+
+.lw-lms-content-list {
+	min-height: 100px;
+	border: 1px dashed #ccd0d4;
+	border-radius: 4px;
+	padding: 10px;
+}
+
+/* Sections */
+.lw-lms-section {
+	background: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin-bottom: 10px;
+}
+
+.lw-lms-section-header {
+	display: flex;
+	align-items: center;
+	padding: 10px 15px;
+	background: #f1f1f1;
+	border-bottom: 1px solid #ddd;
+	cursor: move;
+}
+
+.lw-lms-section-title {
+	flex: 1;
+	font-weight: 600;
+	margin-left: 10px;
+}
+
+.lw-lms-section-header .button-link {
+	margin-left: 10px;
+	color: #2271b1;
+}
+
+.lw-lms-section-header .button-link:hover {
+	color: #135e96;
+}
+
+.lw-lms-section-header .lw-lms-delete-section {
+	color: #d63638;
+}
+
+.lw-lms-section-header .lw-lms-delete-section:hover {
+	color: #a00;
+}
+
+.lw-lms-section-lessons {
+	padding: 10px;
+	min-height: 40px;
+}
+
+/* Lessons */
+.lw-lms-lesson {
+	display: flex;
+	align-items: center;
+	padding: 10px 15px;
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin-bottom: 5px;
+	cursor: move;
+}
+
+.lw-lms-lesson-title {
+	flex: 1;
+	margin-left: 10px;
+}
+
+.lw-lms-preview-label {
+	margin-right: 15px;
+	font-size: 12px;
+	color: #666;
+}
+
+.lw-lms-preview-checkbox {
+	margin-right: 4px;
+}
+
+.lw-lms-lesson .button-link {
+	color: #2271b1;
+}
+
+/* Drag Handle */
+.lw-lms-drag-handle {
+	color: #ccc;
+	cursor: move;
+}
+
+.lw-lms-drag-handle:hover {
+	color: #999;
+}
+
+/* Sortable Placeholder */
+.lw-lms-content-list .ui-sortable-placeholder,
+.lw-lms-section-lessons .ui-sortable-placeholder {
+	background: #e5f5e5;
+	border: 2px dashed #4ab866;
+	visibility: visible !important;
+	height: 50px;
+	margin-bottom: 5px;
+	border-radius: 4px;
+}
+
+/* Attachments */
+.lw-lms-attachments-list {
+	margin-bottom: 10px;
+}
+
+.lw-lms-attachment-row {
+	display: flex;
+	align-items: center;
+	padding: 8px 12px;
+	background: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin-bottom: 5px;
+}
+
+.lw-lms-attachment-name {
+	flex: 1;
+}
+
+.lw-lms-remove-attachment {
+	color: #d63638;
+}
+
+.lw-lms-remove-attachment:hover {
+	color: #a00;
+}
+
+/* Video Preview */
+.lw-lms-video-preview {
+	margin-top: 15px;
+	padding: 15px;
+	background: #f9f9f9;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+}
+
+.lw-lms-video-preview iframe,
+.lw-lms-video-preview video {
+	max-width: 100%;
+	height: auto;
+}
+
+/* Access Settings */
+.lw-lms-access-settings p {
+	margin-bottom: 10px;
+}
+
+.lw-lms-paid-options {
+	padding-top: 10px;
+	margin-top: 10px;
+}
+
+/* Section Edit Form */
+.lw-lms-section-edit-form {
+	padding: 15px;
+	background: #fff;
+	border: 1px solid #2271b1;
+	border-radius: 4px;
+	margin-bottom: 10px;
+}
+
+.lw-lms-section-edit-form input {
+	width: 100%;
+	margin-bottom: 10px;
+}
+
+.lw-lms-section-edit-form .button {
+	margin-right: 8px;
+}
+
+/* LW Plugins Overview Cards */
+.lw-plugins-cards {
+	display: flex;
+	gap: 20px;
+	flex-wrap: wrap;
+	margin-top: 20px;
+}
+
+.lw-plugin-card {
+	background: #fff;
+	border: 1px solid #ccd0d4;
+	border-radius: 4px;
+	padding: 20px;
+	width: 300px;
+}
+
+.lw-plugin-card h2 {
+	margin-top: 0;
+	display: flex;
+	align-items: center;
+}
+
+.lw-plugin-card h2 .dashicons {
+	margin-right: 8px;
+}
