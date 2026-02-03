@@ -26,6 +26,7 @@ use LightweightPlugins\LMS\Meta\CourseMeta;
 use LightweightPlugins\LMS\Meta\LessonMeta;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\CLI\MigrateLearnDashCommand;
+use LightweightPlugins\LMS\Admin\UserProfile;
 use LightweightPlugins\LMS\Access\AccessGranter;
 use LightweightPlugins\LMS\WooCommerce\WooCommerce;
 
@@ -81,6 +82,7 @@ final class Plugin {
 		if ( is_admin() ) {
 			new SettingsPage();
 			new Assets();
+			new UserProfile();
 			new CourseContentMetabox();
 			new CourseAccessMetabox();
 			new CourseDataMetabox();

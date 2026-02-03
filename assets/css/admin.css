@@ -252,6 +252,34 @@
 	margin-right: 8px;
 }
 
+/* Enrollment Table (User Profile) */
+.lw-lms-enrollments-table {
+	margin: 10px 0 20px;
+}
+
+.lw-lms-add-enrollment {
+	margin-top: 15px;
+}
+
+.lw-lms-add-enrollment h3 {
+	margin-bottom: 10px;
+}
+
+.lw-lms-add-enrollment-fields {
+	display: flex;
+	gap: 10px;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.lw-lms-add-enrollment-fields select {
+	min-width: 250px;
+}
+
+.lw-lms-add-enrollment-fields input[type="date"] {
+	min-width: 160px;
+}
+
 /* LW Plugins Overview Cards */
 .lw-plugins-cards {
 	display: flex;

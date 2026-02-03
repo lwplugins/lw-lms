@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.1.1
+Stable tag: 1.2.0
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,12 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.2.0 =
+* Add manual course enrollment on user profile pages (wp-admin)
+* Add enrollment table with course name, source, granted date, and expiry
+* Add course grant/revoke actions with nonce and capability protection
+* Add AccessRepository::get_user_enrollments() method
 
 = 1.1.1 =
 * Fix: auto-create access table on plugin update (not just activation)

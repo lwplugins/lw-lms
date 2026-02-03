@@ -132,6 +132,29 @@ final class AccessRepository {
 	}
 
 	/**
+	 * Get all enrollments for a user.
+	 *
+	 * @param int $user_id User ID.
+	 * @return array<int, object>
+	 */
+	public static function get_user_enrollments( int $user_id ): array {
+		global $wpdb;
+
+		$table = AccessTable::get_table_name();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$results = $wpdb->get_results(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
+				"SELECT * FROM {$table} WHERE user_id = %d AND status = 'active' ORDER BY granted_at DESC",
+				$user_id
+			)
+		);
+
+		return is_array( $results ) ? $results : [];
+	}
+
+	/**
 	 * Revoke access for a user and course.
 	 *
 	 * @param int $user_id   User ID.

@@ -40,11 +40,12 @@ final class Assets {
 		];
 
 		// Load on course and lesson edit pages.
-		$is_course_page = $screen && Course::POST_TYPE === $screen->post_type;
-		$is_lesson_page = $screen && Lesson::POST_TYPE === $screen->post_type;
-		$is_lw_page     = in_array( $hook, $lw_pages, true );
+		$is_course_page  = $screen && Course::POST_TYPE === $screen->post_type;
+		$is_lesson_page  = $screen && Lesson::POST_TYPE === $screen->post_type;
+		$is_lw_page      = in_array( $hook, $lw_pages, true );
+		$is_profile_page = in_array( $hook, [ 'profile.php', 'user-edit.php' ], true );
 
-		if ( ! $is_lw_page && ! $is_course_page && ! $is_lesson_page ) {
+		if ( ! $is_lw_page && ! $is_course_page && ! $is_lesson_page && ! $is_profile_page ) {
 			return;
 		}
 
