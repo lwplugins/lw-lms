@@ -51,12 +51,18 @@ final class CourseDataMetabox {
 		wp_nonce_field( 'lw_lms_course_data', 'lw_lms_course_data_nonce' );
 
 		$duration    = Options::get_post_meta( $post->ID, 'duration', '' );
+		$instructor  = Options::get_post_meta( $post->ID, 'instructor', '' );
 		$attachments = Options::get_post_meta( $post->ID, 'attachments', [] );
 		?>
 		<div class="lw-lms-course-data">
 			<p>
 				<label for="lw_lms_duration"><strong><?php esc_html_e( 'Duration', 'lw-lms' ); ?></strong></label>
 				<input type="text" id="lw_lms_duration" name="lw_lms_duration" value="<?php echo esc_attr( $duration ); ?>" class="widefat" placeholder="<?php esc_attr_e( 'e.g., 8 hours', 'lw-lms' ); ?>" />
+			</p>
+
+			<p>
+				<label for="lw_lms_instructor"><strong><?php esc_html_e( 'Instructor', 'lw-lms' ); ?></strong></label>
+				<input type="text" id="lw_lms_instructor" name="lw_lms_instructor" value="<?php echo esc_attr( $instructor ); ?>" class="widefat" placeholder="<?php esc_attr_e( 'e.g., John Doe', 'lw-lms' ); ?>" />
 			</p>
 
 			<p><strong><?php esc_html_e( 'Attachments', 'lw-lms' ); ?></strong></p>
@@ -126,6 +132,11 @@ final class CourseDataMetabox {
 		// Save duration.
 		if ( isset( $_POST['lw_lms_duration'] ) ) {
 			Options::set_post_meta( $post_id, 'duration', sanitize_text_field( wp_unslash( $_POST['lw_lms_duration'] ) ) );
+		}
+
+		// Save instructor.
+		if ( isset( $_POST['lw_lms_instructor'] ) ) {
+			Options::set_post_meta( $post_id, 'instructor', sanitize_text_field( wp_unslash( $_POST['lw_lms_instructor'] ) ) );
 		}
 
 		// Save attachments.

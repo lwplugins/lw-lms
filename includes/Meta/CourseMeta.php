@@ -171,6 +171,19 @@ final class CourseMeta {
 				'auth_callback' => [ self::class, 'can_edit' ],
 			]
 		);
+
+		// Instructor.
+		register_post_meta(
+			Course::POST_TYPE,
+			Options::META_PREFIX . 'instructor',
+			[
+				'show_in_rest'  => true,
+				'single'        => true,
+				'type'          => 'string',
+				'default'       => '',
+				'auth_callback' => [ self::class, 'can_edit' ],
+			]
+		);
 	}
 
 	/**
