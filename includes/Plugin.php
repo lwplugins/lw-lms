@@ -38,9 +38,25 @@ final class Plugin {
 	 * Constructor.
 	 */
 	public function __construct() {
+		$this->maybe_upgrade();
 		$this->init_hooks();
 		$this->init_components();
 		$this->register_cli_commands();
+	}
+
+	/**
+	 * Run DB upgrades if version changed.
+	 *
+	 * @return void
+	 */
+	private function maybe_upgrade(): void {
+		$current = get_option( 'lw_lms_db_version', '0' );
+
+		if ( version_compare( $current, Activator::DB_VERSION, '>=' ) ) {
+			return;
+		}
+
+		Activator::activate();
 	}
 
 	/**

@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,9 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.1.1 =
+* Fix: auto-create access table on plugin update (not just activation)
 
 = 1.1.0 =
 * Add time-limited course access (per-product duration)
