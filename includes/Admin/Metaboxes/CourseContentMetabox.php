@@ -169,10 +169,10 @@ final class CourseContentMetabox {
 				'post_type'      => Lesson::POST_TYPE,
 				'post_status'    => [ 'publish', 'draft' ],
 				'posts_per_page' => -1,
-				'meta_key'       => Options::META_PREFIX . 'lesson_order',
+				'meta_key'       => Options::META_PREFIX . 'lesson_order', // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key -- Required for lesson ordering.
 				'orderby'        => 'meta_value_num',
 				'order'          => 'ASC',
-				'meta_query'     => [
+				'meta_query'     => [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_query -- Required for course filtering.
 					[
 						'key'     => Options::META_PREFIX . 'lesson_course_id',
 						'value'   => $course_id,

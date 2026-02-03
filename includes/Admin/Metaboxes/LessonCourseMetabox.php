@@ -56,8 +56,8 @@ final class LessonCourseMetabox {
 		$order      = (int) Options::get_post_meta( $post->ID, 'lesson_order', 0 );
 
 		// Get course_id from URL if available (for new lessons).
-		if ( ! $course_id && isset( $_GET['course_id'] ) ) {
-			$course_id = absint( $_GET['course_id'] );
+		if ( ! $course_id && isset( $_GET['course_id'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Read-only display, no state change.
+			$course_id = absint( $_GET['course_id'] ); // phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		}
 
 		$courses = get_posts(

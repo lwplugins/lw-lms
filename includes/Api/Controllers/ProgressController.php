@@ -90,7 +90,7 @@ final class ProgressController {
 	 * @param WP_REST_Request $request Request object.
 	 * @return WP_REST_Response
 	 */
-	public function get_progress( WP_REST_Request $request ): WP_REST_Response {
+	public function get_progress( WP_REST_Request $request ): WP_REST_Response { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- Required by REST API callback signature.
 		$user_id  = get_current_user_id();
 		$progress = ProgressRepository::get_user_progress( $user_id );
 

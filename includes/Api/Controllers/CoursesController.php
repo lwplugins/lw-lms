@@ -84,7 +84,7 @@ final class CoursesController {
 		];
 
 		if ( $category ) {
-			$args['tax_query'] = [
+			$args['tax_query'] = [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required for category filtering.
 				[
 					'taxonomy' => CourseCategory::TAXONOMY,
 					'field'    => 'slug',
@@ -94,7 +94,7 @@ final class CoursesController {
 		}
 
 		if ( $level ) {
-			$args['tax_query']   = $args['tax_query'] ?? [];
+			$args['tax_query']   = $args['tax_query'] ?? []; // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required for level filtering.
 			$args['tax_query'][] = [
 				'taxonomy' => CourseLevel::TAXONOMY,
 				'field'    => 'slug',

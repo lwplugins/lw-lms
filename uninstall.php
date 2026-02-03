@@ -17,6 +17,7 @@ delete_option( 'lw_lms_options' );
 delete_option( 'lw_lms_db_version' );
 
 // Delete post meta.
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall cleanup.
 $wpdb->query(
 	$wpdb->prepare(
 		"DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s",
@@ -26,7 +27,7 @@ $wpdb->query(
 
 // Drop progress table.
 $lw_lms_table = $wpdb->prefix . 'lms_progress';
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Uninstall script.
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Uninstall cleanup.
 $wpdb->query( "DROP TABLE IF EXISTS {$lw_lms_table}" );
 
 // Flush rewrite rules.

@@ -34,7 +34,7 @@ final class ProductSelector {
 		];
 
 		if ( $type ) {
-			$args['tax_query'] = [
+			$args['tax_query'] = [ // phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_tax_query -- Required for product type filtering.
 				[
 					'taxonomy' => 'product_type',
 					'field'    => 'slug',
