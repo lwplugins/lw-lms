@@ -18,45 +18,30 @@ use LightweightPlugins\LMS\WooCommerce\WooCommerce;
 final class WooCommerceChecker {
 
 	/**
-	 * Check if user has purchased access to a course.
+	 * Check legacy purchases for backward compatibility.
+	 *
+	 * Only returns true when no product_durations are configured,
+	 * preserving old behavior for courses without time-limited access.
 	 *
 	 * @param int $course_id Course ID.
 	 * @param int $user_id   User ID.
 	 * @return bool
 	 */
-	public static function has_purchased( int $course_id, int $user_id ): bool {
-		if ( ! WooCommerce::is_active() ) {
-			return false;
-		}
-
-		// Check single purchases.
-		if ( self::has_product_purchase( $course_id, $user_id ) ) {
-			return true;
-		}
-
-		// Check subscriptions.
-		if ( self::has_active_subscription( $course_id, $user_id ) ) {
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * Check if user has purchased a product linked to the course.
-	 *
-	 * @param int $course_id Course ID.
-	 * @param int $user_id   User ID.
-	 * @return bool
-	 */
-	public static function has_product_purchase( int $course_id, int $user_id ): bool {
-		if ( ! function_exists( 'wc_customer_bought_product' ) ) {
+	public static function has_legacy_purchase( int $course_id, int $user_id ): bool {
+		if ( ! WooCommerce::is_active() || ! function_exists( 'wc_customer_bought_product' ) ) {
 			return false;
 		}
 
 		$product_ids = Options::get_post_meta( $course_id, 'product_ids', [] );
 
 		if ( ! is_array( $product_ids ) || empty( $product_ids ) ) {
+			return false;
+		}
+
+		// If durations are set, access table is the source of truth.
+		$durations = Options::get_post_meta( $course_id, 'product_durations', [] );
+
+		if ( is_array( $durations ) && ! empty( $durations ) ) {
 			return false;
 		}
 
@@ -118,7 +103,8 @@ final class WooCommerceChecker {
 			return [];
 		}
 
-		$products = [];
+		$durations = Options::get_post_meta( $course_id, 'product_durations', [] );
+		$products  = [];
 
 		foreach ( $product_ids as $product_id ) {
 			$product = wc_get_product( (int) $product_id );
@@ -127,12 +113,16 @@ final class WooCommerceChecker {
 				continue;
 			}
 
+			$key  = (string) $product_id;
+			$days = isset( $durations[ $key ] ) ? (int) $durations[ $key ] : 0;
+
 			$products[] = [
 				'id'              => $product->get_id(),
 				'name'            => $product->get_name(),
 				'price'           => $product->get_price(),
 				'price_formatted' => $product->get_price_html(),
 				'url'             => $product->get_permalink(),
+				'access_duration' => $days,
 			];
 		}
 

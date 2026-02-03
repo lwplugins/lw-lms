@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,16 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.1.0 =
+* Add time-limited course access (per-product duration)
+* Add wp_lms_access database table for fast access lookups
+* Add AccessGranter — automatic access on WooCommerce order completion
+* Add product_id:days format in Course Access metabox
+* Add expires_at to REST API access info
+* Add access_duration to product info in REST API
+* Add backward-compatible fallback for legacy purchases
+* Update DB version to 1.1.0
 
 = 1.0.0 =
 * Initial release

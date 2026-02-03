@@ -19,6 +19,8 @@ use LightweightPlugins\LMS\WooCommerce\WooCommerce;
  */
 final class CourseAccessMetabox {
 
+	use AccessMetaboxRenderer;
+
 	/**
 	 * Constructor.
 	 */
@@ -54,53 +56,23 @@ final class CourseAccessMetabox {
 
 		$access_type      = Options::get_post_meta( $post->ID, 'access_type', AccessChecker::ACCESS_FREE );
 		$product_ids      = Options::get_post_meta( $post->ID, 'product_ids', [] );
+		$durations        = Options::get_post_meta( $post->ID, 'product_durations', [] );
 		$subscription_ids = Options::get_post_meta( $post->ID, 'subscription_ids', [] );
+		$products_value   = AccessProductParser::build_textarea( $product_ids, $durations );
 		?>
 		<div class="lw-lms-access-settings">
-			<p>
-				<label>
-					<input type="radio" name="lw_lms_access_type" value="open" <?php checked( $access_type, AccessChecker::ACCESS_OPEN ); ?> />
-					<?php esc_html_e( 'Open (anyone can access)', 'lw-lms' ); ?>
-				</label>
-			</p>
-			<p>
-				<label>
-					<input type="radio" name="lw_lms_access_type" value="free" <?php checked( $access_type, AccessChecker::ACCESS_FREE ); ?> />
-					<?php esc_html_e( 'Free (login required)', 'lw-lms' ); ?>
-				</label>
-			</p>
-			<p>
-				<label>
-					<input type="radio" name="lw_lms_access_type" value="paid" <?php checked( $access_type, AccessChecker::ACCESS_PAID ); ?> />
-					<?php esc_html_e( 'Paid (purchase required)', 'lw-lms' ); ?>
-				</label>
-			</p>
-
+			<?php self::render_access_radios( $access_type ); ?>
 			<div class="lw-lms-paid-options" style="<?php echo AccessChecker::ACCESS_PAID !== $access_type ? 'display:none;' : ''; ?>">
 				<?php if ( WooCommerce::is_active() ) : ?>
 					<hr>
-					<p><strong><?php esc_html_e( 'WooCommerce Products', 'lw-lms' ); ?></strong></p>
-					<p>
-						<label for="lw_lms_product_ids"><?php esc_html_e( 'Product IDs:', 'lw-lms' ); ?></label>
-						<input type="text" id="lw_lms_product_ids" name="lw_lms_product_ids" value="<?php echo esc_attr( implode( ',', $product_ids ) ); ?>" class="widefat" placeholder="e.g., 123, 456" />
-						<span class="description"><?php esc_html_e( 'Comma-separated product IDs.', 'lw-lms' ); ?></span>
-					</p>
-
-					<p><strong><?php esc_html_e( 'Subscriptions', 'lw-lms' ); ?></strong></p>
-					<p>
-						<label for="lw_lms_subscription_ids"><?php esc_html_e( 'Subscription IDs:', 'lw-lms' ); ?></label>
-						<input type="text" id="lw_lms_subscription_ids" name="lw_lms_subscription_ids" value="<?php echo esc_attr( implode( ',', $subscription_ids ) ); ?>" class="widefat" placeholder="e.g., 789" />
-						<span class="description"><?php esc_html_e( 'Comma-separated subscription product IDs.', 'lw-lms' ); ?></span>
-					</p>
+					<?php self::render_products_field( $products_value ); ?>
+					<?php self::render_subscriptions_field( $subscription_ids ); ?>
 				<?php else : ?>
 					<hr>
-					<p class="description">
-						<?php esc_html_e( 'WooCommerce is required for paid courses.', 'lw-lms' ); ?>
-					</p>
+					<p class="description"><?php esc_html_e( 'WooCommerce is required for paid courses.', 'lw-lms' ); ?></p>
 				<?php endif; ?>
 			</div>
 		</div>
-
 		<script>
 		jQuery(function($) {
 			$('input[name="lw_lms_access_type"]').on('change', function() {
@@ -121,35 +93,32 @@ final class CourseAccessMetabox {
 		if ( ! isset( $_POST['lw_lms_course_access_nonce'] ) ) {
 			return;
 		}
-
 		if ( ! wp_verify_nonce( sanitize_key( $_POST['lw_lms_course_access_nonce'] ), 'lw_lms_course_access' ) ) {
 			return;
 		}
-
 		if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
 			return;
 		}
-
 		if ( ! current_user_can( 'edit_post', $post_id ) ) {
 			return;
 		}
 
-		// Save access type.
 		if ( isset( $_POST['lw_lms_access_type'] ) ) {
-			$access_type = sanitize_key( $_POST['lw_lms_access_type'] );
-			Options::set_post_meta( $post_id, 'access_type', $access_type );
+			Options::set_post_meta( $post_id, 'access_type', sanitize_key( $_POST['lw_lms_access_type'] ) );
 		}
 
-		// Save product IDs.
 		if ( isset( $_POST['lw_lms_product_ids'] ) ) {
-			$product_ids = array_filter( array_map( 'absint', explode( ',', sanitize_text_field( wp_unslash( $_POST['lw_lms_product_ids'] ) ) ) ) );
+			$raw                             = sanitize_textarea_field( wp_unslash( $_POST['lw_lms_product_ids'] ) );
+			list( $product_ids, $durations ) = AccessProductParser::parse( $raw );
 			Options::set_post_meta( $post_id, 'product_ids', $product_ids );
+			Options::set_post_meta( $post_id, 'product_durations', $durations );
 		}
 
-		// Save subscription IDs.
 		if ( isset( $_POST['lw_lms_subscription_ids'] ) ) {
-			$subscription_ids = array_filter( array_map( 'absint', explode( ',', sanitize_text_field( wp_unslash( $_POST['lw_lms_subscription_ids'] ) ) ) ) );
-			Options::set_post_meta( $post_id, 'subscription_ids', $subscription_ids );
+			$ids = array_filter(
+				array_map( 'absint', explode( ',', sanitize_text_field( wp_unslash( $_POST['lw_lms_subscription_ids'] ) ) ) )
+			);
+			Options::set_post_meta( $post_id, 'subscription_ids', $ids );
 		}
 	}
 }

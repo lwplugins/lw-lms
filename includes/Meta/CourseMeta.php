@@ -72,6 +72,24 @@ final class CourseMeta {
 			]
 		);
 
+		// WooCommerce product durations (product_id => days).
+		register_post_meta(
+			Course::POST_TYPE,
+			Options::META_PREFIX . 'product_durations',
+			[
+				'show_in_rest'  => [
+					'schema' => [
+						'type'                 => 'object',
+						'additionalProperties' => [ 'type' => 'integer' ],
+					],
+				],
+				'single'        => true,
+				'type'          => 'object',
+				'default'       => [],
+				'auth_callback' => [ self::class, 'can_edit' ],
+			]
+		);
+
 		// Preview lesson IDs.
 		register_post_meta(
 			Course::POST_TYPE,

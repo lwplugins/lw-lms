@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS;
 
+use LightweightPlugins\LMS\Access\AccessTable;
 use LightweightPlugins\LMS\Progress\ProgressTable;
 
 /**
@@ -19,7 +20,7 @@ final class Activator {
 	/**
 	 * DB version constant.
 	 */
-	public const DB_VERSION = '1.0.0';
+	public const DB_VERSION = '1.1.0';
 
 	/**
 	 * Activate the plugin.
@@ -51,6 +52,7 @@ final class Activator {
 	 */
 	private static function create_tables(): void {
 		ProgressTable::create();
+		AccessTable::create();
 		update_option( 'lw_lms_db_version', self::DB_VERSION );
 	}
 

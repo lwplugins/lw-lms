@@ -52,9 +52,20 @@ final class AccessChecker {
 			return true;
 		}
 
-		// Paid courses require WooCommerce purchase check.
+		// Paid courses: check access table, subscriptions, then legacy fallback.
 		if ( self::ACCESS_PAID === $access_type ) {
-			return WooCommerceChecker::has_purchased( $course_id, $user_id );
+			// 1. Access table check.
+			if ( AccessRepository::has_active_access( $user_id, $course_id ) ) {
+				return true;
+			}
+
+			// 2. Subscription check.
+			if ( WooCommerceChecker::has_active_subscription( $course_id, $user_id ) ) {
+				return true;
+			}
+
+			// 3. Fallback: legacy purchases without durations.
+			return WooCommerceChecker::has_legacy_purchase( $course_id, $user_id );
 		}
 
 		/**
@@ -146,6 +157,19 @@ final class AccessChecker {
 			'type'       => $access_type,
 			'has_access' => $has_access,
 		];
+
+		// Add expiry info for users with access.
+		if ( $has_access && self::ACCESS_PAID === $access_type ) {
+			$user_id = $user_id ? $user_id : get_current_user_id();
+
+			if ( $user_id ) {
+				$access_record = AccessRepository::get_user_access( $user_id, $course_id );
+
+				if ( $access_record && $access_record->expires_at ) {
+					$info['expires_at'] = $access_record->expires_at;
+				}
+			}
+		}
 
 		// Add purchase info for paid courses without access.
 		if ( self::ACCESS_PAID === $access_type && ! $has_access ) {
