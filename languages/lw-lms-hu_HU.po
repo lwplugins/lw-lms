@@ -1,0 +1,822 @@
+# Copyright (C) 2026 LW Plugins
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Lightweight LMS 1.2.4\n"
+"Report-Msgid-Bugs-To: https://github.com/lwplugins/lw-lms/issues\n"
+"POT-Creation-Date: 2026-02-07T08:43:29+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LW Plugins <info@lwplugins.com>\n"
+"Language: hu_HU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: lw-lms\n"
+"X-Generator: WP-CLI 2.12.0\n"
+
+#. Plugin Name of the plugin
+#: lw-lms.php
+msgid "Lightweight LMS"
+msgstr "Könnyű LMS"
+
+#. Plugin URI of the plugin
+#: lw-lms.php
+msgid "https://github.com/lwplugins/lw-lms"
+msgstr "https://github.com/lwplugins/lw-lms"
+
+#. Description of the plugin
+#: lw-lms.php
+msgid ""
+"Lightweight LMS plugin for WordPress - courses, lessons, and progress "
+"tracking."
+msgstr ""
+"Könnyű LMS bővítmény WordPresshez – kurzusok, leckék és haladáskövetés."
+
+#. Author of the plugin
+#: lw-lms.php includes/Admin/ParentPage.php:104
+#: includes/Admin/ParentPage.php:105 includes/Admin/ParentPage.php:126
+msgid "LW Plugins"
+msgstr "LW Plugins"
+
+#. Author URI of the plugin
+#: lw-lms.php
+msgid "https://lwplugins.com"
+msgstr "https://lwplugins.com"
+
+#: includes/Admin/Assets.php:77
+msgid "Are you sure you want to remove this item?"
+msgstr "Biztosan el akarod távolítani ezt az elemet?"
+
+#: includes/Admin/Assets.php:78
+msgid "New Section"
+msgstr "Új szekció"
+
+#: includes/Admin/Assets.php:79
+msgid "Untitled"
+msgstr "Névtelen"
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:27
+msgid "Open (anyone can access)"
+msgstr "Nyitott (bárki hozzáférhet)"
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:28
+#: includes/Admin/Settings/TabGeneral.php:85
+msgid "Free (login required)"
+msgstr "Ingyenes (bejelentkezés szükséges)"
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:29
+#: includes/Admin/Settings/TabGeneral.php:86
+msgid "Paid (purchase required)"
+msgstr "Fizetős (vásárlás szükséges)"
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:50
+msgid "WooCommerce Products"
+msgstr "WooCommerce termékek"
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:52
+msgid "Product IDs:"
+msgstr "Termék ID-k:"
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:55
+msgid ""
+"One per line. Format: product_id:days (e.g., 123:180). Without days = "
+"unlimited."
+msgstr ""
+"Soronkét egy. Formátum: product_id:napok (pl. 123:180). Napok nélkül = "
+"korlátlan."
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:69
+msgid "Subscriptions"
+msgstr "Előfizetések"
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:71
+msgid "Subscription IDs:"
+msgstr "Előfizetés ID-k:"
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:73
+msgid "Comma-separated subscription product IDs."
+msgstr "Vesszővel elválasztott előfizetéses termék ID-k."
+
+#: includes/Admin/Metaboxes/CourseAccessMetabox.php:40
+msgid "Access Settings"
+msgstr "Hozzáférési beállítások"
+
+#: includes/Admin/Metaboxes/CourseAccessMetabox.php:72
+msgid "WooCommerce is required for paid courses."
+msgstr "A WooCommerce kötelező a fizetős kurzusokhoz."
+
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:37
+msgid "Course Content"
+msgstr "Kurzustartalom"
+
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:60
+msgid "+ Add Section"
+msgstr "+ Szekció hozzáadása"
+
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:63
+msgid "+ Add Lesson"
+msgstr "+ Lecke hozzáadása"
+
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:80
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:122
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:155
+msgid "Edit"
+msgstr "Szerkesztés"
+
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:81
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:123
+#: includes/Admin/Metaboxes/CourseDataMetabox.php:104
+#: includes/Admin/Metaboxes/LessonDataMetabox.php:98
+msgid "Remove"
+msgstr "Eltávolítás"
+
+#: includes/Admin/Metaboxes/CourseContentMetabox.php:153
+#: includes/Admin/Metaboxes/LessonVideoMetabox.php:68
+msgid "Preview"
+msgstr "Előnézet"
+
+#: includes/Admin/Metaboxes/CourseDataMetabox.php:36
+msgid "Course Data"
+msgstr "Kurzus adatai"
+
+#: includes/Admin/Metaboxes/CourseDataMetabox.php:59
+#: includes/Admin/Metaboxes/LessonDataMetabox.php:58
+msgid "Duration"
+msgstr "Időtartam"
+
+#: includes/Admin/Metaboxes/CourseDataMetabox.php:60
+msgid "e.g., 8 hours"
+msgstr "pl. 8 óra"
+
+#: includes/Admin/Metaboxes/CourseDataMetabox.php:64
+msgid "Instructor"
+msgstr "Oktató"
+
+#: includes/Admin/Metaboxes/CourseDataMetabox.php:65
+msgid "e.g., John Doe"
+msgstr "pl. John Doe"
+
+#: includes/Admin/Metaboxes/CourseDataMetabox.php:68
+#: includes/Admin/Metaboxes/LessonDataMetabox.php:62
+msgid "Attachments"
+msgstr "Mellékletek"
+
+#: includes/Admin/Metaboxes/CourseDataMetabox.php:79
+#: includes/Admin/Metaboxes/LessonDataMetabox.php:73
+msgid "Add Attachment"
+msgstr "Melléklet hozzáadása"
+
+#: includes/Admin/Metaboxes/LessonCourseMetabox.php:37
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:81
+msgid "Course"
+msgstr "Kurzus"
+
+#: includes/Admin/Metaboxes/LessonCourseMetabox.php:75
+msgid "Select Course"
+msgstr "Kurzus kiválasztása"
+
+#: includes/Admin/Metaboxes/LessonCourseMetabox.php:77
+msgid "— Select Course —"
+msgstr "— Kurzus kiválasztása —"
+
+#: includes/Admin/Metaboxes/LessonCourseMetabox.php:87
+msgid "Section (optional)"
+msgstr "Szekció (opcionális)"
+
+#: includes/Admin/Metaboxes/LessonCourseMetabox.php:89
+msgid "— No Section —"
+msgstr "— Nincs szekció —"
+
+#: includes/Admin/Metaboxes/LessonCourseMetabox.php:107
+msgid "Order"
+msgstr "Sorrend"
+
+#: includes/Admin/Metaboxes/LessonDataMetabox.php:36
+msgid "Lesson Data"
+msgstr "Lecke adatai"
+
+#: includes/Admin/Metaboxes/LessonDataMetabox.php:59
+msgid "e.g., 15 min"
+msgstr "pl. 15 perc"
+
+#: includes/Admin/Metaboxes/LessonVideoMetabox.php:37
+msgid "Video"
+msgstr "Videó"
+
+#: includes/Admin/Metaboxes/LessonVideoMetabox.php:59
+msgid "Video URL"
+msgstr "Videó URL"
+
+#: includes/Admin/Metaboxes/LessonVideoMetabox.php:62
+msgid "Supported: YouTube, Vimeo, Wistia, or direct video URL (.mp4, .webm)"
+msgstr ""
+"Támogatott: YouTube, Vimeo, Wistia vagy közvetlen videó URL (.mp4, .webm)"
+
+#. translators: %s: video provider name
+#: includes/Admin/Metaboxes/LessonVideoMetabox.php:78
+#, php-format
+msgid "Provider: %s"
+msgstr "Szolgáltató: %s"
+
+#: includes/Admin/ParentPage.php:127
+msgid "Lightweight plugins for WordPress - minimal footprint, maximum impact."
+msgstr ""
+"Könnyű WordPress bővítmények – minimális erőforrásigény, maximális hatás."
+
+#: includes/Admin/ParentPage.php:180
+msgid "Active"
+msgstr "Aktív"
+
+#: includes/Admin/ParentPage.php:187
+msgid "Settings"
+msgstr "Beállítások"
+
+#: includes/Admin/ParentPage.php:191
+msgid "Get Plugin"
+msgstr "Bővítmény beszerzése"
+
+#: includes/Admin/Settings/TabAdvanced.php:34
+msgid "Advanced"
+msgstr "Haladó"
+
+#: includes/Admin/Settings/TabAdvanced.php:53
+msgid "Advanced Settings"
+msgstr "Haladó beállítások"
+
+#: includes/Admin/Settings/TabAdvanced.php:57
+msgid "Data Removal"
+msgstr "Adatok eltávolítása"
+
+#: includes/Admin/Settings/TabAdvanced.php:63
+msgid "Delete all data when plugin is uninstalled"
+msgstr "Az összes adat törlése a bővítmény eltávolításakor"
+
+#: includes/Admin/Settings/TabAdvanced.php:68
+msgid ""
+"Warning: This will permanently delete all courses, lessons, and progress "
+"data when the plugin is uninstalled."
+msgstr ""
+"Figyelem: Ez véglegesen törli az összes kurzust, leckét és haladási adatot, "
+"amikor a bővítményt eltávolítod."
+
+#: includes/Admin/Settings/TabAdvanced.php:74
+msgid "REST API"
+msgstr "REST API"
+
+#: includes/Admin/Settings/TabAdvanced.php:78
+msgid "API Namespace"
+msgstr "API névtér"
+
+#: includes/Admin/Settings/TabAdvanced.php:82
+msgid "Base URL:"
+msgstr "Alap URL:"
+
+#: includes/Admin/Settings/TabAdvanced.php:89
+msgid "Available Endpoints"
+msgstr "Elérhető endpointok"
+
+#: includes/Admin/Settings/TabAdvanced.php:92
+msgid "List courses"
+msgstr "Kurzusok listázása"
+
+#: includes/Admin/Settings/TabAdvanced.php:93
+msgid "Course details"
+msgstr "Kurzus részletei"
+
+#: includes/Admin/Settings/TabAdvanced.php:94
+msgid "Lesson content"
+msgstr "Lecke tartalma"
+
+#: includes/Admin/Settings/TabAdvanced.php:95
+msgid "User progress"
+msgstr "Felhasználói haladás"
+
+#: includes/Admin/Settings/TabAdvanced.php:96
+msgid "Update progress"
+msgstr "Haladás frissítése"
+
+#: includes/Admin/Settings/TabAdvanced.php:97
+msgid "Download attachment"
+msgstr "Melléklet letöltése"
+
+#: includes/Admin/Settings/TabGeneral.php:34
+msgid "General"
+msgstr "Általános"
+
+#: includes/Admin/Settings/TabGeneral.php:53
+msgid "General Settings"
+msgstr "Általános beállítások"
+
+#: includes/Admin/Settings/TabGeneral.php:58
+msgid "Courses per Page"
+msgstr "Kurzusok száma oldalanként"
+
+#: includes/Admin/Settings/TabGeneral.php:65
+msgid "Number of courses to show per page in API responses."
+msgstr "Az API válaszokban oldalanként megjelenítendő kurzusok száma."
+
+#: includes/Admin/Settings/TabGeneral.php:76
+msgid "Default Access Type"
+msgstr "Alapértelmezett hozzáférési típus"
+
+#: includes/Admin/Settings/TabGeneral.php:84
+msgid "Open (anyone)"
+msgstr "Nyitott (bárki)"
+
+#: includes/Admin/Settings/TabGeneral.php:91
+msgid "Default access type for new courses."
+msgstr "Az új kurzusok alapértelmezett hozzáférési típusa."
+
+#: includes/Admin/Settings/TabGeneral.php:96
+msgid "Features"
+msgstr "Funkciók"
+
+#: includes/Admin/Settings/TabGeneral.php:102
+msgid "Show progress bar in course listings"
+msgstr "Haladási sáv megjelenítése a kurzuslistákban"
+
+#: includes/Admin/Settings/TabGeneral.php:111
+msgid "Enable preview lessons feature"
+msgstr "Előnézeti leckék funkció engedélyezése"
+
+#: includes/Admin/Settings/TabGeneral.php:119
+msgid "WooCommerce"
+msgstr "WooCommerce"
+
+#: includes/Admin/Settings/TabGeneral.php:123
+msgid "Integration"
+msgstr "Integráció"
+
+#: includes/Admin/Settings/TabGeneral.php:129
+msgid "Enable WooCommerce integration for paid courses"
+msgstr "WooCommerce integráció engedélyezése fizetős kurzusokhoz"
+
+#: includes/Admin/Settings/TabGeneral.php:134
+msgid "Requires WooCommerce. Enable to sell courses via WooCommerce products."
+msgstr ""
+"WooCommerce szükséges. Engedélyezd, hogy kurzusokat WooCommerce termékeken "
+"keresztül értékesíts."
+
+#: includes/Admin/SettingsPage.php:71
+msgid "LMS Settings"
+msgstr "LMS beállítások"
+
+#: includes/Admin/SettingsPage.php:72
+msgid "LMS"
+msgstr "LMS"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:40
+msgid "Course Enrollment"
+msgstr "Kurzusfeliratkozás"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:42
+msgid "Manage course access for this user."
+msgstr "A kurzushoz való hozzáférés kezelése ennél a felhasználónál."
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:59
+msgid "No active enrollments."
+msgstr "Nincs aktív feliratkozás."
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:82
+msgid "Source"
+msgstr "Forrás"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:83
+msgid "Granted"
+msgstr "Megadva"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:84
+msgid "Expires"
+msgstr "Lejár"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:85
+msgid "Action"
+msgstr "Művelet"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:100
+msgid "Lifetime"
+msgstr "Élethosszig"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:118
+msgid "Revoke"
+msgstr "Visszavonás"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:132
+msgid "Add Enrollment"
+msgstr "Feliratkozás hozzáadása"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:136
+msgid "No paid courses available or user is already enrolled in all."
+msgstr ""
+"Nincs elérhető fizetős kurzus, vagy a felhasználó már mindegyikre fel van "
+"iratkozva."
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:145
+msgid "Course:"
+msgstr "Kurzus:"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:148
+msgid "-- Select Course --"
+msgstr "-- Kurzus kiválasztása --"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:158
+msgid "Expires:"
+msgstr "Lejár:"
+
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:161
+msgid "(optional, empty = lifetime)"
+msgstr "(opcionális, üres = élethosszig)"
+
+#: includes/Api/Controllers/CoursesController.php:143
+#: includes/Api/Controllers/CoursesController.php:151
+msgid "Course not found."
+msgstr "Kurzus nem található."
+
+#: includes/Api/Controllers/DownloadController.php:67
+#: includes/Api/Controllers/DownloadController.php:84
+msgid "File not found."
+msgstr "Fájl nem található."
+
+#: includes/Api/Controllers/DownloadController.php:179
+#: includes/Api/Controllers/ProgressController.php:80
+msgid "Authentication required."
+msgstr "Hitelesítés szükséges."
+
+#: includes/Api/Controllers/DownloadController.php:188
+msgid "You do not have access to this content."
+msgstr "Nincs hozzáférésed ehhez a tartalomhoz."
+
+#: includes/Api/Controllers/LessonsController.php:64
+#: includes/Api/Controllers/LessonsController.php:72
+msgid "Lesson not found."
+msgstr "Lecke nem található."
+
+#: includes/Api/Controllers/LessonsController.php:84
+#: includes/Api/Controllers/ProgressController.php:143
+msgid "You do not have access to this lesson."
+msgstr "Nincs hozzáférésed ehhez a leckéhez."
+
+#: includes/Api/Controllers/ProgressController.php:153
+msgid "Lesson does not belong to the specified course."
+msgstr "A lecke nem tartozik a megadott kurzushoz."
+
+#: includes/Api/Controllers/ProgressController.php:164
+msgid "Failed to update progress."
+msgstr "Nem sikerült frissíteni a haladást."
+
+#: includes/PostTypes/Course.php:29
+msgctxt "Post type general name"
+msgid "Courses"
+msgstr "Kurzusok"
+
+#: includes/PostTypes/Course.php:30
+msgctxt "Post type singular name"
+msgid "Course"
+msgstr "Kurzus"
+
+#: includes/PostTypes/Course.php:31
+msgctxt "Admin menu text"
+msgid "Courses"
+msgstr "Kurzusok"
+
+#: includes/PostTypes/Course.php:32 includes/PostTypes/Lesson.php:32
+msgid "Add New"
+msgstr "Új hozzáadása"
+
+#: includes/PostTypes/Course.php:33
+msgid "Add New Course"
+msgstr "Új kurzus hozzáadása"
+
+#: includes/PostTypes/Course.php:34
+msgid "Edit Course"
+msgstr "Kurzus szerkesztése"
+
+#: includes/PostTypes/Course.php:35
+msgid "New Course"
+msgstr "Új kurzus"
+
+#: includes/PostTypes/Course.php:36
+msgid "View Course"
+msgstr "Kurzus megtekintése"
+
+#: includes/PostTypes/Course.php:37
+msgid "View Courses"
+msgstr "Kurzusok megtekintése"
+
+#: includes/PostTypes/Course.php:38
+msgid "Search Courses"
+msgstr "Kurzusok keresése"
+
+#: includes/PostTypes/Course.php:39
+msgid "No courses found"
+msgstr "Nem találhatók kurzusok"
+
+#: includes/PostTypes/Course.php:40
+msgid "No courses found in Trash"
+msgstr "Nem találhatók kurzusok a Kukában"
+
+#: includes/PostTypes/Course.php:41
+msgid "All Courses"
+msgstr "Összes kurzus"
+
+#: includes/PostTypes/Course.php:42
+msgid "Course Archives"
+msgstr "Kurzus archívumok"
+
+#: includes/PostTypes/Course.php:43
+msgid "Course Attributes"
+msgstr "Kurzus attribútumok"
+
+#: includes/PostTypes/Course.php:44
+msgid "Insert into course"
+msgstr "Beszúrás a kurzusba"
+
+#: includes/PostTypes/Course.php:45
+msgid "Uploaded to this course"
+msgstr "Feltöltve ehhez a kurzushoz"
+
+#: includes/PostTypes/Course.php:46
+msgid "Filter courses list"
+msgstr "Kurzuslista szűrése"
+
+#: includes/PostTypes/Course.php:47
+msgid "Courses list navigation"
+msgstr "Kurzuslista navigáció"
+
+#: includes/PostTypes/Course.php:48
+msgid "Courses list"
+msgstr "Kurzuslista"
+
+#: includes/PostTypes/Lesson.php:29
+msgctxt "Post type general name"
+msgid "Lessons"
+msgstr "Leckék"
+
+#: includes/PostTypes/Lesson.php:30
+msgctxt "Post type singular name"
+msgid "Lesson"
+msgstr "Lecke"
+
+#: includes/PostTypes/Lesson.php:31
+msgctxt "Admin menu text"
+msgid "Lessons"
+msgstr "Leckék"
+
+#: includes/PostTypes/Lesson.php:33
+msgid "Add New Lesson"
+msgstr "Új lecke hozzáadása"
+
+#: includes/PostTypes/Lesson.php:34
+msgid "Edit Lesson"
+msgstr "Lecke szerkesztése"
+
+#: includes/PostTypes/Lesson.php:35
+msgid "New Lesson"
+msgstr "Új lecke"
+
+#: includes/PostTypes/Lesson.php:36
+msgid "View Lesson"
+msgstr "Lecke megtekintése"
+
+#: includes/PostTypes/Lesson.php:37
+msgid "View Lessons"
+msgstr "Leckék megtekintése"
+
+#: includes/PostTypes/Lesson.php:38
+msgid "Search Lessons"
+msgstr "Leckék keresése"
+
+#: includes/PostTypes/Lesson.php:39
+msgid "No lessons found"
+msgstr "Nem találhatók leckék"
+
+#: includes/PostTypes/Lesson.php:40
+msgid "No lessons found in Trash"
+msgstr "Nem találhatók leckék a Kukában"
+
+#: includes/PostTypes/Lesson.php:41
+msgid "All Lessons"
+msgstr "Összes lecke"
+
+#: includes/PostTypes/Lesson.php:42
+msgid "Lesson Archives"
+msgstr "Lecke archívumok"
+
+#: includes/PostTypes/Lesson.php:43
+msgid "Lesson Attributes"
+msgstr "Lecke attribútumok"
+
+#: includes/PostTypes/Lesson.php:44
+msgid "Insert into lesson"
+msgstr "Beszúrás a leckébe"
+
+#: includes/PostTypes/Lesson.php:45
+msgid "Uploaded to this lesson"
+msgstr "Feltöltve ehhez a leckéhez"
+
+#: includes/PostTypes/Lesson.php:46
+msgid "Filter lessons list"
+msgstr "Leckelista szűrése"
+
+#: includes/PostTypes/Lesson.php:47
+msgid "Lessons list navigation"
+msgstr "Leckelista navigáció"
+
+#: includes/PostTypes/Lesson.php:48
+msgid "Lessons list"
+msgstr "Leckelista"
+
+#: includes/Taxonomies/CourseCategory.php:31
+msgctxt "taxonomy general name"
+msgid "Categories"
+msgstr "Kategóriák"
+
+#: includes/Taxonomies/CourseCategory.php:32
+msgctxt "taxonomy singular name"
+msgid "Category"
+msgstr "Kategória"
+
+#: includes/Taxonomies/CourseCategory.php:33
+msgid "Search Categories"
+msgstr "Kategóriák keresése"
+
+#: includes/Taxonomies/CourseCategory.php:34
+msgid "All Categories"
+msgstr "Összes kategória"
+
+#: includes/Taxonomies/CourseCategory.php:35
+msgid "Parent Category"
+msgstr "Szülőkategória"
+
+#: includes/Taxonomies/CourseCategory.php:36
+msgid "Parent Category:"
+msgstr "Szülőkategória:"
+
+#: includes/Taxonomies/CourseCategory.php:37
+msgid "Edit Category"
+msgstr "Kategória szerkesztése"
+
+#: includes/Taxonomies/CourseCategory.php:38
+msgid "Update Category"
+msgstr "Kategória frissítése"
+
+#: includes/Taxonomies/CourseCategory.php:39
+msgid "Add New Category"
+msgstr "Új kategória hozzáadása"
+
+#: includes/Taxonomies/CourseCategory.php:40
+msgid "New Category Name"
+msgstr "Új kategória neve"
+
+#: includes/Taxonomies/CourseCategory.php:41
+msgid "Categories"
+msgstr "Kategóriák"
+
+#: includes/Taxonomies/CourseCategory.php:42
+msgid "Separate categories with commas"
+msgstr "A kategóriákat vesszőkkel válaszd el"
+
+#: includes/Taxonomies/CourseCategory.php:43
+msgid "Add or remove categories"
+msgstr "Kategóriák hozzáadása vagy eltávolítása"
+
+#: includes/Taxonomies/CourseCategory.php:44
+msgid "Choose from the most used categories"
+msgstr "Válassz a leggyakrabban használt kategóriák közül"
+
+#: includes/Taxonomies/CourseCategory.php:45
+msgid "No categories found"
+msgstr "Nem találhatók kategóriák"
+
+#: includes/Taxonomies/CourseCategory.php:46
+msgid "&larr; Back to Categories"
+msgstr "&larr; Vissza a kategóriákhoz"
+
+#: includes/Taxonomies/CourseLevel.php:31
+msgctxt "taxonomy general name"
+msgid "Levels"
+msgstr "Szintek"
+
+#: includes/Taxonomies/CourseLevel.php:32
+msgctxt "taxonomy singular name"
+msgid "Level"
+msgstr "Szint"
+
+#: includes/Taxonomies/CourseLevel.php:33
+msgid "Search Levels"
+msgstr "Szintek keresése"
+
+#: includes/Taxonomies/CourseLevel.php:34
+msgid "All Levels"
+msgstr "Összes szint"
+
+#: includes/Taxonomies/CourseLevel.php:35
+msgid "Edit Level"
+msgstr "Szint szerkesztése"
+
+#: includes/Taxonomies/CourseLevel.php:36
+msgid "Update Level"
+msgstr "Szint frissítése"
+
+#: includes/Taxonomies/CourseLevel.php:37
+msgid "Add New Level"
+msgstr "Új szint hozzáadása"
+
+#: includes/Taxonomies/CourseLevel.php:38
+msgid "New Level Name"
+msgstr "Új szint neve"
+
+#: includes/Taxonomies/CourseLevel.php:39
+msgid "Levels"
+msgstr "Szintek"
+
+#: includes/Taxonomies/CourseLevel.php:40
+msgid "Separate levels with commas"
+msgstr "A szinteket vesszőkkel válaszd el"
+
+#: includes/Taxonomies/CourseLevel.php:41
+msgid "Add or remove levels"
+msgstr "Szintek hozzáadása vagy eltávolítása"
+
+#: includes/Taxonomies/CourseLevel.php:42
+msgid "Choose from the most used levels"
+msgstr "Válassz a leggyakrabban használt szintek közül"
+
+#: includes/Taxonomies/CourseLevel.php:43
+msgid "No levels found"
+msgstr "Nem találhatók szintek"
+
+#: includes/Taxonomies/CourseLevel.php:44
+msgid "&larr; Back to Levels"
+msgstr "&larr; Vissza a szintekhez"
+
+#: includes/Taxonomies/CourseTag.php:31
+msgctxt "taxonomy general name"
+msgid "Tags"
+msgstr "Címkék"
+
+#: includes/Taxonomies/CourseTag.php:32
+msgctxt "taxonomy singular name"
+msgid "Tag"
+msgstr "Címke"
+
+#: includes/Taxonomies/CourseTag.php:33
+msgid "Search Tags"
+msgstr "Címkék keresése"
+
+#: includes/Taxonomies/CourseTag.php:34
+msgid "All Tags"
+msgstr "Összes címke"
+
+#: includes/Taxonomies/CourseTag.php:35
+msgid "Edit Tag"
+msgstr "Címke szerkesztése"
+
+#: includes/Taxonomies/CourseTag.php:36
+msgid "Update Tag"
+msgstr "Címke frissítése"
+
+#: includes/Taxonomies/CourseTag.php:37
+msgid "Add New Tag"
+msgstr "Új címke hozzáadása"
+
+#: includes/Taxonomies/CourseTag.php:38
+msgid "New Tag Name"
+msgstr "Új címke neve"
+
+#: includes/Taxonomies/CourseTag.php:39
+msgid "Tags"
+msgstr "Címkék"
+
+#: includes/Taxonomies/CourseTag.php:40
+msgid "Separate tags with commas"
+msgstr "A címkéket vesszőkkel válaszd el"
+
+#: includes/Taxonomies/CourseTag.php:41
+msgid "Add or remove tags"
+msgstr "Címkék hozzáadása vagy eltávolítása"
+
+#: includes/Taxonomies/CourseTag.php:42
+msgid "Choose from the most used tags"
+msgstr "Válassz a leggyakrabban használt címkék közül"
+
+#: includes/Taxonomies/CourseTag.php:43
+msgid "No tags found"
+msgstr "Nem találhatók címkék"
+
+#: includes/Taxonomies/CourseTag.php:44
+msgid "&larr; Back to Tags"
+msgstr "&larr; Vissza a címkékhez"
+
+#: includes/WooCommerce/WooCommerce.php:81
+msgid "LW LMS:"
+msgstr "LW LMS:"
+
+#: includes/WooCommerce/WooCommerce.php:82
+msgid ""
+"WooCommerce is required for paid courses. Please install and activate "
+"WooCommerce."
+msgstr ""
+"A WooCommerce szükséges a fizetős kurzusokhoz. Kérlek, telepítsd és aktiváld"
+" a WooCommerce-t."
