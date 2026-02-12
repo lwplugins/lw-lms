@@ -4,6 +4,8 @@
 
 Lightweight LMS plugin for WordPress - courses, lessons, and progress tracking without the bloat.
 
+![LW LMS Settings](.github/screenshot.png)
+
 ## Requirements
 
 - PHP 8.1+
