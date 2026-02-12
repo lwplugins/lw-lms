@@ -2,59 +2,87 @@
  * LW LMS Admin Styles
  */
 
-/* Settings Page */
-.lw-lms-settings {
-	display: flex;
-	margin-top: 20px;
+/* Title Icon */
+.lw-title-icon {
+	width: 28px;
+	height: 28px;
+	vertical-align: middle;
+	margin-right: 4px;
+	position: relative;
+	top: -2px;
 }
 
+/* ==========================================================================
+	Tabbed Layout
+	========================================================================== */
+
+.lw-lms-settings {
+	display: flex;
+	gap: 0;
+	margin-top: 20px;
+	background: #fff;
+	border: 1px solid #c3c4c7;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
+}
+
+/* Vertical Tab Navigation */
 .lw-lms-tabs {
 	width: 200px;
+	min-width: 200px;
+	background: #f6f7f7;
+	border-right: 1px solid #c3c4c7;
 	margin: 0;
 	padding: 0;
 	list-style: none;
-	background: #fff;
-	border: 1px solid #ccd0d4;
-	border-radius: 4px 0 0 4px;
 }
 
 .lw-lms-tabs li {
 	margin: 0;
+	padding: 0;
 }
 
 .lw-lms-tabs li a {
 	display: flex;
 	align-items: center;
-	padding: 12px 16px;
+	gap: 10px;
+	padding: 15px 20px;
 	text-decoration: none;
 	color: #1d2327;
-	border-bottom: 1px solid #ccd0d4;
-}
-
-.lw-lms-tabs li:last-child a {
-	border-bottom: none;
+	border-bottom: 1px solid #c3c4c7;
+	border-left: 3px solid transparent;
+	transition: all 0.15s ease;
 }
 
 .lw-lms-tabs li a:hover {
-	background: #f0f0f1;
+	background: #fff;
+	color: #0097a7;
+}
+
+.lw-lms-tabs li a:focus {
+	box-shadow: none;
+	outline: none;
 }
 
 .lw-lms-tabs li a.active {
-	background: #2271b1;
-	color: #fff;
+	background: #fff;
+	border-left-color: #0097a7;
+	color: #0097a7;
+	font-weight: 600;
+	margin-right: -1px;
 }
 
 .lw-lms-tabs li a .dashicons {
-	margin-right: 8px;
+	font-size: 18px;
+	width: 18px;
+	height: 18px;
+	margin-right: 0;
 }
 
+/* Tab Content */
 .lw-lms-tab-content {
 	flex: 1;
-	background: #fff;
-	border: 1px solid #ccd0d4;
-	border-left: none;
-	border-radius: 0 4px 4px 0;
-	padding: 20px;
+	padding: 20px 30px;
+	min-height: 500px;
 }
 
 .lw-lms-tab-panel {
@@ -65,7 +93,45 @@
 	display: block;
 }
 
-/* Course Builder */
+/* ==========================================================================
+	Form Elements
+	========================================================================== */
+
+.lw-lms-settings .form-table {
+	margin-top: 0;
+}
+
+.lw-lms-settings .form-table th {
+	width: 200px;
+	padding: 15px 10px 15px 0;
+	font-weight: 500;
+}
+
+.lw-lms-settings .form-table td {
+	padding: 15px 10px;
+}
+
+.lw-lms-settings .description {
+	color: #646970;
+	font-style: normal;
+	font-size: 13px;
+	margin-top: 5px;
+}
+
+/* ==========================================================================
+	Submit Button
+	========================================================================== */
+
+.lw-lms-settings .submit {
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid #dcdcde;
+}
+
+/* ==========================================================================
+	Course Builder
+	========================================================================== */
+
 .lw-lms-course-builder {
 	padding: 15px;
 }
@@ -304,4 +370,46 @@
 
 .lw-plugin-card h2 .dashicons {
 	margin-right: 8px;
+}
+
+/* ==========================================================================
+	Responsive
+	========================================================================== */
+
+@media screen and (max-width: 960px) {
+	.lw-lms-settings {
+		flex-direction: column;
+	}
+
+	.lw-lms-tabs {
+		width: 100%;
+		min-width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		border-right: none;
+		border-bottom: 1px solid #c3c4c7;
+	}
+
+	.lw-lms-tabs li {
+		flex: 1;
+		min-width: 120px;
+	}
+
+	.lw-lms-tabs li a {
+		justify-content: center;
+		border-bottom: none;
+		border-left: none;
+		border-bottom: 3px solid transparent;
+		padding: 12px 15px;
+	}
+
+	.lw-lms-tabs li a.active {
+		border-left-color: transparent;
+		border-bottom-color: #0097a7;
+		margin-right: 0;
+	}
+
+	.lw-lms-tab-content {
+		padding: 20px;
+	}
 }
