@@ -3,7 +3,7 @@
  * Plugin Name:       LW LMS
  * Plugin URI:        https://github.com/lwplugins/lw-lms
  * Description:       Lightweight LMS — courses, lessons, and progress tracking.
- * Version:           1.2.10
+ * Version:           1.2.11
  * Requires at least: 6.0
  * Requires PHP:      8.1
  * Author:            LW Plugins
@@ -26,15 +26,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'LW_LMS_VERSION', '1.2.10' );
+define( 'LW_LMS_VERSION', '1.2.11' );
 define( 'LW_LMS_FILE', __FILE__ );
 define( 'LW_LMS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'LW_LMS_URL', plugin_dir_url( __FILE__ ) );
 
-// Autoloader (required for PSR-4 class loading).
+// Autoloader: local vendor (standalone/ZIP) or root Composer (dependency install).
 if ( file_exists( LW_LMS_PATH . 'vendor/autoload.php' ) ) {
 	require_once LW_LMS_PATH . 'vendor/autoload.php';
-} else {
+} elseif ( ! class_exists( Plugin::class ) ) {
 	add_action(
 		'admin_notices',
 		static function (): void {
