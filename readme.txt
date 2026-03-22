@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.2.11
+Stable tag: 1.2.12
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,15 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.2.12 =
+* New: LW Site Manager integration - LMS abilities for AI agents
+* New: lw-lms/list-courses - list courses
+* New: lw-lms/get-course - get course details with lessons
+* New: lw-lms/get-progress - get user progress
+* New: lw-lms/set-progress - update lesson completion
+* New: lw-lms/get-options - get LMS settings
+* Fix: list-courses input schema accepts empty requests
 
 = 1.2.11 =
 * Fix: Smarter autoloader fallback - supports root Composer dependency installs

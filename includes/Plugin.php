@@ -29,6 +29,7 @@ use LightweightPlugins\LMS\CLI\MigrateLearnDashCommand;
 use LightweightPlugins\LMS\Admin\UserProfile;
 use LightweightPlugins\LMS\Access\AccessGranter;
 use LightweightPlugins\LMS\WooCommerce\WooCommerce;
+use LightweightPlugins\LMS\SiteManager\Integration as SiteManagerIntegration;
 
 /**
  * Main plugin class.
@@ -100,6 +101,9 @@ final class Plugin {
 
 		// WooCommerce integration (self-checks if WooCommerce is active).
 		new WooCommerce();
+
+		// LW Site Manager integration (safe to call even if not active).
+		SiteManagerIntegration::init();
 	}
 
 	/**
