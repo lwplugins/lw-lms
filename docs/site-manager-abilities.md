@@ -188,6 +188,8 @@ All abilities return a `WP_Error` on failure. Common error codes:
 | `missing_course_id` | 400 | `course_id` not provided |
 | `missing_params` | 400 | Required fields missing |
 | `invalid_status` | 400 | Status value not in allowed list |
-| `not_found` | 404 | Course or user not found |
+| `not_found` | 404 | Course not found |
+| `course_not_found` | 404 | Course not found (in progress endpoints) |
+| `user_not_found` | 404 | User not found |
 | `lesson_not_found` | 404 | Lesson not found or wrong post type |
 | `save_failed` | 500 | Database write failed |
