@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS;
 
+use LightweightPlugins\LMS\Admin\LessonListColumns;
 use LightweightPlugins\LMS\Admin\SettingsPage;
 use LightweightPlugins\LMS\Admin\Assets;
 use LightweightPlugins\LMS\Admin\Metaboxes\CourseContentMetabox;
@@ -90,6 +91,7 @@ final class Plugin {
 			new LessonCourseMetabox();
 			new LessonVideoMetabox();
 			new LessonDataMetabox();
+			LessonListColumns::register();
 		}
 
 		// REST API.

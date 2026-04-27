@@ -14,6 +14,13 @@ use LightweightPlugins\LMS\Options;
 
 /**
  * Calculates course progress percentages.
+ *
+ * Known limitation (issue #7): if a course gains a new lesson while users are
+ * mid-progress, their stored "completed" set is unchanged, so percentage
+ * calculations against the new total can shift unexpectedly. LearnDash has the
+ * same behaviour. The plugin currently assumes courses are append-only or
+ * authored before enrolment; if you need recalculation, hook into
+ * `save_post_lesson` and rebuild the progress rows for affected users.
  */
 final class ProgressCalculator {
 

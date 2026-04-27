@@ -8,13 +8,15 @@
 		$contentList: null,
 		$sectionsInput: null,
 		$previewInput: null,
+		$assignmentsInput: null,
 		sections: [],
 		previewLessons: [],
 
 		init: function () {
-			this.$contentList   = $( '#lw-lms-content-list' );
-			this.$sectionsInput = $( '#lw-lms-course-sections' );
-			this.$previewInput  = $( '#lw-lms-preview-lessons' );
+			this.$contentList      = $( '#lw-lms-content-list' );
+			this.$sectionsInput    = $( '#lw-lms-course-sections' );
+			this.$previewInput     = $( '#lw-lms-preview-lessons' );
+			this.$assignmentsInput = $( '#lw-lms-lesson-assignments' );
 
 			if ( ! this.$contentList.length) {
 				return;
@@ -23,6 +25,11 @@
 			this.loadData();
 			this.initSortable();
 			this.bindEvents();
+
+			// Always flush the current state so a save after a touch-and-restore
+			// (drag → drag back) still writes the correct lesson_section_id /
+			// lesson_order pairs.
+			this.collectAssignments();
 		},
 
 		loadData: function () {
@@ -246,12 +253,10 @@
 		},
 
 		updateLessonSection: function ($lesson) {
-			var lessonId  = $lesson.data( 'lesson-id' );
-			var $parent   = $lesson.parent();
-			var sectionId = $parent.data( 'section-id' ) || '';
-
-			// This would need AJAX to update the lesson meta
-			// For now, we'll handle this on form submit
+			// Lesson moved between sections (or in/out of orphan area) — flush
+			// the assignment map so save() writes the new section_id + order.
+			void $lesson;
+			this.collectAssignments();
 		},
 
 		updateOrder: function () {
@@ -271,6 +276,52 @@
 			);
 
 			this.saveData();
+			this.collectAssignments();
+		},
+
+		/**
+		 * Walk the DOM and rebuild the lesson → section + order map. Stored on
+		 * a hidden input so the metabox save() can persist lesson_section_id
+		 * and lesson_order for every lesson the course currently owns.
+		 */
+		collectAssignments: function () {
+			if ( ! this.$assignmentsInput.length) { return; }
+
+			var assignments = [];
+			var counter     = 1;
+
+			// Top-level orphan lessons (rendered directly in #lw-lms-content-list).
+			this.$contentList.children( '.lw-lms-lesson' ).each(
+				function () {
+					assignments.push(
+						{
+							lesson_id: parseInt( $( this ).data( 'lesson-id' ), 10 ),
+							section_id: '',
+							order: counter++
+						}
+					);
+				}
+			);
+
+			// Lessons inside each section, in their current visual order.
+			this.$contentList.find( '.lw-lms-section' ).each(
+				function () {
+					var sectionId = String( $( this ).data( 'section-id' ) || '' );
+					$( this ).find( '.lw-lms-section-lessons > .lw-lms-lesson' ).each(
+						function () {
+							assignments.push(
+								{
+									lesson_id: parseInt( $( this ).data( 'lesson-id' ), 10 ),
+									section_id: sectionId,
+									order: counter++
+								}
+							);
+						}
+					);
+				}
+			);
+
+			this.$assignmentsInput.val( JSON.stringify( assignments ) );
 		},
 
 		togglePreview: function (lessonId, isPreview) {

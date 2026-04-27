@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.2.12
+Stable tag: 1.2.13
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,11 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.2.13 =
+* Fix: Course builder drag&drop now persists `lesson_section_id` and `lesson_order` for every lesson on save (issue #3) — eliminates the editor/REST sort-order mismatch and the cross-save orphan bug after a drag-and-drop-back gesture
+* New: All Lessons admin list now has Order (sortable) and Course (linkable) columns (issue #5)
+* Docs: ProgressCalculator now documents the known append-only progress recalculation limitation (issue #7)
 
 = 1.2.12 =
 * New: LW Site Manager integration - LMS abilities for AI agents
