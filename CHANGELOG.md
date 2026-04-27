@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.14] - 2026-04-27
+
+### Added
+- **Lock-on-complete progress snapshot** (issue #7). When a user first reaches 100% in a course, the lesson count is captured and frozen for that user × course pair. Adding a lesson to the course later no longer demotes completed users from 100% — they stay at 100%, and the new lesson is "extra material". Users still in progress see the current (larger) total and a freshly-recalculated percentage.
+  - New `wp_lms_completion_snapshots` table (`user_id`, `course_id`, `total_lessons`, `completed_at`, UNIQUE on `user_id, course_id`).
+  - New `ProgressSnapshotTable`, `ProgressSnapshotRepository`, `CompletionTracker`, `ProgressSnapshotMigration` classes.
+  - `ProgressRepository::upsert()` now triggers `CompletionTracker::maybe_record()` after every status change, so the snapshot is written exactly once at the moment of completion.
+  - Activation migration (`ProgressSnapshotMigration::backfill()`) retroactively writes a snapshot for every user × course pair already at 100% in `wp_lms_progress`. Idempotent — safe to call on every activation.
+- DB version bumped to `1.2.0` to trigger the migration on update.
+
+### Changed
+- `ProgressCalculator::calculate()` now resolves the total via the snapshot when one exists, otherwise falls back to the current course size.
+- Percentage is now clamped to 100% defensively.
+
 ## [1.2.13] - 2026-04-27
 
 ### Fixed

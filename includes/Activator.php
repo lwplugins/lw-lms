@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS;
 
 use LightweightPlugins\LMS\Access\AccessTable;
+use LightweightPlugins\LMS\Progress\ProgressSnapshotMigration;
+use LightweightPlugins\LMS\Progress\ProgressSnapshotTable;
 use LightweightPlugins\LMS\Progress\ProgressTable;
 
 /**
@@ -20,7 +22,7 @@ final class Activator {
 	/**
 	 * DB version constant.
 	 */
-	public const DB_VERSION = '1.1.0';
+	public const DB_VERSION = '1.2.0';
 
 	/**
 	 * Activate the plugin.
@@ -53,6 +55,13 @@ final class Activator {
 	private static function create_tables(): void {
 		ProgressTable::create();
 		AccessTable::create();
+		ProgressSnapshotTable::create();
+
+		// First time the snapshot table exists, retroactively freeze every
+		// already-completed user × course pair so they don't drop below 100%
+		// the moment someone adds a new lesson.
+		ProgressSnapshotMigration::backfill();
+
 		update_option( 'lw_lms_db_version', self::DB_VERSION );
 	}
 

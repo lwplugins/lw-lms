@@ -15,12 +15,12 @@ use LightweightPlugins\LMS\Options;
 /**
  * Calculates course progress percentages.
  *
- * Known limitation (issue #7): if a course gains a new lesson while users are
- * mid-progress, their stored "completed" set is unchanged, so percentage
- * calculations against the new total can shift unexpectedly. LearnDash has the
- * same behaviour. The plugin currently assumes courses are append-only or
- * authored before enrolment; if you need recalculation, hook into
- * `save_post_lesson` and rebuild the progress rows for affected users.
+ * Issue #7 (1.2.14): course completion is now lock-on-complete. The first
+ * time a user reaches 100% in a course, CompletionTracker writes a snapshot
+ * with the lesson count at that moment. Subsequent calls use that frozen
+ * total, so adding a lesson to the course later does NOT push completed
+ * users back below 100%. New (still-in-progress) users see the current
+ * lesson count.
  */
 final class ProgressCalculator {
 
@@ -32,8 +32,8 @@ final class ProgressCalculator {
 	 * @return array{completed_lessons: int, total_lessons: int, percentage: int}
 	 */
 	public static function calculate( int $user_id, int $course_id ): array {
-		$total_lessons     = self::get_total_lessons( $course_id );
 		$completed_lessons = count( ProgressRepository::get_completed_lessons( $user_id, $course_id ) );
+		$total_lessons     = self::resolve_total_lessons( $user_id, $course_id, $completed_lessons );
 
 		$percentage = 0;
 		if ( $total_lessons > 0 ) {
@@ -43,8 +43,30 @@ final class ProgressCalculator {
 		return [
 			'completed_lessons' => $completed_lessons,
 			'total_lessons'     => $total_lessons,
-			'percentage'        => $percentage,
+			'percentage'        => min( 100, $percentage ),
 		];
+	}
+
+	/**
+	 * Total lessons used for the percentage. Honours an existing completion
+	 * snapshot (frozen total) and falls back to the current course size for
+	 * users who have not yet completed.
+	 *
+	 * @param int $user_id           User id.
+	 * @param int $course_id         Course id.
+	 * @param int $completed_lessons Number of lessons the user has completed.
+	 * @return int
+	 */
+	private static function resolve_total_lessons( int $user_id, int $course_id, int $completed_lessons ): int {
+		$snapshot = ProgressSnapshotRepository::get( $user_id, $course_id );
+
+		if ( null !== $snapshot ) {
+			// Defensive: never report fewer total than completed (would push
+			// percentage above 100% if a snapshot ever drifted).
+			return max( (int) $snapshot->total_lessons, $completed_lessons );
+		}
+
+		return self::get_total_lessons( $course_id );
 	}
 
 	/**

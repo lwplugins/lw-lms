@@ -128,6 +128,10 @@ final class ProgressRepository {
 			);
 		}
 
+		if ( false !== $result ) {
+			CompletionTracker::maybe_record( $user_id, $course_id, $status );
+		}
+
 		return false !== $result;
 	}
 

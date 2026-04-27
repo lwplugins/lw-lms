@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.2.13
+Stable tag: 1.2.14
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,11 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.2.14 =
+* New: Lock-on-complete progress snapshot — once a user reaches 100% in a course, the lesson count is frozen so adding a new lesson later does not knock them below 100% (issue #7). New `wp_lms_completion_snapshots` table; activation migration backfills existing completed users.
+* New: Course completion is detected automatically inside `ProgressRepository::upsert()` via the new `CompletionTracker` (no extra hook needed at the call sites).
+* Fix: `percentage` is now clamped to 100% defensively so a stale snapshot can never report >100%.
 
 = 1.2.13 =
 * Fix: Course builder drag&drop now persists `lesson_section_id` and `lesson_order` for every lesson on save (issue #3) — eliminates the editor/REST sort-order mismatch and the cross-save orphan bug after a drag-and-drop-back gesture
