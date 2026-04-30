@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.2.14
+Stable tag: 1.2.15
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,11 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.2.15 =
+* New: Variation-level WooCommerce Subscriptions access (issue #8). New `subscription_variation_ids` course meta lets you tie access to specific variations of a variable subscription (e.g. only the "Yearly" variation grants access, not "Monthly"). Existing `subscription_ids` (parent-level) behaviour is unchanged and still works alongside.
+* New: `Subscription Variations` field in the Course Access metabox — one `parent_id:variation_id` per line.
+* New: REST course access info now includes `subscription_variations` for paid courses without access.
 
 = 1.2.14 =
 * New: Lock-on-complete progress snapshot — once a user reaches 100% in a course, the lesson count is frozen so adding a new lesson later does not knock them below 100% (issue #7). New `wp_lms_completion_snapshots` table; activation migration backfills existing completed users.

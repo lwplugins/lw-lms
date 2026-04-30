@@ -72,6 +72,8 @@ final class CourseMeta {
 			]
 		);
 
+		SubscriptionVariationMeta::register();
+
 		// WooCommerce product durations (product_id => days).
 		register_post_meta(
 			Course::POST_TYPE,

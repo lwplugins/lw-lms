@@ -59,12 +59,17 @@ final class AccessChecker {
 				return true;
 			}
 
-			// 2. Subscription check.
+			// 2. Parent-level subscription check.
 			if ( WooCommerceChecker::has_active_subscription( $course_id, $user_id ) ) {
 				return true;
 			}
 
-			// 3. Fallback: legacy purchases without durations.
+			// 3. Variation-level subscription check (specific variations of variable subscriptions).
+			if ( SubscriptionVariationChecker::has_active( $course_id, $user_id ) ) {
+				return true;
+			}
+
+			// 4. Fallback: legacy purchases without durations.
 			return WooCommerceChecker::has_legacy_purchase( $course_id, $user_id );
 		}
 
@@ -173,9 +178,10 @@ final class AccessChecker {
 
 		// Add purchase info for paid courses without access.
 		if ( self::ACCESS_PAID === $access_type && ! $has_access ) {
-			$info['requires']      = 'purchase';
-			$info['products']      = WooCommerceChecker::get_products_info( $course_id );
-			$info['subscriptions'] = WooCommerceChecker::get_subscriptions_info( $course_id );
+			$info['requires']                = 'purchase';
+			$info['products']                = WooCommerceChecker::get_products_info( $course_id );
+			$info['subscriptions']           = WooCommerceChecker::get_subscriptions_info( $course_id );
+			$info['subscription_variations'] = SubscriptionVariationChecker::get_info( $course_id );
 		}
 
 		return $info;

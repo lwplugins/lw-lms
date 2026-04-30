@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.2.15] - 2026-04-30
+
+### Added
+- Variation-level WooCommerce Subscriptions access (issue #8). New `subscription_variation_ids` course meta accepts `parent_id:variation_id` pairs, so a course can be tied to specific variations of a variable-subscription product (e.g. only the "Yearly" variation grants access, not "Monthly"). Implemented in the new `SubscriptionVariationChecker` (runtime check via `wcs_get_users_subscriptions()` against `active` subscriptions; matches on the variation ID line item, not the parent). Existing parent-level `subscription_ids` behaviour is unchanged and still evaluated first.
+- New `Subscription Variations` field in the Course Access metabox — textarea, one `parent_id:variation_id` per line.
+- `AccessChecker::get_access_info()` now includes a `subscription_variations` array for paid courses without access (parent_id, variation_id, name, attributes, price, url) so REST clients can render variation-specific upsells.
+
+### Changed
+- `AccessMetaboxRenderer` converted from trait to a static helper class (was 78 lines as a trait, would have exceeded the 80-line trait limit with the new render method).
+
 ## [1.2.14] - 2026-04-27
 
 ### Added
