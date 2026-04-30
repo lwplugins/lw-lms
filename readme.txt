@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.2.15
+Stable tag: 1.2.16
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,13 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.2.16 =
+* New: Standalone Abilities API support — abilities now register directly on `wp_abilities_api_categories_init` / `wp_abilities_api_init` (priority 20) when LW Site Manager is not active. Previously abilities required Site Manager to be installed.
+* New: Detailed `output_schema` for every ability (course summary, full course, lesson, progress per-lesson, etc.) so AI agents can introspect the response shape.
+* New: `list-courses` response now includes `total_pages`, `page`, and `per_page` for pagination consumers.
+* Change: SiteManager folder restructured — `LmsAbilities` and `LmsService` split into focused `Abilities/`, `Service/`, and `Schema/` namespaces.
+* Change: `set-progress` description now explicitly notes that reverting from completed loses the completion timestamp.
 
 = 1.2.15 =
 * New: Variation-level WooCommerce Subscriptions access (issue #8). New `subscription_variation_ids` course meta lets you tie access to specific variations of a variable subscription (e.g. only the "Yearly" variation grants access, not "Monthly"). Existing `subscription_ids` (parent-level) behaviour is unchanged and still works alongside.

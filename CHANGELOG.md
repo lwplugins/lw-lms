@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.16] - 2026-04-30
+
+### Added
+- Standalone Abilities API support. `Integration` now registers a fallback on the official `wp_abilities_api_categories_init` and `wp_abilities_api_init` hooks (priority 20, gated by `did_action()` so the Site Manager bridge wins when active). Abilities are usable with only the WordPress 6.9+ Abilities API or the feature plugin — no Site Manager required.
+- Detailed `output_schema` definitions for every ability (`OutputSchemas`): course summary fragment, full course with sections + lessons, per-lesson progress map with status enum, options. Lets AI agents introspect the exact response shape instead of guessing from `'type' => 'array'`.
+- `list-courses` response includes `total_pages`, `page`, and `per_page` alongside `total`.
+- `AbilityPermissions` factory: prefers Site Manager's `PermissionManager` when injected (via the `lw_site_manager_register_abilities` bridge), falls back to a `current_user_can()` map (`can_edit_posts` → `edit_posts`, `can_manage_options` → `manage_options`, `can_edit_users` → `edit_users`) when registering directly.
+
+### Changed
+- SiteManager folder restructured into focused `Abilities/`, `Service/`, and `Schema/` namespaces. `LmsAbilities` and `LmsService` split per concern: course / progress / options.
+- `set-progress` description explicitly notes the destructive aspect: reverting from completed loses the completion timestamp.
+
 ## [1.2.15] - 2026-04-30
 
 ### Added
