@@ -12,6 +12,7 @@ namespace LightweightPlugins\LMS\Api\Controllers;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\Api\Transformers\ProgressTransformer;
 use LightweightPlugins\LMS\Progress\ProgressRepository;
+use LightweightPlugins\LMS\Progress\ProgressQueries;
 use LightweightPlugins\LMS\Progress\ProgressCalculator;
 use LightweightPlugins\LMS\Access\AccessChecker;
 use LightweightPlugins\LMS\Options;
@@ -92,7 +93,7 @@ final class ProgressController {
 	 */
 	public function get_progress( WP_REST_Request $request ): WP_REST_Response { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.Found -- Required by REST API callback signature.
 		$user_id  = get_current_user_id();
-		$progress = ProgressRepository::get_user_progress( $user_id );
+		$progress = ProgressQueries::get_user_progress( $user_id );
 
 		return new WP_REST_Response(
 			[
@@ -112,7 +113,7 @@ final class ProgressController {
 		$user_id   = get_current_user_id();
 		$course_id = (int) $request->get_param( 'id' );
 
-		$progress = ProgressRepository::get_course_progress( $user_id, $course_id );
+		$progress = ProgressQueries::get_course_progress( $user_id, $course_id );
 		$stats    = ProgressCalculator::calculate( $user_id, $course_id );
 
 		return new WP_REST_Response(
@@ -166,17 +167,9 @@ final class ProgressController {
 			);
 		}
 
-		// Fire action.
-		if ( 'completed' === $status ) {
-			do_action( 'lw_lms_lesson_completed', $lesson_id, $user_id );
-
-			// Check if course is completed.
-			if ( ProgressCalculator::is_course_completed( $user_id, $course_id ) ) {
-				do_action( 'lw_lms_course_completed', $course_id, $user_id );
-			}
-		}
-
-		$progress_entry  = ProgressRepository::get( $user_id, $lesson_id );
+		// Lesson/course completion actions are fired by ProgressRepository::upsert
+		// and CompletionTracker::maybe_record once the user crosses 100%.
+		$progress_entry  = ProgressQueries::get( $user_id, $lesson_id );
 		$course_progress = ProgressCalculator::calculate( $user_id, $course_id );
 
 		return new WP_REST_Response(

@@ -32,7 +32,7 @@ final class ProgressCalculator {
 	 * @return array{completed_lessons: int, total_lessons: int, percentage: int}
 	 */
 	public static function calculate( int $user_id, int $course_id ): array {
-		$completed_lessons = count( ProgressRepository::get_completed_lessons( $user_id, $course_id ) );
+		$completed_lessons = count( ProgressQueries::get_completed_lessons( $user_id, $course_id ) );
 		$total_lessons     = self::resolve_total_lessons( $user_id, $course_id, $completed_lessons );
 
 		$percentage = 0;
@@ -116,7 +116,7 @@ final class ProgressCalculator {
 	 * @return bool
 	 */
 	public static function is_lesson_completed( int $user_id, int $lesson_id ): bool {
-		$progress = ProgressRepository::get( $user_id, $lesson_id );
+		$progress = ProgressQueries::get( $user_id, $lesson_id );
 		return $progress && 'completed' === $progress->status;
 	}
 }

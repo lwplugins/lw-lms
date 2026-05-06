@@ -38,12 +38,22 @@ final class CompletionTracker {
 		}
 
 		$total     = ProgressCalculator::get_total_lessons( $course_id );
-		$completed = count( ProgressRepository::get_completed_lessons( $user_id, $course_id ) );
+		$completed = count( ProgressQueries::get_completed_lessons( $user_id, $course_id ) );
 
 		if ( $total <= 0 || $completed < $total ) {
 			return;
 		}
 
 		ProgressSnapshotRepository::record( $user_id, $course_id, $total );
+
+		/**
+		 * Fires once when a user reaches 100% in a course.
+		 *
+		 * @since 1.2.0
+		 *
+		 * @param int $course_id Course ID.
+		 * @param int $user_id   User ID.
+		 */
+		do_action( 'lw_lms_course_completed', $course_id, $user_id );
 	}
 }

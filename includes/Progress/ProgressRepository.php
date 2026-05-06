@@ -9,81 +9,20 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Progress;
 
+use LightweightPlugins\LMS\PostTypes\Lesson;
+use LightweightPlugins\LMS\Options;
+
 /**
- * Handles CRUD operations for progress data.
+ * Write operations for the progress table.
+ *
+ * Read queries live in ProgressQueries.
  */
 final class ProgressRepository {
 
 	/**
-	 * Get progress for a user and lesson.
-	 *
-	 * @param int $user_id   User ID.
-	 * @param int $lesson_id Lesson ID.
-	 * @return object|null
-	 */
-	public static function get( int $user_id, int $lesson_id ): ?object {
-		global $wpdb;
-
-		$table = ProgressTable::get_table_name();
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		return $wpdb->get_row(
-			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE user_id = %d AND lesson_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
-				$user_id,
-				$lesson_id
-			)
-		);
-	}
-
-	/**
-	 * Get all progress for a user in a course.
-	 *
-	 * @param int $user_id   User ID.
-	 * @param int $course_id Course ID.
-	 * @return array
-	 */
-	public static function get_course_progress( int $user_id, int $course_id ): array {
-		global $wpdb;
-
-		$table = ProgressTable::get_table_name();
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE user_id = %d AND course_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
-				$user_id,
-				$course_id
-			)
-		);
-
-		return $results ? $results : [];
-	}
-
-	/**
-	 * Get all progress for a user.
-	 *
-	 * @param int $user_id User ID.
-	 * @return array
-	 */
-	public static function get_user_progress( int $user_id ): array {
-		global $wpdb;
-
-		$table = ProgressTable::get_table_name();
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$results = $wpdb->get_results(
-			$wpdb->prepare(
-				"SELECT * FROM {$table} WHERE user_id = %d", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
-				$user_id
-			)
-		);
-
-		return $results ? $results : [];
-	}
-
-	/**
 	 * Update or create progress entry.
+	 *
+	 * @since 1.3.0 Fires lw_lms_lesson_completed when status transitions to completed.
 	 *
 	 * @param int    $user_id   User ID.
 	 * @param int    $course_id Course ID.
@@ -96,7 +35,8 @@ final class ProgressRepository {
 
 		$table        = ProgressTable::get_table_name();
 		$completed_at = 'completed' === $status ? current_time( 'mysql' ) : null;
-		$existing     = self::get( $user_id, $lesson_id );
+		$existing     = ProgressQueries::get( $user_id, $lesson_id );
+		$was_complete = $existing && 'completed' === $existing->status;
 
 		if ( $existing ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
@@ -128,11 +68,25 @@ final class ProgressRepository {
 			);
 		}
 
-		if ( false !== $result ) {
-			CompletionTracker::maybe_record( $user_id, $course_id, $status );
+		if ( false === $result ) {
+			return false;
 		}
 
-		return false !== $result;
+		if ( 'completed' === $status && ! $was_complete ) {
+			/**
+			 * Fires when a lesson transitions to completed.
+			 *
+			 * @since 1.2.0
+			 *
+			 * @param int $lesson_id Lesson ID.
+			 * @param int $user_id   User ID.
+			 */
+			do_action( 'lw_lms_lesson_completed', $lesson_id, $user_id );
+		}
+
+		CompletionTracker::maybe_record( $user_id, $course_id, $status );
+
+		return true;
 	}
 
 	/**
@@ -161,26 +115,48 @@ final class ProgressRepository {
 	}
 
 	/**
-	 * Get completed lesson IDs for a user in a course.
+	 * Mark all lessons in a course as completed for a user.
+	 *
+	 * Enumerates published lessons assigned to the course and upserts each as
+	 * completed. The final upsert triggers CompletionTracker::maybe_record(),
+	 * which fires lw_lms_course_completed once the snapshot is written.
+	 *
+	 * @since 1.3.0
 	 *
 	 * @param int $user_id   User ID.
 	 * @param int $course_id Course ID.
-	 * @return array<int>
+	 * @return bool True if at least one lesson was upserted.
 	 */
-	public static function get_completed_lessons( int $user_id, int $course_id ): array {
-		global $wpdb;
-
-		$table = ProgressTable::get_table_name();
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$results = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT lesson_id FROM {$table} WHERE user_id = %d AND course_id = %d AND status = 'completed'", // phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
-				$user_id,
-				$course_id
-			)
+	public static function mark_course_completed( int $user_id, int $course_id ): bool {
+		$lesson_ids = get_posts(
+			[
+				'post_type'      => Lesson::POST_TYPE,
+				'post_status'    => 'publish',
+				'posts_per_page' => -1,
+				'fields'         => 'ids',
+				'meta_query'     => [
+					[
+						'key'     => Options::META_PREFIX . 'lesson_course_id',
+						'value'   => $course_id,
+						'compare' => '=',
+						'type'    => 'NUMERIC',
+					],
+				],
+			]
 		);
 
-		return array_map( 'intval', $results );
+		if ( empty( $lesson_ids ) ) {
+			return false;
+		}
+
+		$any = false;
+
+		foreach ( $lesson_ids as $lesson_id ) {
+			if ( self::upsert( $user_id, $course_id, (int) $lesson_id, 'completed' ) ) {
+				$any = true;
+			}
+		}
+
+		return $any;
 	}
 }

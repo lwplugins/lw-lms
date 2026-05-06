@@ -49,13 +49,20 @@ final class AccessChecker {
 
 		// Free courses are accessible to logged-in users.
 		if ( self::ACCESS_FREE === $access_type ) {
+			// Implicit enrollment: lazily insert a source='free' row on first
+			// access so callers get an lw_lms_after_grant event for free
+			// courses (drip / welcome email / cohort analytics).
+			if ( ! AccessQueries::has_active_access( $user_id, $course_id, 'free' ) ) {
+				AccessRepository::grant( $user_id, $course_id, 'free', null, null );
+			}
+
 			return true;
 		}
 
 		// Paid courses: check access table, subscriptions, then legacy fallback.
 		if ( self::ACCESS_PAID === $access_type ) {
 			// 1. Access table check.
-			if ( AccessRepository::has_active_access( $user_id, $course_id ) ) {
+			if ( AccessQueries::has_active_access( $user_id, $course_id ) ) {
 				return true;
 			}
 
@@ -168,7 +175,7 @@ final class AccessChecker {
 			$user_id = $user_id ? $user_id : get_current_user_id();
 
 			if ( $user_id ) {
-				$access_record = AccessRepository::get_user_access( $user_id, $course_id );
+				$access_record = AccessQueries::get_user_access( $user_id, $course_id );
 
 				if ( $access_record && $access_record->expires_at ) {
 					$info['expires_at'] = $access_record->expires_at;

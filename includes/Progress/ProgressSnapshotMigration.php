@@ -52,7 +52,7 @@ final class ProgressSnapshotMigration {
 			}
 
 			$total     = ProgressCalculator::get_total_lessons( $course_id );
-			$completed = count( ProgressRepository::get_completed_lessons( $user_id, $course_id ) );
+			$completed = count( ProgressQueries::get_completed_lessons( $user_id, $course_id ) );
 
 			if ( $total <= 0 || $completed < $total ) {
 				continue;

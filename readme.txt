@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.2.16
+Stable tag: 1.3.0
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,17 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.3.0 =
+* New: `lw_lms_after_grant` action — fires after access is granted (issue #9). 5 args: user_id, course_id, source, source_id, expires_at.
+* New: `lw_lms_after_revoke` action — fires only when an active row is actually flipped to revoked. 3 args: user_id, course_id, source.
+* New: `lw_lms_pre_grant` filter — return false to abort a grant before any DB work. 6 args: allow, user_id, course_id, source, source_id, expires_at.
+* New: Free-course implicit enrollment. First time a logged-in user accesses a free course, a `source='free'` access row is inserted (idempotent), so `lw_lms_after_grant` fires for free enrollments and downstream automation (drip / welcome email / cohort analytics) can listen to a single grant signal.
+* New: `AccessQueries::has_active_access( user_id, course_id, source = null )` — optional `$source` argument for source-specific access checks.
+* New: `ProgressRepository::mark_course_completed( user_id, course_id )` — programmatically marks every published lesson in a course completed. The last upsert naturally fires `lw_lms_lesson_completed` and `lw_lms_course_completed`.
+* Change: `lw_lms_lesson_completed` and `lw_lms_course_completed` are now fired centrally by `ProgressRepository::upsert()` and `CompletionTracker::maybe_record()` respectively, instead of by individual REST endpoints. Existing 2-arg signatures (`lesson_id, user_id` and `course_id, user_id`) are preserved.
+* Change: `AccessRepository` split into `AccessRepository` (writes: grant/revoke) and `AccessQueries` (reads: has_active_access, get_user_access, get_user_enrollments). Keeps each class within the 200-line limit. Direct callers of the read methods on `AccessRepository` should migrate to `AccessQueries`.
+* Change: `ProgressRepository` split into `ProgressRepository` (writes: upsert/delete/mark_course_completed) and `ProgressQueries` (reads: get/get_course_progress/get_user_progress/get_completed_lessons). Direct callers of the read methods on `ProgressRepository` should migrate to `ProgressQueries`.
 
 = 1.2.16 =
 * New: Standalone Abilities API support — abilities now register directly on `wp_abilities_api_categories_init` / `wp_abilities_api_init` (priority 20) when LW Site Manager is not active. Previously abilities required Site Manager to be installed.

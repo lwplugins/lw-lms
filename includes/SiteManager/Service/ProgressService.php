@@ -11,6 +11,7 @@ namespace LightweightPlugins\LMS\SiteManager\Service;
 
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Progress\ProgressCalculator;
+use LightweightPlugins\LMS\Progress\ProgressQueries;
 use LightweightPlugins\LMS\Progress\ProgressRepository;
 
 /**
@@ -43,7 +44,7 @@ final class ProgressService {
 		}
 
 		$summary   = ProgressCalculator::calculate( $user_id, $course_id );
-		$raw       = ProgressRepository::get_course_progress( $user_id, $course_id );
+		$raw       = ProgressQueries::get_course_progress( $user_id, $course_id );
 		$by_lesson = [];
 
 		foreach ( $raw as $row ) {

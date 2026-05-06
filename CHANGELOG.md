@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.3.0] - 2026-05-06
+
+### Added
+- `lw_lms_after_grant` action — fires after access is granted (issue #9). Args: `user_id`, `course_id`, `source`, `source_id`, `expires_at` (5 args, callers must register with `$accepted_args = 5`).
+- `lw_lms_after_revoke` action — fires only when an active row is actually flipped to revoked. Args: `user_id`, `course_id`, `source` (3 args).
+- `lw_lms_pre_grant` filter — return false to abort a grant before any DB work. Args: `$allow`, `user_id`, `course_id`, `source`, `source_id`, `expires_at` (6 args).
+- Free-course implicit enrollment. First time a logged-in user accesses a free course, a `source='free'` access row is inserted (idempotent), so `lw_lms_after_grant` fires for free enrollments and downstream automation (drip / welcome email / cohort analytics) can listen to a single grant signal.
+- `AccessQueries::has_active_access( user_id, course_id, source = null )` — optional `$source` argument for source-specific active-access checks (`'free'`, `'manual'`, `'woocommerce'`, `'subscription'`).
+- `ProgressRepository::mark_course_completed( user_id, course_id )` — enumerates published lessons assigned to the course and upserts each as completed. The final upsert naturally fires `lw_lms_lesson_completed` and `lw_lms_course_completed`.
+
+### Changed
+- `lw_lms_lesson_completed` and `lw_lms_course_completed` are now fired centrally by `ProgressRepository::upsert()` and `CompletionTracker::maybe_record()` respectively, instead of by individual REST endpoints. Existing 2-arg signatures (`lesson_id, user_id` and `course_id, user_id`) are preserved.
+- `AccessRepository` split into `AccessRepository` (writes: `grant`, `revoke`) and `AccessQueries` (reads: `has_active_access`, `get_user_access`, `get_user_enrollments`). Each class stays within the 200-line limit. Direct callers of the read methods on `AccessRepository` should migrate to `AccessQueries`.
+- `ProgressRepository` split into `ProgressRepository` (writes: `upsert`, `delete`, `mark_course_completed`) and `ProgressQueries` (reads: `get`, `get_course_progress`, `get_user_progress`, `get_completed_lessons`). Direct callers of the read methods on `ProgressRepository` should migrate to `ProgressQueries`.
+
 ## [1.2.16] - 2026-04-30
 
 ### Added

@@ -34,7 +34,7 @@ final class EnrollmentRenderer {
 	 * @return void
 	 */
 	public function render_section( int $user_id ): void {
-		$enrollments = \LightweightPlugins\LMS\Access\AccessRepository::get_user_enrollments( $user_id );
+		$enrollments = \LightweightPlugins\LMS\Access\AccessQueries::get_user_enrollments( $user_id );
 		$courses     = $this->get_available_courses( $enrollments );
 
 		echo '<h2>' . esc_html__( 'Course Enrollment', 'lw-lms' ) . '</h2>';
