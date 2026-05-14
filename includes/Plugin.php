@@ -27,6 +27,16 @@ use LightweightPlugins\LMS\Meta\CourseMeta;
 use LightweightPlugins\LMS\Meta\LessonMeta;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\CLI\MigrateLearnDashCommand;
+use LightweightPlugins\LMS\CLI\CourseCreateCommand;
+use LightweightPlugins\LMS\CLI\CourseListCommand;
+use LightweightPlugins\LMS\CLI\CourseDeleteCommand;
+use LightweightPlugins\LMS\CLI\CourseSetSectionCommand;
+use LightweightPlugins\LMS\CLI\LessonCreateCommand;
+use LightweightPlugins\LMS\CLI\LessonListCommand;
+use LightweightPlugins\LMS\CLI\LessonAssignCommand;
+use LightweightPlugins\LMS\CLI\EnrollCommand;
+use LightweightPlugins\LMS\CLI\RevokeCommand;
+use LightweightPlugins\LMS\CLI\ForceCompleteCommand;
 use LightweightPlugins\LMS\Admin\UserProfile;
 use LightweightPlugins\LMS\Access\AccessGranter;
 use LightweightPlugins\LMS\WooCommerce\WooCommerce;
@@ -163,5 +173,18 @@ final class Plugin {
 		}
 
 		\WP_CLI::add_command( 'lw-lms migrate-learndash', MigrateLearnDashCommand::class );
+
+		\WP_CLI::add_command( 'lw-lms course create', CourseCreateCommand::class );
+		\WP_CLI::add_command( 'lw-lms course list', CourseListCommand::class );
+		\WP_CLI::add_command( 'lw-lms course delete', CourseDeleteCommand::class );
+		\WP_CLI::add_command( 'lw-lms course set-section', CourseSetSectionCommand::class );
+
+		\WP_CLI::add_command( 'lw-lms lesson create', LessonCreateCommand::class );
+		\WP_CLI::add_command( 'lw-lms lesson list', LessonListCommand::class );
+		\WP_CLI::add_command( 'lw-lms lesson assign', LessonAssignCommand::class );
+
+		\WP_CLI::add_command( 'lw-lms enroll', EnrollCommand::class );
+		\WP_CLI::add_command( 'lw-lms revoke', RevokeCommand::class );
+		\WP_CLI::add_command( 'lw-lms force-complete', ForceCompleteCommand::class );
 	}
 }

@@ -108,6 +108,16 @@ final class AccessChecker {
 			return false;
 		}
 
+		// Open courses are accessible to everyone — the preview flag is moot
+		// because the entire course is already public, so checking it first
+		// would wrongly require login for an open-course lesson marked preview.
+		if ( self::ACCESS_OPEN === self::get_access_type( $course_id ) ) {
+			$has_access = true;
+
+			/** This filter is documented below. */
+			return apply_filters( 'lw_lms_has_lesson_access', $has_access, $lesson_id, $user_id );
+		}
+
 		// Check if lesson is a preview lesson.
 		if ( self::is_preview_lesson( $lesson_id, $course_id ) ) {
 			// Preview lessons require login.

@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,12 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.4.0 =
+* New: WP-CLI workflow — `wp lw-lms course create|list|delete|set-section`, `wp lw-lms lesson create|list|assign`, `wp lw-lms enroll`, `wp lw-lms revoke`, `wp lw-lms force-complete`. Each command resolves user/course/lesson refs by ID, slug, login, or email. Issue #10.
+* New: `lw_lms_settings_tabs` filter — third-party plugins can append, remove, or reorder admin Settings tabs by returning a modified list of `TabInterface` instances. `SettingsPage::get_settings_group()` is also public, so companion plugins can `register_setting()` against the same group and save options through the existing form. Issue #12.
+* Fix: Course `content` is now always public in the REST `transform_full` response, matching the marketing/about-page intent of a course's `post_content`. Lesson content stays gated by the per-lesson `accessible` flag and its REST endpoint. `content_raw` (unfiltered source) remains editor-only. Issue #13.
+* Fix: Open-course lessons are accessible even when marked as preview. `AccessChecker::has_lesson_access()` now short-circuits on `ACCESS_OPEN` before consulting the preview branch, which previously wrongly required login. Issue #11.
 
 = 1.3.0 =
 * New: `lw_lms_after_grant` action — fires after access is granted (issue #9). 5 args: user_id, course_id, source, source_id, expires_at.

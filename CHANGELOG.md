@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.4.0] - 2026-05-13
+
+### Added
+- WP-CLI workflow (issue #10):
+  - `wp lw-lms course create|list|delete|set-section`
+  - `wp lw-lms lesson create|list|assign`
+  - `wp lw-lms enroll <user> <course> [--source=…] [--expires-at=…]`
+  - `wp lw-lms revoke <user> <course>`
+  - `wp lw-lms force-complete <user> <course>`
+  - User refs accept ID, login, or email; course/lesson refs accept ID or slug. Each subcommand lives in its own `CLI/*Command.php` file (max 200 lines).
+- `lw_lms_settings_tabs` filter — third-party plugins can append, remove, or reorder admin Settings tabs by returning a modified list of `TabInterface` instances. Issue #12.
+- `SettingsPage::get_settings_group()` — exposes the settings group identifier so companion plugins can `register_setting()` against the same group and save options through the existing form (single nonce, single submit).
+
+### Fixed
+- Course `content` is no longer gated behind `has_access` in the REST `transform_full` response. The course `post_content` is the public marketing/about description; per-lesson content stays gated by the lesson `accessible` flag and the lessons REST endpoint. `content_raw` (unfiltered source) remains editor-only. Issue #13.
+- `AccessChecker::has_lesson_access()` now short-circuits on `ACCESS_OPEN` before consulting the preview-lesson branch, so open-course lessons remain accessible to guests even when marked as preview. Previously, preview lessons on open courses wrongly required login. Issue #11.
+
 ## [1.3.0] - 2026-05-06
 
 ### Added

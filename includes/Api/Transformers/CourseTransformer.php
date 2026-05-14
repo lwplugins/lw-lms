@@ -77,14 +77,16 @@ final class CourseTransformer {
 			'access'     => $access_info,
 		];
 
-		// Add content only if user has access.
-		if ( $has_access ) {
-			$data['content'] = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Using WordPress core filter.
+		// Course post_content is the public marketing/about description for the
+		// course as a whole — separate from per-lesson content, which lives on
+		// Lesson posts and is independently gated by the `accessible` flag and
+		// the lessons REST endpoint. Always public so frontends can render a
+		// real course detail page for prospective students.
+		$data['content'] = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Using WordPress core filter.
 
-			// Only include raw content for editors.
-			if ( current_user_can( 'edit_posts' ) ) {
-				$data['content_raw'] = $post->post_content;
-			}
+		// content_raw (unfiltered source) stays editor-only.
+		if ( current_user_can( 'edit_posts' ) ) {
+			$data['content_raw'] = $post->post_content;
 		}
 
 		// Always include sections and lessons structure.

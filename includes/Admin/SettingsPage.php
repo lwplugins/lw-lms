@@ -52,10 +52,41 @@ final class SettingsPage {
 	 * @return void
 	 */
 	private function register_tabs(): void {
-		$this->tabs = [
+		$tabs = [
 			new TabGeneral(),
 			new TabAdvanced(),
 		];
+
+		/**
+		 * Filter the registered settings tabs.
+		 *
+		 * Third-party plugins can append, remove, or reorder tabs by returning a
+		 * modified list. Each entry must implement TabInterface; non-implementing
+		 * values are dropped.
+		 *
+		 * @param array<TabInterface> $tabs Currently registered tabs.
+		 */
+		$tabs = apply_filters( 'lw_lms_settings_tabs', $tabs );
+
+		$this->tabs = array_values(
+			array_filter(
+				$tabs,
+				static fn ( $tab ): bool => $tab instanceof TabInterface
+			)
+		);
+	}
+
+	/**
+	 * Get the settings group identifier.
+	 *
+	 * Exposed so third-party plugins can register_setting() against the same
+	 * group and save their option alongside core LMS settings through the
+	 * existing form (single nonce, single submit).
+	 *
+	 * @return string
+	 */
+	public static function get_settings_group(): string {
+		return self::SETTINGS_GROUP;
 	}
 
 	/**
