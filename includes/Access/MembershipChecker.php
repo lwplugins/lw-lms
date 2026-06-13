@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\Access;
 
 use LightweightPlugins\LMS\Options;
+use LightweightPlugins\LMS\WooCommerce\WooCommerce;
 
 /**
  * Checks active WooCommerce Memberships for course access.
@@ -59,7 +60,7 @@ final class MembershipChecker {
 	 * @return array
 	 */
 	public static function get_info( int $course_id ): array {
-		if ( ! function_exists( 'wc_memberships_get_membership_plan' ) ) {
+		if ( ! self::is_active() || ! function_exists( 'wc_memberships_get_membership_plan' ) || ! WooCommerce::is_active() ) {
 			return [];
 		}
 
