@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.5.0
+Stable tag: 1.5.1
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,9 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.5.1 =
+* Update: Maintenance release — internal housekeeping, no functional changes.
 
 = 1.5.0 =
 * New: WooCommerce Memberships integration — a paid course can be unlocked by an active membership. Select one or more membership plans in the course Access Settings; active members of any selected plan get access. Live check (no stored access row), gracefully no-op when WooCommerce Memberships is inactive.

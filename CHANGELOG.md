@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.1] - 2026-06-13
+
+### Changed
+- Maintenance release — internal housekeeping, no functional changes.
+
 ## [1.5.0] - 2026-06-13
 
 ### Added
