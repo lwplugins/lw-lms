@@ -76,7 +76,12 @@ final class AccessChecker {
 				return true;
 			}
 
-			// 4. Fallback: legacy purchases without durations.
+			// 4. Active WooCommerce Membership check.
+			if ( MembershipChecker::has_active( $course_id, $user_id ) ) {
+				return true;
+			}
+
+			// 5. Fallback: legacy purchases without durations.
 			return WooCommerceChecker::has_legacy_purchase( $course_id, $user_id );
 		}
 
@@ -199,6 +204,7 @@ final class AccessChecker {
 			$info['products']                = WooCommerceChecker::get_products_info( $course_id );
 			$info['subscriptions']           = WooCommerceChecker::get_subscriptions_info( $course_id );
 			$info['subscription_variations'] = SubscriptionVariationChecker::get_info( $course_id );
+			$info['memberships']             = MembershipChecker::get_info( $course_id );
 		}
 
 		return $info;

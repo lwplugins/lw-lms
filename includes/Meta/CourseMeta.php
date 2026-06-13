@@ -72,6 +72,24 @@ final class CourseMeta {
 			]
 		);
 
+		// WooCommerce Memberships plan IDs.
+		register_post_meta(
+			Course::POST_TYPE,
+			Options::META_PREFIX . 'membership_plan_ids',
+			[
+				'show_in_rest'  => [
+					'schema' => [
+						'type'  => 'array',
+						'items' => [ 'type' => 'integer' ],
+					],
+				],
+				'single'        => true,
+				'type'          => 'array',
+				'default'       => [],
+				'auth_callback' => [ self::class, 'can_edit' ],
+			]
+		);
+
 		SubscriptionVariationMeta::register();
 
 		// WooCommerce product durations (product_id => days).
