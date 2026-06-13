@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.4.0
+Stable tag: 1.5.0
 Requires PHP: 8.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,9 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.5.0 =
+* New: WooCommerce Memberships integration — a paid course can be unlocked by an active membership. Select one or more membership plans in the course Access Settings; active members of any selected plan get access. Live check (no stored access row), gracefully no-op when WooCommerce Memberships is inactive.
 
 = 1.4.0 =
 * New: WP-CLI workflow — `wp lw-lms course create|list|delete|set-section`, `wp lw-lms lesson create|list|assign`, `wp lw-lms enroll`, `wp lw-lms revoke`, `wp lw-lms force-complete`. Each command resolves user/course/lesson refs by ID, slug, login, or email. Issue #10.

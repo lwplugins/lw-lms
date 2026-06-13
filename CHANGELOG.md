@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.5.0] - 2026-06-13
+
+### Added
+- WooCommerce Memberships integration: a `paid` course can be unlocked by an active WooCommerce Membership. New `membership_plan_ids` course meta, selectable as a checkbox list in the Access Settings metabox. `AccessChecker` grants access when the user is an active member of any selected plan (live check via `wc_memberships_is_user_active_member`, after the subscription checks and before the legacy-purchase fallback). The denied `access` REST payload now includes a `memberships` array (plan `id`, `name`, and a `join` URL). No DB schema change; no-op when WooCommerce Memberships is inactive.
+
 ## [1.4.0] - 2026-05-13
 
 ### Added
