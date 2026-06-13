@@ -59,6 +59,7 @@ final class CourseAccessMetabox {
 		$variation_pairs  = Options::get_post_meta( $post->ID, 'subscription_variation_ids', [] );
 		$products_value   = AccessProductParser::build_textarea( $product_ids, $durations );
 		$variations_value = SubscriptionVariationParser::build_textarea( is_array( $variation_pairs ) ? $variation_pairs : [] );
+		$membership_ids   = array_map( 'intval', (array) Options::get_post_meta( $post->ID, 'membership_plan_ids', [] ) );
 		?>
 		<div class="lw-lms-access-settings">
 			<?php AccessMetaboxRenderer::render_access_radios( $access_type ); ?>
@@ -68,6 +69,7 @@ final class CourseAccessMetabox {
 					<?php AccessMetaboxRenderer::render_products_field( $products_value ); ?>
 					<?php AccessMetaboxRenderer::render_subscriptions_field( is_array( $subscription_ids ) ? $subscription_ids : [] ); ?>
 					<?php AccessMetaboxRenderer::render_subscription_variations_field( $variations_value ); ?>
+					<?php AccessMetaboxRenderer::render_memberships_field( $membership_ids ); ?>
 				<?php else : ?>
 					<hr>
 					<p class="description"><?php esc_html_e( 'WooCommerce is required for paid courses.', 'lw-lms' ); ?></p>
@@ -126,6 +128,13 @@ final class CourseAccessMetabox {
 			$raw   = sanitize_textarea_field( wp_unslash( $_POST['lw_lms_subscription_variation_ids'] ) );
 			$pairs = SubscriptionVariationParser::parse( $raw );
 			Options::set_post_meta( $post_id, 'subscription_variation_ids', $pairs );
+		}
+
+		if ( isset( $_POST['lw_lms_memberships_present'] ) ) {
+			$membership_ids = isset( $_POST['lw_lms_membership_plan_ids'] ) && is_array( $_POST['lw_lms_membership_plan_ids'] )
+				? array_values( array_filter( array_map( 'absint', wp_unslash( $_POST['lw_lms_membership_plan_ids'] ) ) ) )
+				: [];
+			Options::set_post_meta( $post_id, 'membership_plan_ids', $membership_ids );
 		}
 	}
 }
