@@ -12,6 +12,7 @@ namespace LightweightPlugins\LMS\Admin\Metaboxes;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\Access\AccessChecker;
+use LightweightPlugins\LMS\Access\MembershipChecker;
 use LightweightPlugins\LMS\WooCommerce\WooCommerce;
 
 /**
@@ -130,7 +131,7 @@ final class CourseAccessMetabox {
 			Options::set_post_meta( $post_id, 'subscription_variation_ids', $pairs );
 		}
 
-		if ( isset( $_POST['lw_lms_memberships_present'] ) ) {
+		if ( isset( $_POST['lw_lms_memberships_present'] ) && MembershipChecker::is_active() ) {
 			$membership_ids = isset( $_POST['lw_lms_membership_plan_ids'] ) && is_array( $_POST['lw_lms_membership_plan_ids'] )
 				? array_values( array_filter( array_map( 'absint', wp_unslash( $_POST['lw_lms_membership_plan_ids'] ) ) ) )
 				: [];
