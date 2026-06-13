@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\Admin\Metaboxes;
 
 use LightweightPlugins\LMS\Access\AccessChecker;
+use LightweightPlugins\LMS\Access\MembershipChecker;
 
 /**
  * Renders access metabox fields.
@@ -92,5 +93,37 @@ final class AccessMetaboxRenderer {
 			</span>
 		</p>
 		<?php
+	}
+
+	/**
+	 * Render membership plans field (checkbox list).
+	 *
+	 * @param int[] $selected_ids Selected plan IDs.
+	 * @return void
+	 */
+	public static function render_memberships_field( array $selected_ids ): void {
+		if ( ! MembershipChecker::is_active() || ! function_exists( 'wc_memberships_get_membership_plans' ) ) {
+			return;
+		}
+
+		$plans = wc_memberships_get_membership_plans();
+
+		if ( empty( $plans ) ) {
+			return;
+		}
+		?>
+		<p><strong><?php esc_html_e( 'Memberships', 'lw-lms' ); ?></strong></p>
+		<p class="description"><?php esc_html_e( 'Active members of any checked plan get access.', 'lw-lms' ); ?></p>
+		<input type="hidden" name="lw_lms_memberships_present" value="1" />
+		<?php
+		foreach ( $plans as $plan ) {
+			$plan_id = (int) $plan->get_id();
+			printf(
+				'<p><label><input type="checkbox" name="lw_lms_membership_plan_ids[]" value="%d" %s /> %s</label></p>',
+				absint( $plan_id ),
+				checked( in_array( $plan_id, $selected_ids, true ), true, false ),
+				esc_html( $plan->get_name() )
+			);
+		}
 	}
 }
