@@ -1,3 +1,5 @@
 /vendor/
 /node_modules/
 .phpcs-cache
+# Internal planning docs (brainstorm specs / implementation plans)
+/docs/superpowers/
