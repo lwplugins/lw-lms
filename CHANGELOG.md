@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0] - 2026-07-18
+
+### Fixed
+- The `lw_lms_has_course_access` filter is now reachable for paid courses. Previously the paid branch returned the legacy-purchase result before the filter line, so an integration could never grant (or deny) paid access through it. The built-in paid checks now short-circuit into a single filtered result.
+
+### Added
+- `AccessRepository::revoke_by_source( int $user_id, int $course_id, string $source, ?int $source_id = null )` — revokes only the access rows a given grant source owns, so an integration can cancel its own grant without trampling another source's access for the same course.
+
+### Changed
+- Minimum PHP is now 8.2.
+- Added PHPStan level 5 static analysis and a PHPUnit test suite (with an access-control regression test) to CI.
+
 ## [1.5.1] - 2026-06-13
 
 ### Changed

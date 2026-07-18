@@ -3,8 +3,8 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 6.7
-Stable tag: 1.5.1
-Requires PHP: 8.1
+Stable tag: 1.6.0
+Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -101,6 +101,11 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.6.0 =
+* Fix: The lw_lms_has_course_access filter now runs for paid courses (it was unreachable behind the built-in checks), so integrations can grant or deny paid access through it
+* New: AccessRepository::revoke_by_source() lets an integration revoke only its own grant rows without trampling access granted by another source
+* Update: Minimum PHP is now 8.2; added PHPStan level 5 and a PHPUnit test suite to CI
 
 = 1.5.1 =
 * Update: Maintenance release — internal housekeeping, no functional changes.
