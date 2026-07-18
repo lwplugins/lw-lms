@@ -39,7 +39,7 @@ final class AccessProductParser {
 	 * Each line: "product_id:days" or "product_id" (unlimited).
 	 *
 	 * @param string $raw Raw textarea content.
-	 * @return array{0: array<int>, 1: array<string, int>}
+	 * @return array{0: array<int>, 1: array<int, int>}
 	 */
 	public static function parse( string $raw ): array {
 		$product_ids = [];

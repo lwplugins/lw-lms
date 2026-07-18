@@ -270,10 +270,9 @@ final class CourseTransformer {
 	 */
 	private static function transform_lessons_list( array $lessons, int $course_id, int $user_id, bool $has_access ): array {
 		$preview_ids = Options::get_post_meta( $course_id, 'preview_lesson_ids', [] );
-		$completed   = $user_id ? ProgressCalculator::get_total_lessons( $course_id ) : [];
 
 		return array_map(
-			function ( $lesson ) use ( $preview_ids, $has_access, $user_id, $completed ) {
+			function ( $lesson ) use ( $preview_ids, $has_access, $user_id ) {
 				$is_preview   = in_array( $lesson->ID, $preview_ids, true );
 				$is_completed = ProgressCalculator::is_lesson_completed( $user_id, $lesson->ID );
 

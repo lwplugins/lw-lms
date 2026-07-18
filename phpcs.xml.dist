@@ -23,6 +23,8 @@
         <exclude name="Universal.NamingConventions.NoReservedKeywordParameterNames"/>
         <!-- Allow code-like comments (placeholder patterns) -->
         <exclude name="Squiz.PHP.CommentedOutCode"/>
+        <!-- @phpstan-ignore directive comments end in an identifier, not punctuation -->
+        <exclude name="Squiz.Commenting.InlineComment.InvalidEndChar"/>
         <!-- PSR-4 autoloading: use PascalCase filenames instead of class- prefix -->
         <exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
         <exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
@@ -40,7 +42,7 @@
 
     <!-- PHP Compatibility -->
     <rule ref="PHPCompatibilityWP"/>
-    <config name="testVersion" value="8.1-"/>
+    <config name="testVersion" value="8.2-"/>
 
     <!-- WordPress minimum version -->
     <config name="minimum_wp_version" value="6.0"/>

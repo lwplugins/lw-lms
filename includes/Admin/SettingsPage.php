@@ -71,6 +71,9 @@ final class SettingsPage {
 		$this->tabs = array_values(
 			array_filter(
 				$tabs,
+				// A third-party filter can return anything despite the @param
+				// docblock, so this guard is real at runtime.
+				// @phpstan-ignore instanceof.alwaysTrue
 				static fn ( $tab ): bool => $tab instanceof TabInterface
 			)
 		);

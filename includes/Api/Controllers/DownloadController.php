@@ -53,7 +53,7 @@ final class DownloadController {
 	 * Handle file download.
 	 *
 	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response|WP_Error|void
+	 * @return WP_Error Streams the file and exits on success; returns WP_Error on failure.
 	 */
 	public function download( WP_REST_Request $request ) {
 		$attachment_id = (int) $request->get_param( 'id' );

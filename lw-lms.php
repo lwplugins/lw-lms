@@ -84,4 +84,9 @@ register_activation_hook( __FILE__, __NAMESPACE__ . '\\lw_lms_activate' );
 register_deactivation_hook( __FILE__, __NAMESPACE__ . '\\lw_lms_deactivate' );
 
 // Initialize the plugin.
-add_action( 'plugins_loaded', __NAMESPACE__ . '\\lw_lms' );
+add_action(
+	'plugins_loaded',
+	static function (): void {
+		lw_lms();
+	}
+);

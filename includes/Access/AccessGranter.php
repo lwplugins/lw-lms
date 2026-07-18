@@ -44,6 +44,11 @@ final class AccessGranter {
 		}
 
 		foreach ( $order->get_items() as $item ) {
+			// Only line items (WC_Order_Item_Product) carry a product ID.
+			if ( ! $item instanceof \WC_Order_Item_Product ) {
+				continue;
+			}
+
 			$product_id = $item->get_product_id();
 
 			if ( ! $product_id ) {

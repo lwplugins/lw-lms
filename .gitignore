@@ -3,3 +3,7 @@
 .phpcs-cache
 # Internal planning docs (brainstorm specs / implementation plans)
 /docs/superpowers/
+
+# Test / analysis caches
+.phpunit.cache/
+.phpunit.result.cache

@@ -1,0 +1,40 @@
+includes:
+	- phpstan-baseline.neon
+	- vendor/szepeviktor/phpstan-wordpress/extension.neon
+
+parameters:
+	level: 5
+
+	paths:
+		- lw-lms.php
+		- includes/
+
+	excludePaths:
+		- tests/
+		- vendor/
+
+	# Declare the plugin's runtime-defined constants for static analysis.
+	bootstrapFiles:
+		- phpstan-bootstrap.php
+
+	# Third-party APIs the plugin integrates with. WordPress core stubs come
+	# from the szepeviktor/phpstan-wordpress extension above.
+	scanFiles:
+		- vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php
+		- vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+
+	# The WooCommerce/WordPress stub symbol tables are large; a single worker
+	# keeps peak memory deterministic under the `analyse` script's limit.
+	parallel:
+		maximumNumberOfProcesses: 1
+
+	# WooCommerce Memberships is an OPTIONAL runtime integration; its symbols are
+	# not shipped in woocommerce-stubs, and MembershipChecker guards on the plugin
+	# being active before these run. Scoped to that one integration file.
+	ignoreErrors:
+		-
+			message: '#Function wc_memberships_is_user_active_member not found#'
+			path: includes/Access/MembershipChecker.php
+		-
+			message: '#WC_Memberships_Membership_Plan#'
+			path: includes/Access/MembershipChecker.php

@@ -28,7 +28,7 @@ final class PostCreator {
 			'post_content'  => $source->post_content,
 			'post_excerpt'  => $source->post_excerpt,
 			'post_status'   => $source->post_status,
-			'post_author'   => $source->post_author,
+			'post_author'   => (int) $source->post_author,
 			'post_date'     => $source->post_date,
 			'post_date_gmt' => $source->post_date_gmt,
 			'post_name'     => $source->post_name,
@@ -38,7 +38,7 @@ final class PostCreator {
 			$args['menu_order'] = $source->menu_order;
 		}
 
-		return wp_insert_post( $args );
+		return wp_insert_post( $args, true );
 	}
 
 	/**
