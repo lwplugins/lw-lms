@@ -181,4 +181,59 @@ final class AccessRepository {
 
 		return true;
 	}
+
+	/**
+	 * Revoke access rows that belong to a specific source only.
+	 *
+	 * Unlike revoke(), which flips the first active row for a user/course
+	 * regardless of origin, this targets only the rows a given grant source owns
+	 * (optionally a specific source_id). It lets an integration cancel its own
+	 * grant — e.g. on a subscription expiry or membership end — without
+	 * trampling access another source granted for the same course.
+	 *
+	 * @param int      $user_id   User ID.
+	 * @param int      $course_id Course ID.
+	 * @param string   $source    Access source to revoke (e.g. subscription).
+	 * @param int|null $source_id Optional source ID to narrow to a single grant.
+	 * @return bool True when at least one active row was revoked.
+	 */
+	public static function revoke_by_source( int $user_id, int $course_id, string $source, ?int $source_id = null ): bool {
+		global $wpdb;
+
+		$table = AccessTable::get_table_name();
+
+		if ( null !== $source_id ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$affected = $wpdb->query(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
+					"UPDATE {$table} SET status = 'revoked' WHERE user_id = %d AND course_id = %d AND source = %s AND source_id = %d AND status = 'active'",
+					$user_id,
+					$course_id,
+					$source,
+					$source_id
+				)
+			);
+		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$affected = $wpdb->query(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
+					"UPDATE {$table} SET status = 'revoked' WHERE user_id = %d AND course_id = %d AND source = %s AND status = 'active'",
+					$user_id,
+					$course_id,
+					$source
+				)
+			);
+		}
+
+		if ( ! $affected ) {
+			return false;
+		}
+
+		/** This action is documented in revoke(). */
+		do_action( 'lw_lms_after_revoke', $user_id, $course_id, $source );
+
+		return true;
+	}
 }

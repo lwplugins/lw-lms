@@ -59,40 +59,32 @@ final class AccessChecker {
 			return true;
 		}
 
-		// Paid courses: check access table, subscriptions, then legacy fallback.
+		// Paid courses: check access table, subscriptions, memberships, then the
+		// legacy fallback. Short-circuits on the first grant so later (heavier)
+		// checks are skipped, exactly like the previous early-return chain.
+		$has_access = false;
+
 		if ( self::ACCESS_PAID === $access_type ) {
-			// 1. Access table check.
-			if ( AccessQueries::has_active_access( $user_id, $course_id ) ) {
-				return true;
-			}
-
-			// 2. Parent-level subscription check.
-			if ( WooCommerceChecker::has_active_subscription( $course_id, $user_id ) ) {
-				return true;
-			}
-
-			// 3. Variation-level subscription check (specific variations of variable subscriptions).
-			if ( SubscriptionVariationChecker::has_active( $course_id, $user_id ) ) {
-				return true;
-			}
-
-			// 4. Active WooCommerce Membership check.
-			if ( MembershipChecker::has_active( $course_id, $user_id ) ) {
-				return true;
-			}
-
-			// 5. Fallback: legacy purchases without durations.
-			return WooCommerceChecker::has_legacy_purchase( $course_id, $user_id );
+			$has_access = AccessQueries::has_active_access( $user_id, $course_id )                 // 1. Access table.
+				|| WooCommerceChecker::has_active_subscription( $course_id, $user_id )             // 2. Parent subscription.
+				|| SubscriptionVariationChecker::has_active( $course_id, $user_id )                // 3. Variation subscription.
+				|| MembershipChecker::has_active( $course_id, $user_id )                           // 4. WC Membership.
+				|| WooCommerceChecker::has_legacy_purchase( $course_id, $user_id );                // 5. Legacy purchase.
 		}
 
 		/**
-		 * Filter whether user has access to a course.
+		 * Filter whether a user has access to a course.
 		 *
-		 * @param bool $has_access Whether user has access.
+		 * Runs AFTER the built-in checks (including the paid branch), so an
+		 * integration can grant — or revoke — access as the final say. Previously
+		 * the paid branch returned before this line, making the filter dead for
+		 * paid courses (the common extension point).
+		 *
+		 * @param bool $has_access Whether the built-in checks granted access.
 		 * @param int  $course_id  Course ID.
 		 * @param int  $user_id    User ID.
 		 */
-		return apply_filters( 'lw_lms_has_course_access', false, $course_id, $user_id );
+		return (bool) apply_filters( 'lw_lms_has_course_access', $has_access, $course_id, $user_id );
 	}
 
 	/**
