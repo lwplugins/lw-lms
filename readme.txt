@@ -2,8 +2,8 @@
 Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
-Tested up to: 6.7
-Stable tag: 1.6.0
+Tested up to: 7.1
+Stable tag: 1.6.1
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,9 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.6.1 =
+* Update: Tested up to WordPress 7.1.
 
 = 1.6.0 =
 * Fix: The lw_lms_has_course_access filter now runs for paid courses (it was unreachable behind the built-in checks), so integrations can grant or deny paid access through it
