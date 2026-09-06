@@ -55,12 +55,12 @@ jobs:
           VERSION: ${{ steps.get_version.outputs.version }}
         run: |
           mkdir -p dist/lw-lms
-          rsync -av --exclude='.git' --exclude='.github' --exclude='dist' \
-            --exclude='builds' --exclude='composer.json' --exclude='composer.lock' \
-            --exclude='phpcs.xml.dist' --exclude='node_modules' --exclude='.gitignore' \
-            --exclude='tests' --exclude='phpstan.neon.dist' --exclude='phpstan-baseline.neon' \
-            --exclude='phpstan-bootstrap.php' --exclude='phpunit.xml.dist' \
-            --exclude='.claude' --exclude='*.log' . dist/lw-lms/
+          rsync -av --exclude='.git' --exclude='.github' --exclude='dist' --exclude='builds' \
+            --exclude='composer.json' --exclude='composer.lock' --exclude='phpcs.xml.dist' \
+            --exclude='node_modules' --exclude='.gitignore' --exclude='.gitattributes' \
+            --exclude='tests' --exclude='docs' --exclude='.claude' --exclude='.superpowers' \
+            --exclude='phpstan.neon.dist' --exclude='phpstan-baseline.neon' \
+            --exclude='phpstan-bootstrap.php' --exclude='phpunit.xml.dist' --exclude='*.log' . dist/lw-lms/
           cd dist && zip -r "lw-lms-${VERSION}.zip" lw-lms/
 
       - name: Create tag and release
