@@ -36,7 +36,7 @@ Or upload the `lw-lms` folder to `/wp-content/plugins/` and activate.
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/lms/v1/courses` | List courses |
+| GET | `/lms/v1/courses` | List courses (`status`: `publish` (default), `private`, `draft`, `any`) |
 | GET | `/lms/v1/courses/{id}` | Get single course |
 | GET | `/lms/v1/lessons/{id}` | Get single lesson |
 | POST | `/lms/v1/progress` | Update lesson progress |
