@@ -45,6 +45,7 @@ final class Options {
 
 			// Access.
 			'default_access_type'      => 'free',
+			'auto_enroll_admins'       => false,
 
 			// WooCommerce.
 			'woo_enabled'              => true,
