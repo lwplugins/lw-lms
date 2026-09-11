@@ -31,6 +31,7 @@ final class RestApi {
 	 */
 	public function init(): void {
 		add_action( 'rest_api_init', [ $this, 'register_routes' ] );
+		LessonRestGuard::register();
 	}
 
 	/**
