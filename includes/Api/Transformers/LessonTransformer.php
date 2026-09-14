@@ -12,6 +12,7 @@ namespace LightweightPlugins\LMS\Api\Transformers;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
+use LightweightPlugins\LMS\Quiz\QuizPublicView;
 
 /**
  * Transforms lesson data for API responses.
@@ -25,7 +26,8 @@ final class LessonTransformer {
 	 * @param int|null $user_id User ID.
 	 * @return array
 	 */
-	public static function transform( \WP_Post $post, ?int $user_id = null ): array { // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed -- Reserved for future use.
+	public static function transform( \WP_Post $post, ?int $user_id = null ): array {
+		$user_id    = $user_id ?? get_current_user_id();
 		$course_id  = (int) Options::get_post_meta( $post->ID, 'lesson_course_id', 0 );
 		$section_id = Options::get_post_meta( $post->ID, 'lesson_section_id', '' );
 		$video      = Options::get_post_meta( $post->ID, 'video', [] );
@@ -41,6 +43,7 @@ final class LessonTransformer {
 			'video'       => ! empty( $video ) ? $video : null,
 			'attachments' => self::get_attachments( $post->ID ),
 			'navigation'  => self::get_navigation( $post->ID, $course_id, $section_id ),
+			'quiz'        => QuizPublicView::for_lesson( $post->ID, $user_id ),
 		];
 
 		// Raw content for editors.

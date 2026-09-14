@@ -34,6 +34,9 @@ use LightweightPlugins\LMS\CLI\CourseSetSectionCommand;
 use LightweightPlugins\LMS\CLI\LessonCreateCommand;
 use LightweightPlugins\LMS\CLI\LessonListCommand;
 use LightweightPlugins\LMS\CLI\LessonAssignCommand;
+use LightweightPlugins\LMS\CLI\LessonSetQuizCommand;
+use LightweightPlugins\LMS\CLI\LessonGetQuizCommand;
+use LightweightPlugins\LMS\CLI\LessonDeleteQuizCommand;
 use LightweightPlugins\LMS\CLI\EnrollCommand;
 use LightweightPlugins\LMS\CLI\RevokeCommand;
 use LightweightPlugins\LMS\CLI\ForceCompleteCommand;
@@ -182,6 +185,9 @@ final class Plugin {
 		\WP_CLI::add_command( 'lw-lms lesson create', LessonCreateCommand::class );
 		\WP_CLI::add_command( 'lw-lms lesson list', LessonListCommand::class );
 		\WP_CLI::add_command( 'lw-lms lesson assign', LessonAssignCommand::class );
+		\WP_CLI::add_command( 'lw-lms lesson set-quiz', LessonSetQuizCommand::class );
+		\WP_CLI::add_command( 'lw-lms lesson get-quiz', LessonGetQuizCommand::class );
+		\WP_CLI::add_command( 'lw-lms lesson delete-quiz', LessonDeleteQuizCommand::class );
 
 		\WP_CLI::add_command( 'lw-lms enroll', EnrollCommand::class );
 		\WP_CLI::add_command( 'lw-lms revoke', RevokeCommand::class );

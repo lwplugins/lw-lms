@@ -38,10 +38,39 @@ Or upload the `lw-lms` folder to `/wp-content/plugins/` and activate.
 |--------|----------|-------------|
 | GET | `/lms/v1/courses` | List courses (`status`: `publish` (default), `private`, `draft`, `any`) |
 | GET | `/lms/v1/courses/{id}` | Get single course |
-| GET | `/lms/v1/lessons/{id}` | Get single lesson |
+| GET | `/lms/v1/lessons/{id}` | Get single lesson (includes `quiz`, without answers) |
+| POST | `/lms/v1/lessons/{id}/quiz` | Submit quiz answers (scored server-side) |
 | POST | `/lms/v1/progress` | Update lesson progress |
 | GET | `/lms/v1/progress` | Get user progress |
 | GET | `/lms/v1/download/{id}` | Download attachment |
+
+## Quizzes
+
+One JSON document per lesson, managed with WP-CLI:
+
+```bash
+wp lw-lms lesson set-quiz <lesson> --file=quiz.json   # validate + replace ("-" = STDIN)
+wp lw-lms lesson get-quiz <lesson> [--format=json|table]
+wp lw-lms lesson delete-quiz <lesson>
+```
+
+```json
+{
+  "pass_percentage": 80,
+  "shuffle_options": true,
+  "questions": [
+    { "id": "q_9e9b2eef93b3", "type": "single", "prompt": "…",
+      "options": [ { "text": "…", "correct": true }, { "text": "…" } ] },
+    { "id": "q_e2f6a37486e7", "type": "boolean", "prompt": "…", "correct": true },
+    { "id": "q_3ae2154b9400", "type": "open", "prompt": "…", "sample": "…" }
+  ]
+}
+```
+
+- Question ids are caller-supplied and stable (start with a letter; letters, digits, `_`, `-`). Unknown keys are rejected.
+- `pass_percentage` and `shuffle_options` are optional; the default threshold is set under **LW Plugins → LMS → General → Quizzes**.
+- Submit: `POST /lms/v1/lessons/{id}/quiz` with `{ "answers": { "<id>": <option index | true/false | "text"> } }`. The option index is 0-based in the order `GET` returns — the server never shuffles, so a client that shuffles (`shuffle_options`) must submit the original index.
+- Hooks: `lw_lms_quiz_submitted( $lesson_id, $user_id, $percentage, $passed )`, `lw_lms_quiz_passed( $lesson_id, $user_id, $percentage )`.
 
 ## Development
 

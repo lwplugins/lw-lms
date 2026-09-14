@@ -47,6 +47,10 @@ final class Options {
 			'default_access_type'      => 'free',
 			'auto_enroll_admins'       => false,
 
+			// Quizzes.
+			'quiz_pass_percentage'     => 80,
+			'require_quiz_pass'        => false,
+
 			// WooCommerce.
 			'woo_enabled'              => true,
 

@@ -13,6 +13,7 @@ use LightweightPlugins\LMS\Api\Controllers\CoursesController;
 use LightweightPlugins\LMS\Api\Controllers\LessonsController;
 use LightweightPlugins\LMS\Api\Controllers\ProgressController;
 use LightweightPlugins\LMS\Api\Controllers\DownloadController;
+use LightweightPlugins\LMS\Api\Controllers\QuizController;
 
 /**
  * Initializes the REST API.
@@ -45,6 +46,7 @@ final class RestApi {
 			new LessonsController(),
 			new ProgressController(),
 			new DownloadController(),
+			new QuizController(),
 		];
 
 		foreach ( $controllers as $controller ) {
