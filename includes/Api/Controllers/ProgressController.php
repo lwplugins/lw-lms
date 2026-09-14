@@ -16,6 +16,7 @@ use LightweightPlugins\LMS\Progress\ProgressQueries;
 use LightweightPlugins\LMS\Progress\ProgressCalculator;
 use LightweightPlugins\LMS\Access\AccessChecker;
 use LightweightPlugins\LMS\Options;
+use LightweightPlugins\LMS\Quiz\QuizGate;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -153,6 +154,15 @@ final class ProgressController {
 				'invalid_request',
 				__( 'Lesson does not belong to the specified course.', 'lw-lms' ),
 				[ 'status' => 400 ]
+			);
+		}
+
+		// Graded quizzes (require_quiz_pass): such a lesson completes by passing its quiz.
+		if ( 'completed' === $status && QuizGate::blocks_completion( $user_id, $lesson_id ) ) {
+			return new WP_Error(
+				'quiz_not_passed',
+				__( 'Pass the lesson quiz to complete this lesson.', 'lw-lms' ),
+				[ 'status' => 403 ]
 			);
 		}
 

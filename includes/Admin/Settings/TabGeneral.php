@@ -133,6 +133,45 @@ final class TabGeneral implements TabInterface {
 			</tr>
 		</table>
 
+		<h2><?php esc_html_e( 'Quizzes', 'lw-lms' ); ?></h2>
+
+		<table class="form-table">
+			<tr>
+				<th scope="row">
+					<label for="quiz_pass_percentage"><?php esc_html_e( 'Default Pass Percentage', 'lw-lms' ); ?></label>
+				</th>
+				<td>
+					<?php
+					$this->render_number_field(
+						[
+							'name'        => 'quiz_pass_percentage',
+							'description' => __( 'Used when a lesson quiz does not set its own pass_percentage.', 'lw-lms' ),
+							'min'         => 0,
+							'max'         => 100,
+						]
+					);
+					?>
+				</td>
+			</tr>
+
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Graded Quizzes', 'lw-lms' ); ?></th>
+				<td>
+					<?php
+					$this->render_checkbox_field(
+						[
+							'name'  => 'require_quiz_pass',
+							'label' => __( 'Require passing the quiz to complete a lesson', 'lw-lms' ),
+						]
+					);
+					?>
+					<p class="description">
+						<?php esc_html_e( 'When on, a lesson with a quiz is marked completed when the learner passes it, and cannot be completed any other way. When off, quizzes are practice only.', 'lw-lms' ); ?>
+					</p>
+				</td>
+			</tr>
+		</table>
+
 		<h2><?php esc_html_e( 'WooCommerce', 'lw-lms' ); ?></h2>
 
 		<table class="form-table">

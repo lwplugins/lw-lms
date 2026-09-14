@@ -25,6 +25,15 @@ $wpdb->query(
 	)
 );
 
+// Delete quiz attempt user meta (_lw_lms_quiz_{lesson_id}).
+// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall cleanup.
+$wpdb->query(
+	$wpdb->prepare(
+		"DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s",
+		$wpdb->esc_like( '_lw_lms_quiz_' ) . '%'
+	)
+);
+
 // Drop custom tables.
 $lw_lms_progress_table = $wpdb->prefix . 'lms_progress';
 // phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Uninstall cleanup.
