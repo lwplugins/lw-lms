@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.8.0] - 2026-09-14
+
+### Added
+- Lesson quizzes stored as one `_lw_lms_quiz` JSON document per lesson — no new post types or tables. Three question types: `single` (exactly one correct option), `boolean` (true/false) and `open` (free text with an optional `sample`, never scored). Per-lesson `pass_percentage`, falling back to the new "Default Pass Percentage" setting (80). The quiz meta is deliberately not exposed through `/wp/v2`.
+- `GET /lms/v1/lessons/{id}` includes a `quiz` object (or `null`) behind the existing lesson access gate. It never contains a `correct` key, and carries the user's `last_attempt` (`percentage`, `passed`, `submitted_at`, `passed_at`).
+- `POST /lms/v1/lessons/{id}/quiz` (logged-in, same access gate) scores answers server-side (`single` → 0-based option index in the order `GET` returns, so a client that shuffles must submit the original index; `boolean` → `true`/`false`; `open` → any text) and returns `score`, `scored_questions`, `percentage`, `passed`, `pass_percentage` and per-question `results`. A wrong answer reveals `correct_option` (single) or `correct_answer` (boolean); open questions return `scored: false` plus their `sample`. Missing answers count as wrong; a quiz with only open questions passes at 100%.
+- `lw_lms_quiz_submitted` action after every submission. Args: `lesson_id`, `user_id`, `percentage`, `passed` (4 args, callers must register with `$accepted_args = 4`).
+- `lw_lms_quiz_passed` action on every passing submission. Args: `lesson_id`, `user_id`, `percentage` (3 args).
+- "Graded Quizzes" setting (`require_quiz_pass`, off by default). When on, passing a lesson's quiz marks the lesson completed through `ProgressRepository::upsert()` (so `lw_lms_lesson_completed` / `lw_lms_course_completed` fire), and `POST /lms/v1/progress` refuses `status=completed` for that lesson with 403 `quiz_not_passed` until the learner has passed; a later failed retry does not re-lock it. `wp lw-lms force-complete` and LW Site Manager remain admin overrides. When off, quizzes are practice only and progress works as before.
+- The last attempt per user and lesson is kept in user meta `_lw_lms_quiz_{lesson_id}` (no attempt history); uninstall removes it.
+- WP-CLI: `wp lw-lms lesson set-quiz <lesson> --file=<file|->`, `wp lw-lms lesson get-quiz <lesson> [--format=json|table]`, `wp lw-lms lesson delete-quiz <lesson>`. `set-quiz` validates strictly — unknown keys, malformed or duplicate question ids and single-choice questions without exactly one correct option are rejected with the offending path — and replaces the whole quiz, so re-importing with stable question ids updates instead of duplicating. `get-quiz` JSON round-trips through `set-quiz` unchanged.
+
 ## [1.7.0] - 2026-09-14
 
 ### Added

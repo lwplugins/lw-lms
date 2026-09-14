@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.7.0
+Stable tag: 1.8.0
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,14 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.8.0 =
+* New: Lesson quizzes stored as one JSON meta per lesson (no new post types or tables) with single-choice, true/false and open (unscored) questions, a per-lesson pass percentage and a global default (80)
+* New: GET /lms/v1/lessons/{id} includes the quiz without correct answers, plus the user's last attempt, behind the existing lesson access gate
+* New: POST /lms/v1/lessons/{id}/quiz scores answers server-side and reveals the correct answer only for wrong answers
+* New: lw_lms_quiz_submitted (lesson_id, user_id, percentage, passed — 4 args) and lw_lms_quiz_passed (lesson_id, user_id, percentage — 3 args) actions
+* New: "Graded Quizzes" setting (off by default): passing the quiz completes the lesson, and the lesson cannot be completed through the progress endpoint until the quiz is passed
+* New: WP-CLI `wp lw-lms lesson set-quiz`, `get-quiz` and `delete-quiz`; set-quiz validates strictly and replaces the whole quiz, so re-imports with stable question ids update instead of duplicating
 
 = 1.7.0 =
 * New: "Staff Access" setting (Settings → General, off by default) gives users with the manage_lms capability access to every course and lesson without buying or enrolling. It is a runtime bypass, so no access row is written, lw_lms_after_grant does not fire and there is nothing to revoke when turned off
