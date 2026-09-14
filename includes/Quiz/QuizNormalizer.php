@@ -35,10 +35,11 @@ final class QuizNormalizer {
 	/**
 	 * Allowed keys of a single-choice option.
 	 */
-	private const OPTION_KEYS = [ 'text', 'correct' ];
+	private const OPTION_KEYS = [ 'id', 'text', 'correct' ];
 
 	/**
-	 * Question id: starts with a letter, so PHP never turns it into an int key.
+	 * Question and option id: starts with a letter, so PHP never turns it into
+	 * an int key.
 	 */
 	private const ID_PATTERN = '/^[A-Za-z][A-Za-z0-9_-]{0,63}$/';
 
@@ -141,13 +142,32 @@ final class QuizNormalizer {
 
 		$options = [];
 		$correct = 0;
+		$seen    = [];
 
 		foreach ( $data as $index => $item ) {
 			$item_path = "{$path}[{$index}]";
 			$option    = self::object( $item, $item_path );
 			self::assert_keys( $option, self::OPTION_KEYS, $item_path );
 
-			$entry = [ 'text' => self::text( $option['text'] ?? null, "{$item_path}.text" ) ];
+			$entry = [];
+
+			// Optional, but recommended: a stable id keeps earlier attempts
+			// meaningful when the options are later reordered.
+			if ( array_key_exists( 'id', $option ) ) {
+				$id = $option['id'];
+
+				if ( ! is_string( $id ) || 1 !== preg_match( self::ID_PATTERN, $id ) ) {
+					self::fail( "{$item_path}.id must start with a letter and use only letters, digits, _ or - (max 64)." );
+				}
+				if ( isset( $seen[ $id ] ) ) {
+					self::fail( "{$item_path}.id duplicates option {$id}." );
+				}
+
+				$seen[ $id ] = true;
+				$entry['id'] = $id;
+			}
+
+			$entry['text'] = self::text( $option['text'] ?? null, "{$item_path}.text" );
 
 			// An explicit "correct": false is kept, so the document round-trips as given.
 			if ( array_key_exists( 'correct', $option ) ) {

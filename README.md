@@ -60,7 +60,7 @@ wp lw-lms lesson delete-quiz <lesson>
   "shuffle_options": true,
   "questions": [
     { "id": "q_9e9b2eef93b3", "type": "single", "prompt": "…",
-      "options": [ { "text": "…", "correct": true }, { "text": "…" } ] },
+      "options": [ { "id": "opt_a", "text": "…", "correct": true }, { "text": "…" } ] },
     { "id": "q_e2f6a37486e7", "type": "boolean", "prompt": "…", "correct": true },
     { "id": "q_3ae2154b9400", "type": "open", "prompt": "…", "sample": "…" }
   ]
@@ -68,9 +68,14 @@ wp lw-lms lesson delete-quiz <lesson>
 ```
 
 - Question ids are caller-supplied and stable (start with a letter; letters, digits, `_`, `-`). Unknown keys are rejected.
+- An option may carry its own `id`. Recommended: without one it is addressed by position (`o0`, `o1`, …), so reordering options changes what a stored answer meant.
 - `pass_percentage` and `shuffle_options` are optional; the default threshold is set under **LW Plugins → LMS → General → Quizzes**.
-- Submit: `POST /lms/v1/lessons/{id}/quiz` with `{ "answers": { "<id>": <option index | true/false | "text"> } }`. The option index is 0-based in the order `GET` returns — the server never shuffles, so a client that shuffles (`shuffle_options`) must submit the original index.
+- Submit: `POST /lms/v1/lessons/{id}/quiz` with `{ "answers": { "<question id>": <option id | index | true/false | "text"> } }`. **Answer with the option id** — with `shuffle_options` on, the server sends the options in random order, and a positional index would mean something else.
+- The response reveals the right answer only for wrong answers (`correct_option_id`, `correct_option`, `correct_answer`); `GET` never contains one.
+- `last_attempt` in `GET /lessons/{id}` carries `percentage`, `passed`, `attempts`, `best_percentage` and `review` — the stored snapshot of the last attempt, so a reload can show what was answered.
 - Hooks: `lw_lms_quiz_submitted( $lesson_id, $user_id, $percentage, $passed )`, `lw_lms_quiz_passed( $lesson_id, $user_id, $percentage )`.
+
+Editors get a validated JSON editor on the lesson screen and a **LW Plugins → Quiz Results** page (per-learner attempts and per-question statistics). Every submission is stored in `{prefix}lms_quiz_attempts` with its answer snapshot.
 
 ## Development
 

@@ -35,6 +35,32 @@ final class QuizNormalizerTest extends TestCase {
 		$this->assertSame( $quiz, QuizNormalizer::normalize( $quiz ) );
 	}
 
+	public function test_option_ids_round_trip_in_canonical_order(): void {
+		$quiz = [
+			'questions' => [
+				[
+					'id'      => 'q_ids',
+					'type'    => 'single',
+					'prompt'  => 'With ids?',
+					'options' => [
+						[
+							'correct' => true,
+							'text'    => 'A',
+							'id'      => 'opt_a',
+						],
+						[ 'text' => 'B' ],
+					],
+				],
+			],
+		];
+
+		$options = QuizNormalizer::normalize( $quiz )['questions'][0]['options'];
+
+		$this->assertSame( [ 'id', 'text', 'correct' ], array_keys( $options[0] ) );
+		$this->assertSame( 'opt_a', $options[0]['id'] );
+		$this->assertArrayNotHasKey( 'id', $options[1] );
+	}
+
 	public function test_canonical_key_order_is_applied(): void {
 		$quiz = [
 			'questions' => [
@@ -84,6 +110,8 @@ final class QuizNormalizerTest extends TestCase {
 			'single with two correct'  => [ static fn ( $q ) => self::with_question( $q, 0, [ 'options' => [ [ 'text' => 'A', 'correct' => true ], [ 'text' => 'B', 'correct' => true ] ] ] ), 'exactly one option' ],
 			'single with none correct' => [ static fn ( $q ) => self::with_question( $q, 0, [ 'options' => [ [ 'text' => 'A' ], [ 'text' => 'B' ] ] ] ), 'exactly one option' ],
 			'option correct not bool'  => [ static fn ( $q ) => self::with_question( $q, 0, [ 'options' => [ [ 'text' => 'A', 'correct' => 1 ], [ 'text' => 'B' ] ] ] ), 'quiz.questions[0].options[0].correct' ],
+			'option id malformed'      => [ static fn ( $q ) => self::with_question( $q, 0, [ 'options' => [ [ 'id' => '1a', 'text' => 'A', 'correct' => true ], [ 'text' => 'B' ] ] ] ), 'quiz.questions[0].options[0].id' ],
+			'option id duplicated'     => [ static fn ( $q ) => self::with_question( $q, 0, [ 'options' => [ [ 'id' => 'opt', 'text' => 'A', 'correct' => true ], [ 'id' => 'opt', 'text' => 'B' ] ] ] ), 'duplicates option opt' ],
 			'boolean without answer'   => [ static fn ( $q ) => self::with_question( $q, 1, [ 'correct' => 'yes' ] ), 'quiz.questions[1].correct' ],
 			'open with options'        => [ static fn ( $q ) => self::with_question( $q, 2, [ 'options' => [] ] ), 'quiz.questions[2] has unknown key(s): options' ],
 			'open sample not string'   => [ static fn ( $q ) => self::with_question( $q, 2, [ 'sample' => 5 ] ), 'quiz.questions[2].sample' ],

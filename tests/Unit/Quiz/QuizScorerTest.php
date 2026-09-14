@@ -52,8 +52,9 @@ final class QuizScorerTest extends TestCase {
 			[
 				'q_single_a' => [ 'correct' => true ],
 				'q_single_b' => [
-					'correct'        => false,
-					'correct_option' => 2,
+					'correct'           => false,
+					'correct_option'    => 2,
+					'correct_option_id' => 'o2',
 				],
 				'q_bool_a'   => [ 'correct' => true ],
 				'q_bool_b'   => [
@@ -97,10 +98,31 @@ final class QuizScorerTest extends TestCase {
 		return [
 			'int index and bool'        => [ 2, false, 2 ],
 			'digit-string index'        => [ '2', false, 2 ],
+			'positional option id'      => [ 'o2', false, 2 ],
+			'wrong option id'           => [ 'o0', false, 1 ],
 			'non-digit string index'    => [ 'two', false, 1 ],
 			'boolean given as string'   => [ 2, 'false', 1 ],
 			'boolean given as int zero' => [ 2, 0, 1 ],
 		];
+	}
+
+	public function test_scores_an_author_supplied_option_id(): void {
+		$quiz                                = self::quiz();
+		$quiz['questions'][1]['options'][2]  = [ 'id' => 'opt_three' ] + $quiz['questions'][1]['options'][2];
+
+		$result = QuizScorer::score( $quiz, [ 'q_single_b' => 'opt_three' ], 50.0 );
+
+		$this->assertTrue( $result['results']['q_single_b']['correct'] );
+	}
+
+	public function test_names_the_correct_option_id_when_the_answer_is_wrong(): void {
+		$quiz                               = self::quiz();
+		$quiz['questions'][1]['options'][2] = [ 'id' => 'opt_three' ] + $quiz['questions'][1]['options'][2];
+
+		$result = QuizScorer::score( $quiz, [ 'q_single_b' => 'o0' ], 50.0 );
+
+		$this->assertSame( 'opt_three', $result['results']['q_single_b']['correct_option_id'] );
+		$this->assertSame( 2, $result['results']['q_single_b']['correct_option'] );
 	}
 
 	/**

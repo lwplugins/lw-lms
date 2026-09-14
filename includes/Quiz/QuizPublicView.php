@@ -12,6 +12,9 @@ namespace LightweightPlugins\LMS\Quiz;
 /**
  * Builds the quiz object for GET /lessons/{id}: every `correct` key is
  * stripped, so answers are only ever revealed by the submission response.
+ *
+ * Options carry an `id` and are shuffled here when the quiz asks for it, so
+ * the order the learner sees never has to match the stored order.
  */
 final class QuizPublicView {
 
@@ -30,7 +33,7 @@ final class QuizPublicView {
 		}
 
 		$view                 = self::build( $quiz, QuizSettings::pass_percentage( $quiz ) );
-		$view['last_attempt'] = $user_id ? QuizAttempts::get( $user_id, $lesson_id ) : null;
+		$view['last_attempt'] = $user_id ? QuizAttempts::last_with_review( $user_id, $lesson_id ) : null;
 
 		return $view;
 	}
@@ -43,11 +46,13 @@ final class QuizPublicView {
 	 * @return array<string, mixed>
 	 */
 	public static function build( array $quiz, float $pass_percentage ): array {
+		$shuffle = (bool) ( $quiz['shuffle_options'] ?? false );
+
 		return [
 			'pass_percentage' => $pass_percentage,
-			'shuffle_options' => (bool) ( $quiz['shuffle_options'] ?? false ),
+			'shuffle_options' => $shuffle,
 			'questions'       => array_map(
-				static fn ( array $question ): array => self::question( $question ),
+				static fn ( array $question ): array => self::question( $question, $shuffle ),
 				$quiz['questions']
 			),
 		];
@@ -57,9 +62,10 @@ final class QuizPublicView {
 	 * Public fields of one question.
 	 *
 	 * @param array<string, mixed> $question Normalized question.
+	 * @param bool                 $shuffle  Whether to randomize option order.
 	 * @return array<string, mixed>
 	 */
-	private static function question( array $question ): array {
+	private static function question( array $question, bool $shuffle = false ): array {
 		$public = [
 			'id'     => $question['id'],
 			'type'   => $question['type'],
@@ -67,10 +73,17 @@ final class QuizPublicView {
 		];
 
 		if ( 'single' === $question['type'] ) {
-			$public['options'] = array_map(
-				static fn ( array $option ): array => [ 'text' => $option['text'] ],
-				$question['options']
-			);
+			$ids     = QuizOptions::ids( $question['options'] );
+			$options = [];
+
+			foreach ( $question['options'] as $index => $option ) {
+				$options[] = [
+					'id'   => $ids[ $index ],
+					'text' => $option['text'],
+				];
+			}
+
+			$public['options'] = $shuffle ? QuizOptions::shuffle( $options ) : $options;
 		}
 
 		if ( 'open' === $question['type'] && isset( $question['sample'] ) ) {

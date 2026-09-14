@@ -66,7 +66,8 @@ final class QuizScorer {
 	}
 
 	/**
-	 * Check a single-choice answer (0-based option index, int or digit string).
+	 * Check a single-choice answer (option id, or a 0-based index into the
+	 * stored order for clients written against 1.8.0).
 	 *
 	 * @param array<int, array<string, mixed>> $options Options.
 	 * @param mixed                            $answer  Submitted answer.
@@ -81,20 +82,16 @@ final class QuizScorer {
 			}
 		}
 
-		$given = null;
-		if ( is_int( $answer ) ) {
-			$given = $answer;
-		} elseif ( is_string( $answer ) && ctype_digit( $answer ) ) {
-			$given = (int) $answer;
-		}
-
-		if ( $given === $correct_index ) {
+		if ( QuizOptions::resolve( $options, $answer ) === $correct_index ) {
 			return [ 'correct' => true ];
 		}
 
 		return [
-			'correct'        => false,
-			'correct_option' => $correct_index,
+			'correct'           => false,
+			// Index kept for 1.8.0 clients; the id is what a client that
+			// received shuffled options can actually use.
+			'correct_option'    => $correct_index,
+			'correct_option_id' => QuizOptions::ids( $options )[ $correct_index ],
 		];
 	}
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.8.1] - 2026-09-14
+
+### Added
+- Quiz attempt history: every submission is stored as a row in the new `{prefix}lms_quiz_attempts` table (user, lesson, course, score, percentage, passed, submitted_at) together with a self-contained answer snapshot — question prompt, the option texts given and expected — so an attempt stays readable after the quiz itself is reworded, and a disputed result can be answered with evidence. The user meta summary stays as the fast path for the lesson payload and the completion gate, and now also carries `attempts` and `best_percentage`. Attempts recorded by 1.8.0 are lifted into the table on update (with `answers` NULL: they were never stored), and their summary is seeded with the counters it never had, so the next submission continues the count instead of restarting it.
+- `review` in the `last_attempt` object of `GET /lms/v1/lessons/{id}` — the stored snapshot of the learner's most recent attempt, so a reload can still show what they answered and what was right.
+- Quiz metabox on the lesson editor: a readable listing of the stored quiz (questions, types, options with the correct one marked) plus a JSON editor validated by the same `QuizNormalizer` the CLI uses, so an editor gets the exact error path (`quiz.questions[3].options must mark exactly one option as correct`) and keeps their input when a save is rejected. A `Quiz` column on the All Lessons list shows question count and pass threshold.
+- "Quiz Results" page under LW Plugins (`manage_lms`): per-learner attempts, best and last percentage, whether they ever passed and when, with a pager — plus per-question statistics (answered, correct, wrong, correct ratio) over the most recent 500 attempts of the lesson, which is what shows a question the lesson never actually taught.
+- Optional stable `id` on single-choice options. Answers may be submitted as an option id instead of a positional index, so inserting or reordering options no longer silently changes the meaning of previously stored answers. Wrong answers now also return `correct_option_id` alongside the existing `correct_option` index.
+
+### Fixed
+- `shuffle_options` was validated and passed to the client but never implemented anywhere in the plugin, while the scorer expects an index into the *stored* order — so a client that shuffled on its own and submitted the displayed index scored silently wrong. The server now shuffles the options it sends when the flag is on, and every option carries the `id` to answer with.
+- Uninstall now drops the course completion snapshot table (`{prefix}lms_completion_snapshots`) as well; it was left behind.
+
+### Changed
+- `GET /lms/v1/lessons/{id}` option objects now contain `id` in addition to `text`. Index-based answers from 1.8.0 clients keep working against the stored order.
+
 ## [1.8.0] - 2026-09-14
 
 ### Added

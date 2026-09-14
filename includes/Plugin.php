@@ -18,6 +18,8 @@ use LightweightPlugins\LMS\Admin\Metaboxes\CourseDataMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\LessonCourseMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\LessonVideoMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\LessonDataMetabox;
+use LightweightPlugins\LMS\Admin\Metaboxes\LessonQuizMetabox;
+use LightweightPlugins\LMS\Admin\QuizResultsPage;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Taxonomies\CourseCategory;
@@ -104,6 +106,8 @@ final class Plugin {
 			new LessonCourseMetabox();
 			new LessonVideoMetabox();
 			new LessonDataMetabox();
+			new LessonQuizMetabox();
+			new QuizResultsPage();
 			LessonListColumns::register();
 		}
 

@@ -29,12 +29,13 @@ final class QuizSubmission {
 	 * @return array<string, mixed> Scoring result (see QuizScorer::score()).
 	 */
 	public static function submit( int $lesson_id, int $user_id, array $quiz, array $answers ): array {
-		$result = QuizScorer::score( $quiz, $answers, QuizSettings::pass_percentage( $quiz ) );
+		$result    = QuizScorer::score( $quiz, $answers, QuizSettings::pass_percentage( $quiz ) );
+		$course_id = (int) Options::get_post_meta( $lesson_id, 'lesson_course_id', 0 );
 
-		QuizAttempts::record( $user_id, $lesson_id, $result['percentage'], $result['passed'] );
+		QuizAttempts::record( $user_id, $lesson_id, $course_id, $result, QuizSnapshot::build( $quiz, $answers, $result['results'] ) );
 
 		if ( $result['passed'] ) {
-			self::maybe_complete_lesson( $lesson_id, $user_id );
+			self::maybe_complete_lesson( $lesson_id, $user_id, $course_id );
 		}
 
 		/**
@@ -72,14 +73,13 @@ final class QuizSubmission {
 	 *
 	 * @param int $lesson_id Lesson ID.
 	 * @param int $user_id   User ID.
+	 * @param int $course_id Course ID (0 when unassigned).
 	 * @return void
 	 */
-	private static function maybe_complete_lesson( int $lesson_id, int $user_id ): void {
+	private static function maybe_complete_lesson( int $lesson_id, int $user_id, int $course_id ): void {
 		if ( ! QuizSettings::require_pass() ) {
 			return;
 		}
-
-		$course_id = (int) Options::get_post_meta( $lesson_id, 'lesson_course_id', 0 );
 
 		if ( ! $course_id || ProgressCalculator::is_lesson_completed( $user_id, $lesson_id ) ) {
 			return;
