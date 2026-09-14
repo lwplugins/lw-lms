@@ -42,6 +42,12 @@ final class AccessChecker {
 			return true;
 		}
 
+		// Staff bypass (opt-in setting). Runtime-only: no access row, no
+		// lw_lms_after_grant, and no lazy free-course grant for staff.
+		if ( AdminAccess::applies( $user_id ) ) {
+			return true;
+		}
+
 		// User must be logged in for free and paid courses.
 		if ( ! $user_id ) {
 			return false;

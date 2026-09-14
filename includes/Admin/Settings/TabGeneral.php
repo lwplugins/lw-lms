@@ -114,6 +114,23 @@ final class TabGeneral implements TabInterface {
 					?>
 				</td>
 			</tr>
+
+			<tr>
+				<th scope="row"><?php esc_html_e( 'Staff Access', 'lw-lms' ); ?></th>
+				<td>
+					<?php
+					$this->render_checkbox_field(
+						[
+							'name'  => 'auto_enroll_admins',
+							'label' => __( 'Give LMS managers access to every course', 'lw-lms' ),
+						]
+					);
+					?>
+					<p class="description">
+						<?php esc_html_e( 'Users with the manage_lms capability (administrators by default) can open every course and lesson without buying or enrolling. No enrollment is recorded, so no welcome emails or drip sequences are triggered.', 'lw-lms' ); ?>
+					</p>
+				</td>
+			</tr>
 		</table>
 
 		<h2><?php esc_html_e( 'WooCommerce', 'lw-lms' ); ?></h2>

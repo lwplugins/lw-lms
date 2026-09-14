@@ -11,6 +11,7 @@ namespace LightweightPlugins\LMS\Tests\Unit\Access;
 
 use Brain\Monkey\Functions;
 use LightweightPlugins\LMS\Access\AccessChecker;
+use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\Tests\Unit\MonkeyTestCase;
 
 /**
@@ -18,8 +19,18 @@ use LightweightPlugins\LMS\Tests\Unit\MonkeyTestCase;
  */
 final class AccessCheckerTest extends MonkeyTestCase {
 
+	protected function setUp(): void {
+		parent::setUp();
+		Options::clear_cache();
+		Functions\when( 'get_option' )->justReturn( [] );
+		Functions\when( 'wp_parse_args' )->alias(
+			static fn ( mixed $args, array $defaults = [] ): array => array_merge( $defaults, (array) $args )
+		);
+	}
+
 	protected function tearDown(): void {
 		unset( $GLOBALS['wpdb'] );
+		Options::clear_cache();
 		parent::tearDown();
 	}
 
@@ -44,15 +55,7 @@ final class AccessCheckerTest extends MonkeyTestCase {
 
 		// The access table reports no active grant; every WooCommerce checker is
 		// guarded by function_exists()/is_active() and returns false with WC absent.
-		$GLOBALS['wpdb'] = new class() {
-			public string $prefix = 'wp_';
-			public function prepare( string $query, mixed ...$args ): string {
-				return $query;
-			}
-			public function get_var( string $query ): mixed {
-				return null;
-			}
-		};
+		$GLOBALS['wpdb'] = $this->empty_access_table();
 
 		// The extension grants access via the filter (which must now be reached).
 		Functions\when( 'apply_filters' )->alias(
@@ -69,7 +72,52 @@ final class AccessCheckerTest extends MonkeyTestCase {
 		Functions\when( 'current_time' )->justReturn( '2026-07-18 00:00:00' );
 		Functions\when( 'apply_filters' )->returnArg( 2 );
 
-		$GLOBALS['wpdb'] = new class() {
+		$GLOBALS['wpdb'] = $this->empty_access_table();
+
+		$this->assertFalse( AccessChecker::has_course_access( 456, 7 ) );
+	}
+
+	/**
+	 * No $wpdb global is set: reaching the access table (or the free-course
+	 * lazy grant) would fatal, so a pass proves the bypass touches no DB.
+	 */
+	public function test_admin_bypass_grants_paid_course_without_touching_access_table(): void {
+		Functions\when( 'get_option' )->justReturn( [ 'auto_enroll_admins' => true ] );
+		Functions\when( 'get_post_meta' )->justReturn( 'paid' );
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\when( 'user_can' )->justReturn( true );
+
+		$this->assertTrue( AccessChecker::has_course_access( 456, 7 ) );
+	}
+
+	public function test_admin_bypass_skips_free_course_lazy_grant(): void {
+		Functions\when( 'get_option' )->justReturn( [ 'auto_enroll_admins' => true ] );
+		Functions\when( 'get_post_meta' )->justReturn( 'free' );
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\when( 'user_can' )->justReturn( true );
+		Functions\expect( 'do_action' )->never();
+
+		$this->assertTrue( AccessChecker::has_course_access( 456, 7 ) );
+	}
+
+	public function test_paid_course_ignores_capabilities_when_admin_access_is_off(): void {
+		Functions\when( 'get_post_meta' )->justReturn( 'paid' );
+		Functions\when( 'current_time' )->justReturn( '2026-07-18 00:00:00' );
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\expect( 'user_can' )->never();
+
+		$GLOBALS['wpdb'] = $this->empty_access_table();
+
+		$this->assertFalse( AccessChecker::has_course_access( 456, 7 ) );
+	}
+
+	/**
+	 * A $wpdb double whose access table holds no rows.
+	 *
+	 * @return object
+	 */
+	private function empty_access_table(): object {
+		return new class() {
 			public string $prefix = 'wp_';
 			public function prepare( string $query, mixed ...$args ): string {
 				return $query;
@@ -78,7 +126,5 @@ final class AccessCheckerTest extends MonkeyTestCase {
 				return null;
 			}
 		};
-
-		$this->assertFalse( AccessChecker::has_course_access( 456, 7 ) );
 	}
 }

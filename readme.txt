@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.6.3
+Stable tag: 1.7.0
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,13 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.7.0 =
+* New: "Staff Access" setting (Settings → General, off by default) gives users with the manage_lms capability access to every course and lesson without buying or enrolling. It is a runtime bypass, so no access row is written, lw_lms_after_grant does not fire and there is nothing to revoke when turned off
+* New: lw_lms_admin_access_capability filter to change the capability the staff bypass checks (default manage_lms)
+* New: status parameter on GET /lms/v1/courses (publish, private, draft, any; default publish). Non-published statuses require read_private_courses or edit_courses
+* New: GET /lms/v1/courses/{id} and GET /lms/v1/lessons/{id} serve non-published courses and lessons to users with the matching capability; everyone else still gets a 404
+* New: status field in course list items and the single-course REST payload
 
 = 1.6.3 =
 * Fix: Security — published lessons, paid ones included, were readable by anyone through the core /wp/v2/lesson REST routes, bypassing the LMS access check. Those routes are now limited to users who can edit lessons; the block editor and the LMS API are unaffected

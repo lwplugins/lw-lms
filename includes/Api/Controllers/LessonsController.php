@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\Api\Controllers;
 
 use LightweightPlugins\LMS\Api\RestApi;
+use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\Api\Transformers\LessonTransformer;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Access\AccessChecker;
@@ -58,15 +59,13 @@ final class LessonsController {
 		$lesson_id = (int) $request->get_param( 'id' );
 		$post      = get_post( $lesson_id );
 
-		if ( ! $post || Lesson::POST_TYPE !== $post->post_type ) {
-			return new WP_Error(
-				'not_found',
-				__( 'Lesson not found.', 'lw-lms' ),
-				[ 'status' => 404 ]
-			);
-		}
-
-		if ( 'publish' !== $post->post_status ) {
+		// Non-published lessons stay a 404 (not 403) for users without the
+		// matching capability, so their existence is not disclosed.
+		if (
+			! $post
+			|| Lesson::POST_TYPE !== $post->post_type
+			|| ! StatusPermission::can_read( $post->post_status, Lesson::POST_TYPE )
+		) {
 			return new WP_Error(
 				'not_found',
 				__( 'Lesson not found.', 'lw-lms' ),

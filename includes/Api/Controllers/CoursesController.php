@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\Api\Controllers;
 
 use LightweightPlugins\LMS\Api\RestApi;
+use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\Api\Transformers\CourseTransformer;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\Taxonomies\CourseCategory;
@@ -24,6 +25,11 @@ use WP_Error;
  * Handles course REST endpoints.
  */
 final class CoursesController {
+
+	/**
+	 * Values accepted by the collection `status` parameter.
+	 */
+	private const STATUSES = [ 'publish', 'private', 'draft', 'any' ];
 
 	/**
 	 * Register routes.
@@ -65,18 +71,29 @@ final class CoursesController {
 	 * Get courses collection.
 	 *
 	 * @param WP_REST_Request $request Request object.
-	 * @return WP_REST_Response
+	 * @return WP_REST_Response|WP_Error
 	 */
-	public function get_courses( WP_REST_Request $request ): WP_REST_Response {
+	public function get_courses( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 		$per_page = $request->get_param( 'per_page' ) ?? Options::get( 'courses_per_page', 10 );
 		$page     = $request->get_param( 'page' ) ?? 1;
 		$category = $request->get_param( 'category' );
 		$level    = $request->get_param( 'level' );
 		$search   = $request->get_param( 'search' );
+		$status   = (string) ( $request->get_param( 'status' ) ?? 'publish' );
+
+		// The route is public, so non-published statuses are gated here, before
+		// the query (WP_Query itself does not restrict an explicit post_status).
+		if ( ! StatusPermission::can_read( $status, Course::POST_TYPE ) ) {
+			return new WP_Error(
+				'rest_forbidden_status',
+				__( 'You are not allowed to list courses with this status.', 'lw-lms' ),
+				[ 'status' => rest_authorization_required_code() ]
+			);
+		}
 
 		$args = [
 			'post_type'      => Course::POST_TYPE,
-			'post_status'    => 'publish',
+			'post_status'    => $status,
 			'posts_per_page' => (int) $per_page,
 			'paged'          => (int) $page,
 			'orderby'        => 'date',
@@ -137,15 +154,13 @@ final class CoursesController {
 		$course_id = (int) $request->get_param( 'id' );
 		$post      = get_post( $course_id );
 
-		if ( ! $post || Course::POST_TYPE !== $post->post_type ) {
-			return new WP_Error(
-				'not_found',
-				__( 'Course not found.', 'lw-lms' ),
-				[ 'status' => 404 ]
-			);
-		}
-
-		if ( 'publish' !== $post->post_status ) {
+		// Non-published courses stay a 404 (not 403) for users without the
+		// matching capability, so their existence is not disclosed.
+		if (
+			! $post
+			|| Course::POST_TYPE !== $post->post_type
+			|| ! StatusPermission::can_read( $post->post_status, Course::POST_TYPE )
+		) {
 			return new WP_Error(
 				'not_found',
 				__( 'Course not found.', 'lw-lms' ),
@@ -189,6 +204,14 @@ final class CoursesController {
 			'search'   => [
 				'default'           => '',
 				'sanitize_callback' => 'sanitize_text_field',
+			],
+			'status'   => [
+				'default'           => 'publish',
+				'type'              => 'string',
+				'enum'              => self::STATUSES,
+				'validate_callback' => function ( $param ) {
+					return in_array( $param, self::STATUSES, true );
+				},
 			],
 		];
 	}

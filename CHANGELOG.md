@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.7.0] - 2026-09-14
+
+### Added
+- "Staff Access" setting (Settings → General, off by default): users with the `manage_lms` capability (administrators by default) get every course and lesson without buying or enrolling. It is a runtime bypass in `AccessChecker::has_course_access()` — no access row is written, `lw_lms_after_grant` does not fire (so no drip or welcome automation for staff), no free-course enrollment row is created, and turning it off leaves nothing to revoke. With the setting off, access resolution is unchanged.
+- `lw_lms_admin_access_capability` filter — changes the capability the staff bypass checks (default `manage_lms`).
+- `status` parameter on `GET /lms/v1/courses` (`publish` | `private` | `draft` | `any`, default `publish`). `private` requires `read_private_courses`; `draft` and `any` require `edit_courses`; otherwise the request is rejected with 401/403. Anonymous and default requests are unchanged.
+- `GET /lms/v1/courses/{id}` and `GET /lms/v1/lessons/{id}` serve non-published (private, draft, pending, scheduled) courses and lessons to users with the matching capability (`read_private_*` / `edit_*`). Everyone else still gets a 404. Lesson content still goes through the normal access check.
+- `status` field in the course list items and in the single-course REST payload.
+
 ## [1.6.3] - 2026-09-11
 
 ### Fixed
