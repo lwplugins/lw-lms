@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.8.0
+Stable tag: 1.8.1
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,15 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.8.1 =
+* New: Every quiz submission is now stored in its own table (`{prefix}lms_quiz_attempts`) with the full answer snapshot, so attempt history survives and a result can be shown or defended later. Attempts recorded by 1.8.0 are migrated on update (without answers, which were never stored)
+* New: The learner's last attempt in GET /lms/v1/lessons/{id} carries a `review` array, so a page reload can still show what was answered and what was right, plus `attempts` and `best_percentage`
+* New: Quiz metabox on the lesson editor — readable listing of the stored quiz plus a validated JSON editor with the exact error path; a Quiz column on the All Lessons list
+* New: "Quiz Results" page under LW Plugins — per learner attempts, best and last score, pass state, and per-question statistics showing which question everyone gets wrong
+* New: Single-choice options may carry a stable `id`; answers can be submitted as an option id instead of an index, so reordering options no longer changes the meaning of stored answers
+* Fix: `shuffle_options` was declared but never implemented, and a client that shuffled on its own silently scored wrong, because the server expects the stored order. The server now shuffles the options it sends, and each option carries the id to answer with
+* Fix: Uninstall now also drops the course completion snapshot table
 
 = 1.8.0 =
 * New: Lesson quizzes stored as one JSON meta per lesson (no new post types or tables) with single-choice, true/false and open (unscored) questions, a per-lesson pass percentage and a global default (80)
