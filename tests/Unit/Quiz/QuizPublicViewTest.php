@@ -41,7 +41,16 @@ final class QuizPublicViewTest extends TestCase {
 					'id'      => 'q_single',
 					'type'    => 'single',
 					'prompt'  => 'Pick one',
-					'options' => [ [ 'text' => 'A' ], [ 'text' => 'B' ] ],
+					'options' => [
+						[
+							'id'   => 'o0',
+							'text' => 'A',
+						],
+						[
+							'id'   => 'o1',
+							'text' => 'B',
+						],
+					],
 				],
 				[
 					'id'     => 'q_bool',
@@ -57,6 +66,42 @@ final class QuizPublicViewTest extends TestCase {
 			],
 			$view['questions']
 		);
+	}
+
+	public function test_keeps_author_supplied_option_ids(): void {
+		$quiz                                  = self::quiz();
+		$quiz['questions'][0]['options'][1]    = [ 'id' => 'opt_b' ] + $quiz['questions'][0]['options'][1];
+
+		$view = QuizPublicView::build( $quiz, 80.0 );
+
+		$this->assertSame( [ 'o0', 'opt_b' ], array_column( $view['questions'][0]['options'], 'id' ) );
+	}
+
+	public function test_shuffled_payload_keeps_every_option_with_its_id(): void {
+		$quiz                              = self::quiz();
+		$quiz['shuffle_options']           = true;
+		$quiz['questions'][0]['options'][] = [ 'text' => 'C' ];
+
+		$view = QuizPublicView::build( $quiz, 80.0 );
+
+		$this->assertEqualsCanonicalizing(
+			[
+				[
+					'id'   => 'o0',
+					'text' => 'A',
+				],
+				[
+					'id'   => 'o1',
+					'text' => 'B',
+				],
+				[
+					'id'   => 'o2',
+					'text' => 'C',
+				],
+			],
+			$view['questions'][0]['options']
+		);
+		$this->assertTrue( $view['shuffle_options'] );
 	}
 
 	public function test_resolves_threshold_and_shuffle_default(): void {

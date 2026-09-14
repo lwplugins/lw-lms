@@ -13,6 +13,8 @@ use LightweightPlugins\LMS\Access\AccessTable;
 use LightweightPlugins\LMS\Progress\ProgressSnapshotMigration;
 use LightweightPlugins\LMS\Progress\ProgressSnapshotTable;
 use LightweightPlugins\LMS\Progress\ProgressTable;
+use LightweightPlugins\LMS\Quiz\QuizAttemptMigration;
+use LightweightPlugins\LMS\Quiz\QuizAttemptTable;
 
 /**
  * Handles plugin activation and deactivation.
@@ -22,7 +24,7 @@ final class Activator {
 	/**
 	 * DB version constant.
 	 */
-	public const DB_VERSION = '1.2.0';
+	public const DB_VERSION = '1.3.0';
 
 	/**
 	 * Activate the plugin.
@@ -56,11 +58,16 @@ final class Activator {
 		ProgressTable::create();
 		AccessTable::create();
 		ProgressSnapshotTable::create();
+		QuizAttemptTable::create();
 
 		// First time the snapshot table exists, retroactively freeze every
 		// already-completed user × course pair so they don't drop below 100%
 		// the moment someone adds a new lesson.
 		ProgressSnapshotMigration::backfill();
+
+		// 1.8.0 kept only a summary of the last quiz attempt in user meta;
+		// lift those into the attempt table so history does not start empty.
+		QuizAttemptMigration::backfill();
 
 		update_option( 'lw_lms_db_version', self::DB_VERSION );
 	}

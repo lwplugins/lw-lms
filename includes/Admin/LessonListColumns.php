@@ -12,6 +12,8 @@ namespace LightweightPlugins\LMS\Admin;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
+use LightweightPlugins\LMS\Quiz\QuizRepository;
+use LightweightPlugins\LMS\Quiz\QuizSettings;
 
 /**
  * Adds two missing columns to wp-admin/edit.php?post_type=lesson:
@@ -19,6 +21,8 @@ use LightweightPlugins\LMS\PostTypes\Lesson;
  *  - Order: the lesson_order meta (sortable).
  *  - Course: a link to the parent course's editor (clickable so admins can
  *    jump back and forth between lesson and course).
+ *  - Quiz: question count and pass threshold, so a missing quiz is visible
+ *    from the listing instead of one lesson at a time.
  *
  * Issue #5.
  */
@@ -48,6 +52,7 @@ final class LessonListColumns {
 
 		$columns['lw_lms_order']  = __( 'Order', 'lw-lms' );
 		$columns['lw_lms_course'] = __( 'Course', 'lw-lms' );
+		$columns['lw_lms_quiz']   = __( 'Quiz', 'lw-lms' );
 
 		if ( null !== $date ) {
 			$columns['date'] = $date;
@@ -71,6 +76,10 @@ final class LessonListColumns {
 
 			case 'lw_lms_course':
 				self::render_course_link( $post_id );
+				break;
+
+			case 'lw_lms_quiz':
+				self::render_quiz_summary( $post_id );
 				break;
 		}
 	}
@@ -107,6 +116,32 @@ final class LessonListColumns {
 
 		$query->set( 'meta_key', Options::META_PREFIX . 'lesson_order' );
 		$query->set( 'orderby', 'meta_value_num' );
+	}
+
+	/**
+	 * Render the lesson's quiz size and pass threshold.
+	 *
+	 * @param int $lesson_id Lesson id.
+	 * @return void
+	 */
+	private static function render_quiz_summary( int $lesson_id ): void {
+		$quiz = QuizRepository::get( $lesson_id );
+
+		if ( null === $quiz ) {
+			echo '—';
+			return;
+		}
+
+		$count = count( $quiz['questions'] );
+
+		echo esc_html(
+			sprintf(
+				/* translators: 1: number of questions, 2: pass percentage. */
+				_n( '%1$d question · %2$s%%', '%1$d questions · %2$s%%', $count, 'lw-lms' ),
+				$count,
+				(string) QuizSettings::pass_percentage( $quiz )
+			)
+		);
 	}
 
 	/**
