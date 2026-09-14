@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.6.3] - 2026-09-11
+
+### Fixed
+- Security: published lessons — paid ones included — were readable by anyone through the core `/wp/v2/lesson` REST routes (lesson body plus REST-registered meta such as the video URL), bypassing the course access check of `/lms/v1/lessons/{id}`. The core lesson routes now answer 401/403 to users who cannot edit lessons. The block editor (editors and administrators) and the LMS API are unaffected; core `/wp/v2/course` stays public, as course content is the public course description.
+
 ## [1.6.2] - 2026-09-06
 
 ### Fixed
