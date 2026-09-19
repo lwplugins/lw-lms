@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.9.0] - 2026-09-19
+
+### Added
+- Drip and linear progression (issue #16). A course can be switched from free progression to **linear**, where lessons open one after the other in the order the course builder shows, and where a schedule can hold each of them back:
+  - **Course:** "opens N hours/days/weeks/months after enrollment".
+  - **Section (module):** the same, or "N after the previous section is completed".
+  - **Lesson:** the same, or "N after the previous lesson is completed".
+  - Schedules only take effect in linear mode: with free progression a learner can open anything, so there is nothing to pace.
+- The clock every "after enrollment" delay is measured from is stored per learner and course (user meta `_lw_lms_course_start_{course_id}`), written on the first grant whatever the source. A re-grant, a renewal or a second source never restarts it, and learners enrolled before a course started dripping keep their real enrollment date (recovered from their earliest access row). Runtime-only access (subscription, membership) leaves no row, so such a learner's clock starts at their first visit.
+- `GET /lms/v1/courses/{id}` carries `progression` (`free` or `linear`), and every lesson in the outline carries `locked_reason` (`sequence`, `schedule` or null) and `available_at` (ISO 8601 with the site's UTC offset, or null). `accessible` is false while a lesson is held back.
+- `GET /lms/v1/lessons/{id}`, `POST /lms/v1/progress`, `POST /lms/v1/lessons/{id}/quiz` and `GET /lms/v1/download/{id}` answer 403 `lesson_locked` for a lesson the learner is entitled to but cannot open yet, with `locked_reason` and `available_at` in the error data — so a frontend can tell "not yours" from "not yet".
+- Admin: a "Progression & Drip" box on the course (progression plus the course delay), a "Drip" box on the lesson, and a schedule per section in the course builder with a plain-language summary next to the section title.
+- WP-CLI: `wp lw-lms course set-drip`, `wp lw-lms lesson set-drip`, `wp lw-lms drip status <user> <course>` (per-lesson state, reason and unlock time — the answer to "why is this still locked for them?") and `wp lw-lms drip set-start` to move or clear a learner's clock.
+- `lw_lms_lesson_locks` filter over the locked lessons of a course for one learner, so a companion plugin can open or hold back a lesson.
+- Never held back: a lesson the learner already completed, a preview lesson, every lesson of a course they have finished, users covered by Staff Access, and open courses (they are readable without logging in, so pacing the logged-in half of the audience would be theatre). `wp lw-lms force-complete` and LW Site Manager stay admin overrides.
+
+### Fixed
+- The course builder now sanitizes the section list it receives instead of storing the decoded JSON as it came: only `id`, `title`, `description`, `order` and the drip rule survive, and a section id keeps its characters and its case (so lessons stay attached to it).
+
 ## [1.8.3] - 2026-09-19
 
 ### Fixed

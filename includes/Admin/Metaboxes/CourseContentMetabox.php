@@ -78,7 +78,7 @@ final class CourseContentMetabox {
 		if ( isset( $_POST['lw_lms_course_sections'] ) ) {
 			$sections = json_decode( sanitize_text_field( wp_unslash( $_POST['lw_lms_course_sections'] ) ), true );
 			if ( is_array( $sections ) ) {
-				Options::set_post_meta( $post_id, 'course_sections', $sections );
+				Options::set_post_meta( $post_id, 'course_sections', SectionSanitizer::sanitize( $sections ) );
 			}
 		}
 

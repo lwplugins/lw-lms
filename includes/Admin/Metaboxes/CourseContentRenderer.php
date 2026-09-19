@@ -54,6 +54,7 @@ final class CourseContentRenderer {
 				<div class="lw-lms-section-header">
 					<span class="dashicons dashicons-move lw-lms-drag-handle"></span>
 					<span class="lw-lms-section-title">{{title}}</span>
+					<span class="lw-lms-section-drip" data-section-id="{{id}}"></span>
 					<button type="button" class="button-link lw-lms-edit-section"><?php esc_html_e( 'Edit', 'lw-lms' ); ?></button>
 					<button type="button" class="button-link lw-lms-delete-section"><?php esc_html_e( 'Remove', 'lw-lms' ); ?></button>
 				</div>
@@ -105,6 +106,7 @@ final class CourseContentRenderer {
 			<div class="lw-lms-section-header">
 				<span class="dashicons dashicons-move lw-lms-drag-handle"></span>
 				<span class="lw-lms-section-title"><?php echo esc_html( $section['title'] ); ?></span>
+				<span class="lw-lms-section-drip" data-section-id="<?php echo esc_attr( $section['id'] ); ?>"></span>
 				<button type="button" class="button-link lw-lms-edit-section"><?php esc_html_e( 'Edit', 'lw-lms' ); ?></button>
 				<button type="button" class="button-link lw-lms-delete-section"><?php esc_html_e( 'Remove', 'lw-lms' ); ?></button>
 			</div>

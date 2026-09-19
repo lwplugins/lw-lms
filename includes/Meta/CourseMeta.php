@@ -143,6 +143,7 @@ final class CourseMeta {
 								'title'       => [ 'type' => 'string' ],
 								'description' => [ 'type' => 'string' ],
 								'order'       => [ 'type' => 'integer' ],
+								'drip'        => DripMeta::rule_schema(),
 							],
 						],
 					],

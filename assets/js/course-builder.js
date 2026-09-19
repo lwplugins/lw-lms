@@ -25,6 +25,7 @@
 			this.loadData();
 			this.initSortable();
 			this.bindEvents();
+			this.renderAllDripSummaries();
 
 			// Always flush the current state so a save after a touch-and-restore
 			// (drag → drag back) still writes the correct lesson_section_id /
@@ -134,7 +135,8 @@
 				id: id,
 				title: title,
 				description: '',
-				order: this.sections.length + 1
+				order: this.sections.length + 1,
+				drip: { mode: 'none', value: 0, unit: 'day' }
 			};
 
 			this.sections.push( section );
@@ -178,39 +180,73 @@
 				return;
 			}
 
-			var $header      = $section.find( '.lw-lms-section-header' );
-			var currentTitle = section.title;
+			var $header = $section.find( '.lw-lms-section-header' );
+			var i18n    = lwLmsAdmin.i18n;
+			var rule    = this.dripRule( section );
 
-			var $form = $(
-				'<div class="lw-lms-section-edit-form">' +
-				'<input type="text" value="' + currentTitle + '" placeholder="Section title">' +
-				'<button type="button" class="button button-primary lw-lms-save-section">Save</button>' +
-				'<button type="button" class="button lw-lms-cancel-section">Cancel</button>' +
-				'</div>'
+			var $form  = $( '<div class="lw-lms-section-edit-form"></div>' );
+			var $title = $( '<input type="text" class="lw-lms-section-title-input">' )
+				.attr( 'placeholder', i18n.sectionTitle )
+				.val( section.title );
+
+			var $mode = $( '<select class="lw-lms-section-drip-mode"></select>' );
+			$.each(
+				i18n.dripModes,
+				function (value, label) {
+					$mode.append( $( '<option></option>' ).attr( 'value', value ).text( label ) );
+				}
 			);
+			$mode.val( rule.mode );
+
+			var $value = $( '<input type="number" class="lw-lms-section-drip-value" min="0" max="999" step="1">' ).val( rule.value );
+
+			var $unit = $( '<select class="lw-lms-section-drip-unit"></select>' );
+			$.each(
+				i18n.dripUnits,
+				function (value, label) {
+					$unit.append( $( '<option></option>' ).attr( 'value', value ).text( label ) );
+				}
+			);
+			$unit.val( rule.unit );
+
+			var $delay = $( '<span class="lw-lms-drip-delay"></span>' )
+				.append( $( '<span class="lw-lms-drip-after"></span>' ).text( i18n.dripAfter ) )
+				.append( $value )
+				.append( $unit );
+
+			var $save   = $( '<button type="button" class="button button-primary lw-lms-save-section"></button>' ).text( i18n.save );
+			var $cancel = $( '<button type="button" class="button lw-lms-cancel-section"></button>' ).text( i18n.cancel );
+
+			$form.append( $title ).append( $mode ).append( $delay ).append( $save ).append( $cancel );
 
 			$header.hide();
 			$section.prepend( $form );
 
-			$form.find( 'input' ).focus().select();
+			$title.trigger( 'focus' ).trigger( 'select' );
 
-			// Save handler
-			$form.find( '.lw-lms-save-section' ).on(
+			$save.on(
 				'click',
 				function () {
-					var newTitle = $form.find( 'input' ).val().trim();
+					var newTitle = $title.val().trim();
 					if (newTitle) {
 						section.title = newTitle;
-						CourseBuilder.saveData();
 						$section.find( '.lw-lms-section-title' ).text( newTitle );
 					}
+
+					section.drip = {
+						mode: $mode.val(),
+						value: parseInt( $value.val(), 10 ) || 0,
+						unit: $unit.val()
+					};
+
+					CourseBuilder.saveData();
+					CourseBuilder.renderDripSummary( section );
 					$form.remove();
 					$header.show();
 				}
 			);
 
-			// Cancel handler
-			$form.find( '.lw-lms-cancel-section' ).on(
+			$cancel.on(
 				'click',
 				function () {
 					$form.remove();
@@ -218,13 +254,67 @@
 				}
 			);
 
-			// Enter key
-			$form.find( 'input' ).on(
+			$title.on(
 				'keypress',
 				function (e) {
 					if (e.which === 13) {
-						$form.find( '.lw-lms-save-section' ).click();
+						$save.trigger( 'click' );
 					}
+				}
+			);
+		},
+
+		/**
+		 * A section's drip rule, defaulted for sections saved before drip
+		 * existed.
+		 */
+		dripRule: function (section) {
+			var rule = section.drip || {};
+
+			return {
+				mode: rule.mode || 'none',
+				value: parseInt( rule.value, 10 ) || 0,
+				unit: rule.unit || 'day'
+			};
+		},
+
+		/**
+		 * Write the human-readable schedule next to a section's title.
+		 */
+		renderDripSummary: function (section) {
+			var rule    = this.dripRule( section );
+			var i18n    = lwLmsAdmin.i18n;
+			var $target = this.$contentList.find( '.lw-lms-section-drip[data-section-id="' + section.id + '"]' );
+
+			if ( ! $target.length) {
+				return;
+			}
+
+			if (rule.mode === 'none') {
+				$target.text( '' );
+				return;
+			}
+
+			var template = rule.mode === 'previous' ? i18n.dripSummaryPrevious : i18n.dripSummaryEnrollment;
+
+			if (rule.value === 0 && rule.mode === 'previous') {
+				$target.text( i18n.dripSummaryPreviousNow );
+				return;
+			}
+
+			var units = rule.value === 1 ? i18n.dripUnitsOne : i18n.dripUnits;
+
+			$target.text(
+				template.replace( '%1$d', rule.value ).replace( '%2$s', units[rule.unit] || rule.unit )
+			);
+		},
+
+		renderAllDripSummaries: function () {
+			var self = this;
+
+			this.sections.forEach(
+				function (section) {
+					self.renderDripSummary( section );
 				}
 			);
 		},

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Controllers;
 
+use LightweightPlugins\LMS\Api\LessonLockError;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\Api\Transformers\LessonTransformer;
@@ -83,6 +84,13 @@ final class LessonsController {
 				__( 'You do not have access to this lesson.', 'lw-lms' ),
 				[ 'status' => 403 ]
 			);
+		}
+
+		// Entitled, but the course may not have opened this lesson yet.
+		$locked = LessonLockError::check( $lesson_id, $user_id );
+
+		if ( null !== $locked ) {
+			return $locked;
 		}
 
 		$data = LessonTransformer::transform( $post, $user_id );

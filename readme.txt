@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.8.3
+Stable tag: 1.9.0
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,16 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.9.0 =
+* New: Drip and linear progression (issue #16). A course can run in linear mode, where lessons open one after the other, and where the course, a section (module) and a single lesson can each wait a number of hours, days, weeks or months — counted from enrollment, or from the completion of the previous lesson or section
+* New: The drip clock starts at the learner's first grant, whatever the source (purchase, manual enrollment, free course), and a renewal or re-grant never restarts it. Learners enrolled before a course started dripping keep their real enrollment date
+* New: GET /lms/v1/courses/{id} carries `progression`, and every lesson carries `locked_reason` and `available_at`, so a frontend can show the unlock date; the lesson, progress, quiz and download endpoints answer 403 `lesson_locked` with the same details
+* New: "Progression & Drip" box on the course, a "Drip" box on the lesson, and a schedule per section in the course builder
+* New: WP-CLI `wp lw-lms course set-drip`, `wp lw-lms lesson set-drip`, `wp lw-lms drip status` (why is a lesson still locked for this learner) and `wp lw-lms drip set-start`
+* New: `lw_lms_lesson_locks` filter so a companion plugin can open or hold back a lesson
+* Note: drip only applies in linear mode. Completed lessons, preview lessons, finished courses, Staff Access and open courses are never held back
+* Fix: The course builder sanitizes the section list before storing it, keeping only the fields a section is made of
 
 = 1.8.3 =
 * Fix: Security — protected course and lesson attachments were downloadable by anyone through GET /lms/v1/download/{id}, without logging in or owning the course. The endpoint looks up which course or lesson a file belongs to, but searched the stored meta in the wrong shape, found nothing, and treated every file as unrelated to the LMS. Files attached to a course or lesson are now matched correctly and the access check runs. Attachments that belong to no course or lesson keep behaving as before

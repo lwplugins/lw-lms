@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\Api\Controllers;
 
 use LightweightPlugins\LMS\Access\AccessChecker;
+use LightweightPlugins\LMS\Api\LessonLockError;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\PostTypes\Lesson;
@@ -80,6 +81,12 @@ final class QuizController {
 		// Same gate as the lesson body.
 		if ( ! AccessChecker::has_lesson_access( $lesson_id, $user_id ) ) {
 			return new WP_Error( 'forbidden', __( 'You do not have access to this lesson.', 'lw-lms' ), [ 'status' => 403 ] );
+		}
+
+		$locked = LessonLockError::check( $lesson_id, $user_id );
+
+		if ( null !== $locked ) {
+			return $locked;
 		}
 
 		$quiz = QuizRepository::get( $lesson_id );

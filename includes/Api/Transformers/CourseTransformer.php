@@ -11,6 +11,9 @@ namespace LightweightPlugins\LMS\Api\Transformers;
 
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\Access\AccessChecker;
+use LightweightPlugins\LMS\Drip\DripSettings;
+use LightweightPlugins\LMS\Drip\DripTime;
+use LightweightPlugins\LMS\Drip\LessonLocks;
 use LightweightPlugins\LMS\Progress\ProgressCalculator;
 use LightweightPlugins\LMS\Taxonomies\CourseCategory;
 use LightweightPlugins\LMS\Taxonomies\CourseLevel;
@@ -84,16 +87,19 @@ final class CourseTransformer {
 		$access_info = AccessChecker::get_access_info( $post->ID, $user_id );
 
 		$data = [
-			'id'         => $post->ID,
-			'title'      => $post->post_title,
-			'slug'       => $post->post_name,
-			'status'     => $post->post_status,
-			'excerpt'    => get_the_excerpt( $post ),
-			'thumbnail'  => get_the_post_thumbnail_url( $post, 'large' ),
-			'categories' => self::get_taxonomy_terms( $post->ID, CourseCategory::TAXONOMY ),
-			'level'      => self::get_single_term( $post->ID, CourseLevel::TAXONOMY ),
-			'duration'   => Options::get_post_meta( $post->ID, 'duration', '' ),
-			'access'     => $access_info,
+			'id'          => $post->ID,
+			'title'       => $post->post_title,
+			'slug'        => $post->post_name,
+			'status'      => $post->post_status,
+			'excerpt'     => get_the_excerpt( $post ),
+			'thumbnail'   => get_the_post_thumbnail_url( $post, 'large' ),
+			'categories'  => self::get_taxonomy_terms( $post->ID, CourseCategory::TAXONOMY ),
+			'level'       => self::get_single_term( $post->ID, CourseLevel::TAXONOMY ),
+			'duration'    => Options::get_post_meta( $post->ID, 'duration', '' ),
+			'access'      => $access_info,
+			// 'linear' means lessons open one after the other and drip
+			// schedules apply; 'free' means any lesson, any time.
+			'progression' => DripSettings::progression( $post->ID ),
 		];
 
 		// Course post_content is the public marketing/about description for the
@@ -307,19 +313,25 @@ final class CourseTransformer {
 	private static function transform_lessons_list( array $lessons, int $course_id, int $user_id, bool $has_access ): array {
 		$preview_ids = Options::get_post_meta( $course_id, 'preview_lesson_ids', [] );
 
+		// Empty unless the course drips: see LessonLocks for the exemptions.
+		$locks = LessonLocks::for_course( $course_id, $user_id );
+
 		return array_map(
-			function ( $lesson ) use ( $preview_ids, $has_access, $user_id ) {
+			function ( $lesson ) use ( $preview_ids, $has_access, $user_id, $locks ) {
 				$is_preview   = in_array( $lesson->ID, $preview_ids, true );
 				$is_completed = ProgressCalculator::is_lesson_completed( $user_id, $lesson->ID );
+				$lock         = $locks[ $lesson->ID ] ?? null;
 
 				return [
-					'id'         => $lesson->ID,
-					'title'      => $lesson->post_title,
-					'order'      => (int) Options::get_post_meta( $lesson->ID, 'lesson_order', 0 ),
-					'duration'   => Options::get_post_meta( $lesson->ID, 'duration', '' ),
-					'preview'    => $is_preview,
-					'accessible' => $has_access || ( $is_preview && $user_id > 0 ),
-					'completed'  => $is_completed,
+					'id'            => $lesson->ID,
+					'title'         => $lesson->post_title,
+					'order'         => (int) Options::get_post_meta( $lesson->ID, 'lesson_order', 0 ),
+					'duration'      => Options::get_post_meta( $lesson->ID, 'duration', '' ),
+					'preview'       => $is_preview,
+					'accessible'    => ( $has_access || ( $is_preview && $user_id > 0 ) ) && null === $lock,
+					'locked_reason' => $lock['reason'] ?? null,
+					'available_at'  => DripTime::iso( $lock['available_at'] ?? null ),
+					'completed'     => $is_completed,
 				];
 			},
 			$lessons
