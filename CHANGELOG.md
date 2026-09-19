@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.8.3] - 2026-09-19
+
+### Fixed
+- Security: every protected attachment was downloadable by anyone. `GET /lms/v1/download/{id}` finds the course or lesson a file belongs to by matching the attachment id inside the `_lw_lms_attachments` meta, but searched for a JSON fragment (`"id":8`) while WordPress stores the meta serialized (`s:2:"id";i:8;`). The lookup never matched, so `find_attachment_parent()` returned null and the controller took the file for one that has nothing to do with the LMS — the branch that serves it without any check. Verified against 1.8.2: an anonymous request for a paid lesson's attachment answered 200 with the file. The id is now matched in its serialized shape (integer and legacy string form), so the existing course/lesson access check actually runs. Files that belong to no course or lesson are still served, as before.
+
 ## [1.8.2] - 2026-09-19
 
 ### Added

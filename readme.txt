@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.8.2
+Stable tag: 1.8.3
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,9 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.8.3 =
+* Fix: Security — protected course and lesson attachments were downloadable by anyone through GET /lms/v1/download/{id}, without logging in or owning the course. The endpoint looks up which course or lesson a file belongs to, but searched the stored meta in the wrong shape, found nothing, and treated every file as unrelated to the LMS. Files attached to a course or lesson are now matched correctly and the access check runs. Attachments that belong to no course or lesson keep behaving as before
 
 = 1.8.2 =
 * New: lw_lms_rest_course_list_item (data, post, user_id), lw_lms_rest_course (data, post, user_id, has_access — 4 args) and lw_lms_rest_lesson (data, post, user_id) filters, so companion plugins can add their own keys to the lms/v1 course and lesson responses without a second request. Callbacks may only add keys: the keys core writes (access, accessible, quiz, progress, …) are kept as core wrote them, and a non-array return is ignored
