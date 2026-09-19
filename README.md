@@ -44,6 +44,33 @@ Or upload the `lw-lms` folder to `/wp-content/plugins/` and activate.
 | GET | `/lms/v1/progress` | Get user progress |
 | GET | `/lms/v1/download/{id}` | Download attachment |
 
+### Extending the payloads
+
+Companion plugins can add their own keys to the course and lesson responses:
+
+| Filter | Arguments | Response |
+|--------|-----------|----------|
+| `lw_lms_rest_course_list_item` | `array $data, WP_Post $post, int $user_id` | each item of `GET /courses` |
+| `lw_lms_rest_course` | `array $data, WP_Post $post, int $user_id, bool $has_access` | `GET /courses/{id}` |
+| `lw_lms_rest_lesson` | `array $data, WP_Post $post, int $user_id` | `GET /lessons/{id}` (after the access check) |
+
+Only new top-level keys are kept. The keys core writes (`access`, `accessible`, `quiz`, `progress`, …) stay as core wrote them — overriding or removing them has no effect.
+
+```php
+add_filter(
+    'lw_lms_rest_course',
+    static function ( array $data, \WP_Post $post, int $user_id, bool $has_access ): array {
+        if ( $user_id && \LightweightPlugins\LMS\Progress\ProgressCalculator::is_course_completed( $user_id, $post->ID ) ) {
+            $data['certificate_url'] = rest_url( sprintf( 'my-certs/v1/courses/%d/certificate', $post->ID ) );
+        }
+
+        return $data;
+    },
+    10,
+    4
+);
+```
+
 ## Quizzes
 
 One JSON document per lesson, managed with WP-CLI:

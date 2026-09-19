@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.8.2] - 2026-09-19
+
+### Added
+- Payload filters for the `lms/v1` REST API, so a companion plugin (certificates, badges, extra resources, a per-course CTA) can put its data into the responses frontends already fetch instead of needing a second request or `rest_post_dispatch` route matching (issue #27):
+  - `lw_lms_rest_course_list_item( array $data, WP_Post $post, int $user_id )` — each item of `GET /lms/v1/courses`.
+  - `lw_lms_rest_course( array $data, WP_Post $post, int $user_id, bool $has_access )` — `GET /lms/v1/courses/{id}`.
+  - `lw_lms_rest_lesson( array $data, WP_Post $post, int $user_id )` — `GET /lms/v1/lessons/{id}`, only after the lesson access check passed.
+- Callbacks may only add top-level keys. The keys core wrote (`access`, `accessible`, `quiz`, `progress`, …) are enforced: an override or removal is dropped, and a callback that returns a non-array leaves the core payload intact.
+
 ## [1.8.1] - 2026-09-14
 
 ### Added

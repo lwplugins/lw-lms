@@ -51,7 +51,24 @@ final class LessonTransformer {
 			$data['content_raw'] = $post->post_content;
 		}
 
-		return $data;
+		/**
+		 * Filter the payload of GET /lms/v1/lessons/{id}.
+		 *
+		 * Runs only for users who passed the lesson access check. Companion
+		 * plugins may add top-level keys. Core keys (`quiz`, `navigation`, …)
+		 * stay authoritative: overriding or removing them has no effect (see
+		 * PayloadExtension).
+		 *
+		 * @since 1.8.2
+		 *
+		 * @param array    $data    Lesson payload.
+		 * @param \WP_Post $post    Lesson post.
+		 * @param int      $user_id Current user ID.
+		 */
+		return PayloadExtension::merge(
+			$data,
+			apply_filters( 'lw_lms_rest_lesson', $data, $post, $user_id )
+		);
 	}
 
 	/**
