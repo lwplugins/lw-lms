@@ -33,7 +33,7 @@ final class CourseTransformer {
 			$user_id = get_current_user_id();
 		}
 
-		return [
+		$data = [
 			'id'           => $post->ID,
 			'title'        => $post->post_title,
 			'slug'         => $post->post_name,
@@ -49,6 +49,23 @@ final class CourseTransformer {
 				'has_access' => AccessChecker::has_course_access( $post->ID, $user_id ),
 			],
 		];
+
+		/**
+		 * Filter a course item of GET /lms/v1/courses.
+		 *
+		 * Companion plugins may add top-level keys. Core keys stay authoritative:
+		 * overriding or removing them has no effect (see PayloadExtension).
+		 *
+		 * @since 1.8.2
+		 *
+		 * @param array    $data    Course list item payload.
+		 * @param \WP_Post $post    Course post.
+		 * @param int      $user_id Current user ID (0 for anonymous).
+		 */
+		return PayloadExtension::merge(
+			$data,
+			apply_filters( 'lw_lms_rest_course_list_item', $data, $post, $user_id )
+		);
 	}
 
 	/**
@@ -101,7 +118,24 @@ final class CourseTransformer {
 			$data['progress'] = ProgressCalculator::calculate( $user_id, $post->ID );
 		}
 
-		return $data;
+		/**
+		 * Filter the payload of GET /lms/v1/courses/{id}.
+		 *
+		 * Companion plugins may add top-level keys. Core keys (`access`,
+		 * `sections`, `progress`, …) stay authoritative: overriding or removing
+		 * them has no effect (see PayloadExtension).
+		 *
+		 * @since 1.8.2
+		 *
+		 * @param array    $data       Course payload.
+		 * @param \WP_Post $post       Course post.
+		 * @param int      $user_id    Current user ID (0 for anonymous).
+		 * @param bool     $has_access Whether the user has access to the course.
+		 */
+		return PayloadExtension::merge(
+			$data,
+			apply_filters( 'lw_lms_rest_course', $data, $post, $user_id, $has_access )
+		);
 	}
 
 	/**

@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.8.1
+Stable tag: 1.8.2
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,9 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.8.2 =
+* New: lw_lms_rest_course_list_item (data, post, user_id), lw_lms_rest_course (data, post, user_id, has_access — 4 args) and lw_lms_rest_lesson (data, post, user_id) filters, so companion plugins can add their own keys to the lms/v1 course and lesson responses without a second request. Callbacks may only add keys: the keys core writes (access, accessible, quiz, progress, …) are kept as core wrote them, and a non-array return is ignored
 
 = 1.8.1 =
 * New: Every quiz submission is now stored in its own table (`{prefix}lms_quiz_attempts`) with the full answer snapshot, so attempt history survives and a result can be shown or defended later. Attempts recorded by 1.8.0 are migrated on update (without answers, which were never stored)
