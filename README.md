@@ -71,6 +71,39 @@ add_filter(
 );
 ```
 
+## Drip & linear progression
+
+A course runs with **free** progression by default: any lesson, any order. Switched to **linear**, lessons open one after the other, and each level can hold content back for a while:
+
+| Level | Options |
+|-------|---------|
+| Course | opens *N* hours / days / weeks / months after enrollment |
+| Section (module) | the same, or *N* after the previous section is completed |
+| Lesson | the same, or *N* after the previous lesson is completed |
+
+Schedules only apply in linear mode — with free progression there is nothing to pace. The order is the one the course builder shows: lessons outside a section first, then the sections by their order.
+
+**Never held back:** a lesson the learner already completed, preview lessons, every lesson of a course they finished, users covered by Staff Access, and open courses (readable without logging in anyway). `wp lw-lms force-complete` and LW Site Manager remain admin overrides.
+
+The clock each "after enrollment" delay counts from is stored per learner and course, set at their first grant whatever the source. Renewals and re-grants never restart it, and learners who enrolled before the course started dripping keep their real enrollment date.
+
+```bash
+wp lw-lms course set-drip 42 --progression=linear --delay=2 --unit=week
+wp lw-lms lesson set-drip 108 --mode=previous --delay=3 --unit=day
+wp lw-lms drip status alice 42      # per lesson: open/locked, why, and when it opens
+wp lw-lms drip set-start alice 42 --date="2026-09-01 08:00:00"
+```
+
+In the REST payloads, `GET /courses/{id}` carries `progression`, and each lesson carries:
+
+```json
+{ "accessible": false, "locked_reason": "schedule", "available_at": "2026-09-21T10:00:00+02:00" }
+```
+
+`locked_reason` is `sequence` (the lesson before is unfinished, so the moment is not known yet), `schedule` (waiting for `available_at`) or `null`. A locked lesson answers 403 `lesson_locked` — with the same two fields in the error data — on `GET /lessons/{id}`, `POST /progress`, `POST /lessons/{id}/quiz` and `GET /download/{id}`.
+
+The `lw_lms_lesson_locks` filter receives the locked lessons of a course for one learner (`array $locks, int $course_id, int $user_id`), so a companion plugin can open or hold back a lesson.
+
 ## Quizzes
 
 One JSON document per lesson, managed with WP-CLI:

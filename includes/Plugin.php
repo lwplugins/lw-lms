@@ -19,6 +19,8 @@ use LightweightPlugins\LMS\Admin\Metaboxes\LessonCourseMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\LessonVideoMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\LessonDataMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\LessonQuizMetabox;
+use LightweightPlugins\LMS\Admin\Metaboxes\CourseDripMetabox;
+use LightweightPlugins\LMS\Admin\Metaboxes\LessonDripMetabox;
 use LightweightPlugins\LMS\Admin\QuizResultsPage;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
@@ -27,6 +29,9 @@ use LightweightPlugins\LMS\Taxonomies\CourseTag;
 use LightweightPlugins\LMS\Taxonomies\CourseLevel;
 use LightweightPlugins\LMS\Meta\CourseMeta;
 use LightweightPlugins\LMS\Meta\LessonMeta;
+use LightweightPlugins\LMS\Meta\DripMeta;
+use LightweightPlugins\LMS\Drip\CourseStart;
+use LightweightPlugins\LMS\Drip\LessonLocks;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\CLI\MigrateLearnDashCommand;
 use LightweightPlugins\LMS\CLI\CourseCreateCommand;
@@ -42,6 +47,10 @@ use LightweightPlugins\LMS\CLI\LessonDeleteQuizCommand;
 use LightweightPlugins\LMS\CLI\EnrollCommand;
 use LightweightPlugins\LMS\CLI\RevokeCommand;
 use LightweightPlugins\LMS\CLI\ForceCompleteCommand;
+use LightweightPlugins\LMS\CLI\CourseSetDripCommand;
+use LightweightPlugins\LMS\CLI\LessonSetDripCommand;
+use LightweightPlugins\LMS\CLI\DripStatusCommand;
+use LightweightPlugins\LMS\CLI\DripSetStartCommand;
 use LightweightPlugins\LMS\Admin\UserProfile;
 use LightweightPlugins\LMS\Access\AccessGranter;
 use LightweightPlugins\LMS\WooCommerce\WooCommerce;
@@ -87,6 +96,13 @@ final class Plugin {
 		add_action( 'init', [ $this, 'register_post_types' ] );
 		add_action( 'init', [ $this, 'register_taxonomies' ] );
 		add_action( 'init', [ $this, 'register_meta' ] );
+
+		// A learner's drip clock starts at their first grant, whatever the
+		// source, even if the course only starts dripping later.
+		add_action( 'lw_lms_after_grant', [ CourseStart::class, 'on_grant' ], 10, 2 );
+
+		// Completing a lesson can open the next one in the same request.
+		add_action( 'lw_lms_lesson_completed', [ LessonLocks::class, 'flush' ] );
 	}
 
 	/**
@@ -107,6 +123,8 @@ final class Plugin {
 			new LessonVideoMetabox();
 			new LessonDataMetabox();
 			new LessonQuizMetabox();
+			new CourseDripMetabox();
+			new LessonDripMetabox();
 			new QuizResultsPage();
 			LessonListColumns::register();
 		}
@@ -167,6 +185,7 @@ final class Plugin {
 	public function register_meta(): void {
 		CourseMeta::register();
 		LessonMeta::register();
+		DripMeta::register();
 	}
 
 	/**
@@ -185,6 +204,7 @@ final class Plugin {
 		\WP_CLI::add_command( 'lw-lms course list', CourseListCommand::class );
 		\WP_CLI::add_command( 'lw-lms course delete', CourseDeleteCommand::class );
 		\WP_CLI::add_command( 'lw-lms course set-section', CourseSetSectionCommand::class );
+		\WP_CLI::add_command( 'lw-lms course set-drip', CourseSetDripCommand::class );
 
 		\WP_CLI::add_command( 'lw-lms lesson create', LessonCreateCommand::class );
 		\WP_CLI::add_command( 'lw-lms lesson list', LessonListCommand::class );
@@ -192,9 +212,13 @@ final class Plugin {
 		\WP_CLI::add_command( 'lw-lms lesson set-quiz', LessonSetQuizCommand::class );
 		\WP_CLI::add_command( 'lw-lms lesson get-quiz', LessonGetQuizCommand::class );
 		\WP_CLI::add_command( 'lw-lms lesson delete-quiz', LessonDeleteQuizCommand::class );
+		\WP_CLI::add_command( 'lw-lms lesson set-drip', LessonSetDripCommand::class );
 
 		\WP_CLI::add_command( 'lw-lms enroll', EnrollCommand::class );
 		\WP_CLI::add_command( 'lw-lms revoke', RevokeCommand::class );
 		\WP_CLI::add_command( 'lw-lms force-complete', ForceCompleteCommand::class );
+
+		\WP_CLI::add_command( 'lw-lms drip status', DripStatusCommand::class );
+		\WP_CLI::add_command( 'lw-lms drip set-start', DripSetStartCommand::class );
 	}
 }

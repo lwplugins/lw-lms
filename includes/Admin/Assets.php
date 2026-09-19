@@ -73,11 +73,7 @@ final class Assets {
 			[
 				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
 				'nonce'   => wp_create_nonce( 'lw_lms_admin' ),
-				'i18n'    => [
-					'confirmDelete' => __( 'Are you sure you want to remove this item?', 'lw-lms' ),
-					'newSection'    => __( 'New Section', 'lw-lms' ),
-					'untitled'      => __( 'Untitled', 'lw-lms' ),
-				],
+				'i18n'    => self::strings(),
 			]
 		);
 
@@ -91,5 +87,44 @@ final class Assets {
 				true
 			);
 		}
+	}
+
+	/**
+	 * Strings the admin scripts render.
+	 *
+	 * @return array<string, mixed>
+	 */
+	private static function strings(): array {
+		return [
+			'confirmDelete'          => __( 'Are you sure you want to remove this item?', 'lw-lms' ),
+			'newSection'             => __( 'New Section', 'lw-lms' ),
+			'untitled'               => __( 'Untitled', 'lw-lms' ),
+			'save'                   => __( 'Save', 'lw-lms' ),
+			'cancel'                 => __( 'Cancel', 'lw-lms' ),
+			'sectionTitle'           => __( 'Section title', 'lw-lms' ),
+			'dripAfter'              => __( 'after', 'lw-lms' ),
+			'dripModes'              => [
+				'none'       => __( 'Opens right away', 'lw-lms' ),
+				'enrollment' => __( 'Opens after enrollment', 'lw-lms' ),
+				'previous'   => __( 'Opens after the previous section', 'lw-lms' ),
+			],
+			'dripUnits'              => [
+				'hour'  => __( 'hours', 'lw-lms' ),
+				'day'   => __( 'days', 'lw-lms' ),
+				'week'  => __( 'weeks', 'lw-lms' ),
+				'month' => __( 'months', 'lw-lms' ),
+			],
+			'dripUnitsOne'           => [
+				'hour'  => __( 'hour', 'lw-lms' ),
+				'day'   => __( 'day', 'lw-lms' ),
+				'week'  => __( 'week', 'lw-lms' ),
+				'month' => __( 'month', 'lw-lms' ),
+			],
+			/* translators: 1: number, 2: unit such as days. */
+			'dripSummaryEnrollment'  => __( 'opens %1$d %2$s after enrollment', 'lw-lms' ),
+			/* translators: 1: number, 2: unit such as days. */
+			'dripSummaryPrevious'    => __( 'opens %1$d %2$s after the previous section', 'lw-lms' ),
+			'dripSummaryPreviousNow' => __( 'opens with the previous section completed', 'lw-lms' ),
+		];
 	}
 }

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Controllers;
 
+use LightweightPlugins\LMS\Api\LessonLockError;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\Api\Transformers\ProgressTransformer;
 use LightweightPlugins\LMS\Progress\ProgressRepository;
@@ -145,6 +146,13 @@ final class ProgressController {
 				__( 'You do not have access to this lesson.', 'lw-lms' ),
 				[ 'status' => 403 ]
 			);
+		}
+
+		// A lesson the drip schedule has not opened yet takes no progress.
+		$locked = LessonLockError::check( $lesson_id, $user_id );
+
+		if ( null !== $locked ) {
+			return $locked;
 		}
 
 		// Validate course-lesson relationship.

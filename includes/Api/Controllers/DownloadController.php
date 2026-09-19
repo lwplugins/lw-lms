@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\Api\Controllers;
 
 use LightweightPlugins\LMS\Api\AttachmentMetaPattern;
+use LightweightPlugins\LMS\Api\LessonLockError;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\Access\AccessChecker;
 use LightweightPlugins\LMS\Options;
@@ -120,6 +121,12 @@ final class DownloadController {
 			if ( ! AccessChecker::has_lesson_access( $parent['id'], $user_id ) ) {
 				$course_id = (int) Options::get_post_meta( $parent['id'], 'lesson_course_id', 0 );
 				return $this->get_access_error( $course_id, $user_id );
+			}
+
+			$locked = LessonLockError::check( $parent['id'], $user_id );
+
+			if ( null !== $locked ) {
+				return $locked;
 			}
 		}
 

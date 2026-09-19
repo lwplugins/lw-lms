@@ -88,6 +88,34 @@ final class AccessQueries {
 	}
 
 	/**
+	 * Earliest moment a user was ever granted this course.
+	 *
+	 * Revoked rows count too: the question is when the learner first got the
+	 * course, not whether they still have it.
+	 *
+	 * @param int $user_id   User ID.
+	 * @param int $course_id Course ID.
+	 * @return string|null MySQL datetime, or null when there is no row.
+	 */
+	public static function get_earliest_grant( int $user_id, int $course_id ): ?string {
+		global $wpdb;
+
+		$table = AccessTable::get_table_name();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$granted_at = $wpdb->get_var(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
+				"SELECT MIN(granted_at) FROM {$table} WHERE user_id = %d AND course_id = %d",
+				$user_id,
+				$course_id
+			)
+		);
+
+		return is_string( $granted_at ) && '' !== $granted_at ? $granted_at : null;
+	}
+
+	/**
 	 * Get all enrollments for a user.
 	 *
 	 * @param int $user_id User ID.
