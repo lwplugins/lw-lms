@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Controllers;
 
+use LightweightPlugins\LMS\Api\AttachmentMetaPattern;
 use LightweightPlugins\LMS\Api\RestApi;
 use LightweightPlugins\LMS\Access\AccessChecker;
 use LightweightPlugins\LMS\Options;
@@ -134,15 +135,21 @@ final class DownloadController {
 	private function find_attachment_parent( int $attachment_id ): ?array {
 		global $wpdb;
 
-		// Check courses.
+		// The meta is a serialized PHP array, so the attachment id has to be
+		// matched in that shape — a JSON-shaped pattern finds nothing, and
+		// an unowned file is served to everyone.
+		$fragments = AttachmentMetaPattern::fragments( $attachment_id );
+
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$course_id = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT post_id FROM {$wpdb->postmeta}
 				WHERE meta_key = %s
-				AND meta_value LIKE %s",
+				AND ( meta_value LIKE %s OR meta_value LIKE %s )
+				LIMIT 1",
 				Options::META_PREFIX . 'attachments',
-				'%"id":' . $attachment_id . '%'
+				'%' . $wpdb->esc_like( $fragments[0] ) . '%',
+				'%' . $wpdb->esc_like( $fragments[1] ) . '%'
 			)
 		);
 
