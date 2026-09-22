@@ -13,6 +13,7 @@ use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Quiz\QuizPublicView;
+use LightweightPlugins\LMS\Video\EmbedRenderer;
 
 /**
  * Transforms lesson data for API responses.
@@ -40,7 +41,7 @@ final class LessonTransformer {
 			'section'     => self::get_section_info( $course_id, $section_id ),
 			'order'       => (int) Options::get_post_meta( $post->ID, 'lesson_order', 0 ),
 			'duration'    => Options::get_post_meta( $post->ID, 'duration', '' ),
-			'video'       => ! empty( $video ) ? $video : null,
+			'video'       => EmbedRenderer::payload( $video ),
 			'attachments' => self::get_attachments( $post->ID ),
 			'navigation'  => self::get_navigation( $post->ID, $course_id, $section_id ),
 			'quiz'        => QuizPublicView::for_lesson( $post->ID, $user_id ),

@@ -820,3 +820,15 @@ msgid ""
 msgstr ""
 "A WooCommerce szükséges a fizetős kurzusokhoz. Kérlek, telepítsd és aktiváld"
 " a WooCommerce-t."
+
+#: includes/Video/EmbedRenderer.php:115
+msgid "Lesson video"
+msgstr "Leckevideó"
+
+#: includes/LwCookie/BlockedEmbed.php:44
+msgid "To watch this video, accept the required cookies."
+msgstr "A videó megtekintéséhez fogadd el a szükséges sütiket."
+
+#: includes/LwCookie/BlockedEmbed.php:46
+msgid "Accept & play video"
+msgstr "Elfogadom és lejátszom"

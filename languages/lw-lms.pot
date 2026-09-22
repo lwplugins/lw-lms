@@ -801,3 +801,15 @@ msgstr ""
 #: includes/WooCommerce/WooCommerce.php:82
 msgid "WooCommerce is required for paid courses. Please install and activate WooCommerce."
 msgstr ""
+
+#: includes/Video/EmbedRenderer.php:115
+msgid "Lesson video"
+msgstr ""
+
+#: includes/LwCookie/BlockedEmbed.php:44
+msgid "To watch this video, accept the required cookies."
+msgstr ""
+
+#: includes/LwCookie/BlockedEmbed.php:46
+msgid "Accept & play video"
+msgstr ""

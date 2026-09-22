@@ -71,6 +71,18 @@ add_filter(
 );
 ```
 
+### Lesson video markup
+
+`GET /lms/v1/lessons/{id}` returns `video.html` next to the stored video fields: a ready, self-sizing 16:9 player (an iframe for YouTube, Vimeo and Wistia, a `<video>` element for self-hosted files). Insert it as is instead of building the iframe from `video.embed`:
+
+```js
+playerBox.innerHTML = lesson.video.html;
+```
+
+With [LW Cookie](https://github.com/lwplugins/lw-cookie) 1.7.1+ active and its content blocking on, a visitor who has not accepted the cookie category of the video host gets the player in LW Cookie's blocked form: LW Cookie's placeholder with a message and an "Accept & play video" button, and an iframe that has no `src` yet. The button grants that one category, then LW Cookie loads the video in place. Consent given from the banner loads it in place too. Nothing is requested from the video host before consent. Without LW Cookie, `video.html` is the plain player.
+
+The `lw_lms_video_html` filter (`string $html, array $video`) lets other plugins change the markup.
+
 ## Drip & linear progression
 
 A course runs with **free** progression by default: any lesson, any order. Switched to **linear**, lessons open one after the other, and each level can hold content back for a while:

@@ -55,6 +55,7 @@ use LightweightPlugins\LMS\Admin\UserProfile;
 use LightweightPlugins\LMS\Access\AccessGranter;
 use LightweightPlugins\LMS\WooCommerce\WooCommerce;
 use LightweightPlugins\LMS\SiteManager\Integration as SiteManagerIntegration;
+use LightweightPlugins\LMS\LwCookie\Integration as LwCookieIntegration;
 
 /**
  * Main plugin class.
@@ -141,6 +142,9 @@ final class Plugin {
 
 		// LW Site Manager integration (safe to call even if not active).
 		SiteManagerIntegration::init();
+
+		// LW Cookie integration: consent placeholder for lesson videos (no-op without LW Cookie).
+		LwCookieIntegration::init();
 	}
 
 	/**
