@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.9.0
+Stable tag: 1.9.1
 Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -101,6 +101,10 @@ User progress is automatically tracked when users complete lessons via the REST 
 4. REST API response example
 
 == Changelog ==
+
+= 1.9.1 =
+* Fix: With LW Cookie's content blocking on, a lesson video the visitor had not consented to showed as an empty black box, with no message and no way to accept the cookies it needs (issue #18). GET /lms/v1/lessons/{id} now returns `video.html`, a ready 16:9 player. While LW Cookie blocks the video host, the player comes as LW Cookie's own placeholder: "To watch this video, accept the required cookies." and an "Accept & play video" button (Hungarian translation included). The button grants just that cookie category and the video loads in place, without a page reload. Consent from the banner loads it too. Nothing is requested from the video host before consent. Frontends should insert `video.html` instead of building the iframe from `video.embed`
+* New: `lw_lms_video_html` filter for the lesson video markup
 
 = 1.9.0 =
 * New: Drip and linear progression (issue #16). A course can run in linear mode, where lessons open one after the other, and where the course, a section (module) and a single lesson can each wait a number of hours, days, weeks or months — counted from enrollment, or from the completion of the previous lesson or section

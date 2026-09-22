@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.1] - 2026-09-22
+
+### Fixed
+- With LW Cookie's content blocking on, a lesson video the visitor had not consented to showed as an empty black box, with no message and no way to accept the cookies it needs (issue #18). LW LMS renders no player itself. Frontends built one from the bare `video.embed` URL, and LW Cookie's placeholder cannot reach such players. When the player is built with the Vimeo Player SDK, LW Cookie blocks the SDK script, so no iframe is ever created. In a padding-ratio box with `overflow:hidden`, the placeholder is inserted but clipped. `GET /lms/v1/lessons/{id}` now returns `video.html`, a ready, self-sizing 16:9 player: an iframe for YouTube, Vimeo and Wistia, a `<video>` for self-hosted files. With LW Cookie 1.7.1+ active, its content blocking on, and the video host's cookie category not yet accepted, the player comes in LW Cookie's own blocked form. That is its `.lw-cookie-embed-block` placeholder, with "To watch this video, accept the required cookies." and an "Accept & play video" button (Hungarian translation included), followed by an iframe without `src` that carries `data-lw-blocked`, `data-lw-category` and `data-lw-original-src`. The button grants just that category through `LWCookie.acceptCategory()`, and LW Cookie's guard loads the video in place without a page reload. Consent from the banner loads it too. Nothing is requested from the video host before consent. Without LW Cookie, `video.html` is the plain player. Frontends should insert `video.html` instead of building the iframe from `video.embed`.
+
+### Added
+- `lw_lms_video_html` filter (`string $html, array $video`) for the lesson video markup.
+
 ## [1.9.0] - 2026-09-19
 
 ### Added
