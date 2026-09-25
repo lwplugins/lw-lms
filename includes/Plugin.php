@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS;
 
 use LightweightPlugins\LMS\Admin\LessonListColumns;
+use LightweightPlugins\LMS\Admin\NoticeManager;
 use LightweightPlugins\LMS\Admin\SettingsPage;
 use LightweightPlugins\LMS\Admin\Assets;
 use LightweightPlugins\LMS\Admin\Metaboxes\CourseContentMetabox;
@@ -114,6 +115,7 @@ final class Plugin {
 	private function init_components(): void {
 		// Admin components.
 		if ( is_admin() ) {
+			NoticeManager::register();
 			new SettingsPage();
 			new Assets();
 			new UserProfile();
