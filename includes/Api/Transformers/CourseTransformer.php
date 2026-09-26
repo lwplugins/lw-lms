@@ -51,7 +51,8 @@ final class CourseTransformer {
 			'lesson_count' => ProgressCalculator::get_total_lessons( $post->ID ),
 			'access'       => [
 				'type'       => AccessChecker::get_access_type( $post->ID ),
-				'has_access' => AccessChecker::has_course_access( $post->ID, $user_id ),
+				// Only asks: listing courses never enrolls the viewer.
+				'has_access' => AccessChecker::has_course_access( $post->ID, $user_id, false ),
 			],
 		];
 

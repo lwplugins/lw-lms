@@ -120,6 +120,40 @@ final class AccessCheckerTest extends MonkeyTestCase {
 	}
 
 	/**
+	 * Regression: GET /lms/v1/courses enrolled the viewer in every free
+	 * course on the page (and fired lw_lms_after_grant) just from browsing.
+	 */
+	public function test_asking_without_recording_does_not_enroll_in_a_free_course(): void {
+		Functions\when( 'get_post_meta' )->justReturn( 'free' );
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\expect( 'do_action' )->never();
+
+		// No $wpdb: touching the access table would fatal.
+		$this->assertTrue( AccessChecker::has_course_access( 456, 7, false ) );
+	}
+
+	public function test_opening_a_free_course_still_records_the_enrollment(): void {
+		Functions\when( 'get_post_meta' )->justReturn( 'free' );
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\when( 'current_time' )->justReturn( '2026-09-26 12:00:00' );
+		Functions\expect( 'do_action' )->once()->with( 'lw_lms_after_grant', 7, 456, 'free', null, null );
+		$GLOBALS['wpdb'] = new class() {
+			public string $prefix = 'wp_';
+			public function prepare( string $query, mixed ...$args ): string {
+				return $query;
+			}
+			public function get_var( string $query ): mixed {
+				return null;
+			}
+			public function insert( string $table, array $data ): int {
+				return 1;
+			}
+		};
+
+		$this->assertTrue( AccessChecker::has_course_access( 456, 7 ) );
+	}
+
+	/**
 	 * Stub get_post() with a fixed set of posts (anything else is missing).
 	 *
 	 * @param array<int, array<string, mixed>> $posts Post fields by ID.

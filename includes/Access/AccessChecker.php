@@ -30,11 +30,19 @@ final class AccessChecker {
 	/**
 	 * Check if a user has access to a course.
 	 *
-	 * @param int      $course_id Course ID.
-	 * @param int|null $user_id   User ID (null = current user).
+	 * A logged-in user's first access to a free course records a `free`
+	 * enrollment row (so lw_lms_after_grant fires once). Pass
+	 * $record_enrollment = false to only ask, as the course listing does:
+	 * browsing courses must not enroll anyone.
+	 *
+	 * @since 2.0.0 Added $record_enrollment.
+	 *
+	 * @param int      $course_id         Course ID.
+	 * @param int|null $user_id           User ID (null = current user).
+	 * @param bool     $record_enrollment Record the free-course enrollment.
 	 * @return bool
 	 */
-	public static function has_course_access( int $course_id, ?int $user_id = null ): bool {
+	public static function has_course_access( int $course_id, ?int $user_id = null, bool $record_enrollment = true ): bool {
 		if ( null === $user_id ) {
 			$user_id = get_current_user_id();
 		}
@@ -69,7 +77,7 @@ final class AccessChecker {
 			// Implicit enrollment: lazily insert a source='free' row on first
 			// access so callers get an lw_lms_after_grant event for free
 			// courses (drip / welcome email / cohort analytics).
-			if ( ! AccessQueries::has_active_access( $user_id, $course_id, 'free' ) ) {
+			if ( $record_enrollment && ! AccessQueries::has_active_access( $user_id, $course_id, 'free' ) ) {
 				AccessRepository::grant( $user_id, $course_id, 'free', null, null );
 			}
 

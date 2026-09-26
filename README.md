@@ -44,6 +44,8 @@ Or upload the `lw-lms` folder to `/wp-content/plugins/` and activate.
 | GET | `/lms/v1/progress` | Get user progress |
 | GET | `/lms/v1/download/{id}` | Download attachment (use the signed `download_url` from the payloads) |
 
+Free courses: a logged-in user is enrolled (a `free` access row, which fires `lw_lms_after_grant` and starts the drip clock) the first time they open the course (`GET /courses/{id}`) or one of its lessons. Listing courses (`GET /courses`) never enrolls anyone.
+
 ### Downloads
 
 Every attachment in a course or lesson payload carries a `download_url`. Use it as is, for example as a plain `<a href>`: it is a signed link (`lw_user`, `lw_expires`, `lw_signature` query arguments) issued to the user who fetched the payload, so it works without a REST nonce and without cookies. It is valid for one hour; change that with the `lw_lms_download_link_ttl` filter (seconds). An expired or altered link answers 403 `download_link_expired`, so fetch the course or lesson again for a fresh one.
