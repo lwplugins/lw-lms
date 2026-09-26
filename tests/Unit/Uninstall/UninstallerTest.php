@@ -102,4 +102,64 @@ final class UninstallerTest extends MonkeyTestCase {
 		// Course and lesson posts are kept.
 		$this->assertStringNotContainsString( 'wp_posts', $sql );
 	}
+
+	/**
+	 * Stub a two-site network where each site has its own options.
+	 *
+	 * @param array<int, bool> $opted Opt-in per site ID.
+	 * @return void
+	 */
+	private function network( array $opted ): void {
+		$GLOBALS['wpdb'] = $this->wpdb();
+		$current         = 0;
+		Functions\when( 'is_multisite' )->justReturn( true );
+		Functions\when( 'get_sites' )->justReturn( array_map( 'strval', array_keys( $opted ) ) );
+		Functions\when( 'switch_to_blog' )->alias(
+			static function ( int $id ) use ( &$current ): bool {
+				$current = $id;
+				return true;
+			}
+		);
+		Functions\when( 'restore_current_blog' )->justReturn( true );
+		Functions\when( 'get_option' )->alias(
+			static function () use ( &$current, $opted ): array {
+				return [ 'delete_data_on_uninstall' => $opted[ $current ] ];
+			}
+		);
+		Functions\when( 'wp_roles' )->justReturn( (object) [ 'role_objects' => [] ] );
+		Functions\when( 'delete_option' )->justReturn( true );
+	}
+
+	public function test_network_keeps_user_meta_when_one_site_keeps_data(): void {
+		$this->network(
+			[
+				1 => true,
+				2 => false,
+			]
+		);
+
+		Uninstaller::run();
+
+		$sql = implode( "\n", $GLOBALS['wpdb']->queries );
+		// Site 1 opted in: its post meta goes.
+		$this->assertStringContainsString( 'DELETE FROM wp_postmeta', $sql );
+		// Site 2 keeps its data, so the shared user meta stays.
+		$this->assertStringNotContainsString( 'wp_usermeta', $sql );
+	}
+
+	public function test_network_deletes_user_meta_once_when_every_site_opted_in(): void {
+		$this->network(
+			[
+				1 => true,
+				2 => true,
+			]
+		);
+
+		Uninstaller::run();
+
+		$usermeta = array_values( preg_grep( '/wp_usermeta/', $GLOBALS['wpdb']->queries ) );
+		$this->assertCount( 2, $usermeta );
+		$this->assertStringContainsString( "LIKE '\\_lw\\_lms\\_quiz\\_%'", $usermeta[0] );
+		$this->assertStringContainsString( "LIKE '\\_lw\\_lms\\_course\\_start\\_%'", $usermeta[1] );
+	}
 }
