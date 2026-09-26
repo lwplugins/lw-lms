@@ -21,7 +21,8 @@ final class WooCommerceChecker {
 	 * Check legacy purchases for backward compatibility.
 	 *
 	 * Only returns true when no product_durations are configured,
-	 * preserving old behavior for courses without time-limited access.
+	 * preserving old behavior for courses without time-limited access, and
+	 * when a paid order still has a course line that is not fully refunded.
 	 *
 	 * @param int $course_id Course ID.
 	 * @param int $user_id   User ID.
@@ -51,8 +52,10 @@ final class WooCommerceChecker {
 		}
 
 		foreach ( $product_ids as $product_id ) {
+			// wc_customer_bought_product() is cached and cheap, but also counts
+			// an order whose course line was fully refunded: confirm those.
 			if ( wc_customer_bought_product( $user->user_email, $user_id, (int) $product_id ) ) {
-				return true;
+				return OrderLines::customer_has_paid_line( $user_id, (string) $user->user_email, array_map( 'intval', $product_ids ) );
 			}
 		}
 

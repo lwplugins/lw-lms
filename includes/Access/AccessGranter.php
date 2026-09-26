@@ -14,7 +14,8 @@ use LightweightPlugins\LMS\PostTypes\Course;
 
 /**
  * Grants course access from WooCommerce orders and takes it back when the
- * order is refunded, cancelled or fails.
+ * order is refunded, cancelled or fails, or when the order line of a course
+ * product is fully refunded (a partial refund of a larger order).
  *
  * Each grant is stored with source `woocommerce` and the order ID, so a
  * revocation removes only what that order granted.
@@ -48,6 +49,9 @@ final class AccessGranter {
 		foreach ( self::REVOKE_STATUSES as $status ) {
 			add_action( 'woocommerce_order_status_' . $status, [ $this, 'handle_order_reversed' ] );
 		}
+
+		// Fires after every refund, partial or full (wc_create_refund()).
+		add_action( 'woocommerce_order_refunded', [ $this, 'handle_order_refunded' ] );
 	}
 
 	/**
@@ -55,12 +59,13 @@ final class AccessGranter {
 	 *
 	 * Runs on both processing and completed; an order that already granted a
 	 * course is not granted again, so the grant hooks fire once per order.
+	 * Fully refunded lines grant nothing.
 	 *
 	 * @param int $order_id Order ID.
 	 * @return void
 	 */
 	public function handle_order_paid( int $order_id ): void {
-		foreach ( self::order_courses( $order_id ) as [ $user_id, $course_id, $product_id ] ) {
+		foreach ( self::order_courses( $order_id, true ) as [ $user_id, $course_id, $product_id ] ) {
 			if ( AccessQueries::has_active_grant_from( $user_id, $course_id, self::SOURCE, $order_id ) ) {
 				continue;
 			}
@@ -92,18 +97,59 @@ final class AccessGranter {
 	 * @return void
 	 */
 	public function handle_order_reversed( int $order_id ): void {
-		foreach ( self::order_courses( $order_id ) as [ $user_id, $course_id ] ) {
+		foreach ( self::order_courses( $order_id, false ) as [ $user_id, $course_id ] ) {
 			AccessRepository::revoke_by_source( $user_id, $course_id, self::SOURCE, $order_id );
 		}
 	}
 
 	/**
-	 * The (user, course, product) triples an order covers.
+	 * After a refund, revoke the courses whose order line is now fully
+	 * refunded, unless another paid line of the same order still covers
+	 * that course.
 	 *
 	 * @param int $order_id Order ID.
+	 * @return void
+	 */
+	public function handle_order_refunded( int $order_id ): void {
+		$order   = function_exists( 'wc_get_order' ) ? wc_get_order( $order_id ) : false;
+		$user_id = $order ? (int) $order->get_user_id() : 0;
+
+		if ( ! $user_id ) {
+			return;
+		}
+
+		$lines = OrderLines::product_ids( $order );
+		$kept  = self::courses_of( $lines['paid'] );
+
+		foreach ( array_diff( self::courses_of( $lines['refunded'] ), $kept ) as $course_id ) {
+			AccessRepository::revoke_by_source( $user_id, $course_id, self::SOURCE, $order_id );
+		}
+	}
+
+	/**
+	 * Course IDs linked to any of the products.
+	 *
+	 * @param array<int, int> $product_ids Product IDs.
+	 * @return array<int, int>
+	 */
+	private static function courses_of( array $product_ids ): array {
+		$courses = [];
+
+		foreach ( $product_ids as $product_id ) {
+			$courses = array_merge( $courses, self::find_courses_for_product( $product_id ) );
+		}
+
+		return array_values( array_unique( $courses ) );
+	}
+
+	/**
+	 * The (user, course, product) triples an order covers.
+	 *
+	 * @param int  $order_id  Order ID.
+	 * @param bool $paid_only Skip fully refunded lines.
 	 * @return array<int, array{0: int, 1: int, 2: int}>
 	 */
-	private static function order_courses( int $order_id ): array {
+	private static function order_courses( int $order_id, bool $paid_only ): array {
 		$order = function_exists( 'wc_get_order' ) ? wc_get_order( $order_id ) : false;
 
 		if ( ! $order ) {
@@ -126,7 +172,7 @@ final class AccessGranter {
 
 			$product_id = (int) $item->get_product_id();
 
-			if ( ! $product_id ) {
+			if ( ! $product_id || ( $paid_only && OrderLines::fully_refunded( $order, $item ) ) ) {
 				continue;
 			}
 

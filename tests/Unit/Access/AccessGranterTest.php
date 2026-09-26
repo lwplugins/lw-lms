@@ -88,6 +88,7 @@ final class AccessGranterTest extends MonkeyTestCase {
 		$this->assertSame( 'handle_order_reversed', $hooks['woocommerce_order_status_refunded'] );
 		$this->assertSame( 'handle_order_reversed', $hooks['woocommerce_order_status_cancelled'] );
 		$this->assertSame( 'handle_order_reversed', $hooks['woocommerce_order_status_failed'] );
+		$this->assertSame( 'handle_order_refunded', $hooks['woocommerce_order_refunded'] );
 	}
 
 	public function test_paid_order_grants_each_course_once_with_the_order_as_source(): void {
@@ -130,19 +131,91 @@ final class AccessGranterTest extends MonkeyTestCase {
 	}
 
 	/**
-	 * Order 555 by user 7 with product 123 and a fee line.
+	 * Order 555 by user 7 with product 123 and a fee line, or the given lines.
+	 *
+	 * @param array<int, object> $items    Line items.
+	 * @param array<int, int>    $refunded Refunded quantity per item ID (negative, as WooCommerce stores it).
 	 */
-	private function order(): void {
+	private function order( array $items = [], array $refunded = [] ): void {
+		$items = [] !== $items ? $items : [ new \WC_Order_Item_Product( 123, 1 ), (object) [ 'fee' => 1 ] ];
 		Functions\when( 'wc_get_order' )->justReturn(
-			new class() {
+			new class( $items, $refunded ) {
+				public function __construct( private array $items, private array $refunded ) {}
 				public function get_user_id(): int {
 					return 7;
 				}
 				public function get_items(): array {
-					return [ new \WC_Order_Item_Product( 123 ), (object) [ 'fee' => 1 ] ];
+					return $this->items;
+				}
+				public function get_qty_refunded_for_item( int $item_id ): int {
+					return $this->refunded[ $item_id ] ?? 0;
 				}
 			}
 		);
+	}
+
+	/**
+	 * Products 123 (courses 10, 11) and 456 (course 20).
+	 */
+	private function two_products(): void {
+		Functions\when( 'get_posts' )->alias(
+			static fn ( array $args ): array => str_contains( (string) $args['meta_query'][0]['value'], '456' ) ? [ 20 ] : [ 10, 11 ]
+		);
+		Functions\when( 'get_post_meta' )->alias(
+			static function ( int $id, string $key ): mixed {
+				$meta = [
+					10 => [ 123 ],
+					11 => [ 123 ],
+					20 => [ 456 ],
+				];
+				return '_lw_lms_product_ids' === $key ? ( $meta[ $id ] ?? '' ) : '';
+			}
+		);
+	}
+
+	public function test_fully_refunded_course_line_revokes_only_that_course(): void {
+		$this->two_products();
+		// Line 1: product 123, fully refunded. Line 2: product 456, paid.
+		$this->order( [ new \WC_Order_Item_Product( 123, 1, 1 ), new \WC_Order_Item_Product( 456, 2, 1 ) ], [ 1 => -1 ] );
+		Functions\when( 'add_action' )->justReturn( true );
+		Functions\when( 'do_action' )->justReturn( null );
+		$wpdb            = $this->wpdb();
+		$GLOBALS['wpdb'] = $wpdb;
+
+		( new AccessGranter() )->handle_order_refunded( 555 );
+
+		$this->assertCount( 2, $wpdb->updates );
+		$this->assertStringContainsString( 'course_id = 10', $wpdb->updates[0] );
+		$this->assertStringContainsString( 'course_id = 11', $wpdb->updates[1] );
+		$this->assertStringContainsString( 'source_id = 555', $wpdb->updates[0] );
+	}
+
+	public function test_partly_refunded_line_keeps_access(): void {
+		$this->two_products();
+		// 2 of 3 refunded: the learner still paid for the course.
+		$this->order( [ new \WC_Order_Item_Product( 123, 1, 3 ) ], [ 1 => -2 ] );
+		Functions\when( 'add_action' )->justReturn( true );
+		$wpdb            = $this->wpdb();
+		$GLOBALS['wpdb'] = $wpdb;
+
+		( new AccessGranter() )->handle_order_refunded( 555 );
+
+		$this->assertSame( [], $wpdb->updates );
+	}
+
+	public function test_paid_hook_skips_a_fully_refunded_line(): void {
+		$this->two_products();
+		$this->order( [ new \WC_Order_Item_Product( 123, 1, 1 ), new \WC_Order_Item_Product( 456, 2, 1 ) ], [ 1 => -1 ] );
+		Functions\when( 'add_action' )->justReturn( true );
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\when( 'current_time' )->justReturn( '2026-09-26 12:00:00' );
+		Functions\when( 'do_action' )->justReturn( null );
+		$wpdb            = $this->wpdb();
+		$GLOBALS['wpdb'] = $wpdb;
+
+		( new AccessGranter() )->handle_order_paid( 555 );
+
+		$this->assertSame( [ 20 ], array_column( $wpdb->inserts, 'course_id' ) );
 	}
 
 	/**

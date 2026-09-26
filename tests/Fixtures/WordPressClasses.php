@@ -89,14 +89,27 @@ if ( ! class_exists( 'WC_Order_Item_Product' ) ) {
 	 */
 	class WC_Order_Item_Product {
 
-		private int $product_id;
-
-		public function __construct( int $product_id = 0 ) {
-			$this->product_id = $product_id;
-		}
+		public function __construct(
+			private int $product_id = 0,
+			private int $id = 0,
+			private int $quantity = 1,
+			private int $variation_id = 0
+		) {}
 
 		public function get_product_id(): int {
 			return $this->product_id;
+		}
+
+		public function get_id(): int {
+			return $this->id;
+		}
+
+		public function get_quantity(): int {
+			return $this->quantity;
+		}
+
+		public function get_variation_id(): int {
+			return $this->variation_id;
 		}
 	}
 }
