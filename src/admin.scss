@@ -868,6 +868,18 @@ body.lw-lms-screen {
 	}
 }
 
+// The learner picker shows its messages in place of the help text (the only
+// text its input is described by), styled like the other field errors.
+.lw-lms-picker.has-error .components-base-control__help {
+	margin-top: 8px;
+	padding: 8px $gap-md;
+	border-left: 3px solid $error;
+	border-radius: 0 $radius $radius 0;
+	background: $error-bg;
+	color: $error;
+	font-size: 12px;
+}
+
 .lw-admin-row.has-error {
 	.components-text-control__input,
 	.components-textarea-control__input,

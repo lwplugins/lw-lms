@@ -10,7 +10,10 @@ import { store as noticesStore } from '@wordpress/notices';
 /**
  * Internal dependencies
  */
-import FieldErrors from '../../components/FieldErrors';
+import FieldErrors, {
+	describedBy,
+	useDescribedByRef,
+} from '../../components/FieldErrors';
 import Section from '../../components/Section';
 import { api, errorMessage, fieldErrors } from '../../data/api';
 import { TODAY } from '../../data/boot';
@@ -18,6 +21,11 @@ import postOptions from '../../data/courseOptions';
 import UserPicker from './UserPicker';
 
 const EMPTY = { user: '', course: '', expires: '' };
+
+// Fixed ids, so the fields can point aria-describedby at their messages.
+const COURSE_ERRORS = 'lw-lms-grant-course-errors';
+const EXPIRES = 'lw-lms-grant-expires';
+const EXPIRES_ERRORS = 'lw-lms-grant-expires-errors';
 
 /**
  * Enroll a learner in a course by hand (manual source). Enrolling someone
@@ -33,6 +41,10 @@ export default function GrantForm( { courses, onGranted } ) {
 	const [ isSaving, setIsSaving ] = useState( false );
 	const { createSuccessNotice, createErrorNotice } =
 		useDispatch( noticesStore );
+	const hasError = ( key ) => !! errors[ key ]?.length;
+	const courseRef = useDescribedByRef(
+		hasError( 'course' ) ? COURSE_ERRORS : undefined
+	);
 	const set = ( key, value ) => {
 		setForm( ( prev ) => ( { ...prev, [ key ]: value } ) );
 		setErrors( ( prev ) => ( { ...prev, [ key ]: undefined } ) );
@@ -97,14 +109,16 @@ export default function GrantForm( { courses, onGranted } ) {
 					<div>
 						<UserPicker
 							value={ form.user }
+							errors={ errors.user }
 							onChange={ ( value ) => set( 'user', value ) }
 						/>
-						<FieldErrors errors={ errors.user } />
 					</div>
 					<div>
 						<SelectControl
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
+							ref={ courseRef }
+							aria-invalid={ hasError( 'course' ) || undefined }
 							label={ __( 'Course', 'lw-lms' ) }
 							value={ form.course }
 							options={ postOptions(
@@ -113,13 +127,22 @@ export default function GrantForm( { courses, onGranted } ) {
 							) }
 							onChange={ ( value ) => set( 'course', value ) }
 						/>
-						<FieldErrors errors={ errors.course } />
+						<FieldErrors
+							errors={ errors.course }
+							id={ COURSE_ERRORS }
+						/>
 					</div>
 					<div>
 						<TextControl
 							__next40pxDefaultSize
 							__nextHasNoMarginBottom
 							type="date"
+							id={ EXPIRES }
+							aria-describedby={ describedBy(
+								`${ EXPIRES }__help`,
+								hasError( 'expires' ) && EXPIRES_ERRORS
+							) }
+							aria-invalid={ hasError( 'expires' ) || undefined }
 							min={ TODAY }
 							label={ __( 'Access ends (optional)', 'lw-lms' ) }
 							help={ __(
@@ -129,7 +152,10 @@ export default function GrantForm( { courses, onGranted } ) {
 							value={ form.expires }
 							onChange={ ( value ) => set( 'expires', value ) }
 						/>
-						<FieldErrors errors={ errors.expires } />
+						<FieldErrors
+							errors={ errors.expires }
+							id={ EXPIRES_ERRORS }
+						/>
 					</div>
 				</div>
 				<div>

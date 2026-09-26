@@ -15,7 +15,8 @@ import {
 /* eslint-enable @wordpress/no-unsafe-wp-apis */
 
 /**
- * A titled card: the building block of every tab.
+ * A titled card: the building block of every tab. Its heading is an h2,
+ * under the h1 of the top bar.
  *
  * @param {Object}  props
  * @param {string}  props.title       Heading.
@@ -39,7 +40,7 @@ export default function Section( {
 				<CardHeader>
 					<VStack spacing={ 1 }>
 						<HStack justify="flex-start" spacing={ 2 }>
-							<Heading level={ 3 } size={ 15 }>
+							<Heading level={ 2 } size={ 15 }>
 								{ title }
 							</Heading>
 							{ badge }

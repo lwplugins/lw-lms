@@ -7,7 +7,7 @@ import { useInstanceId } from '@wordpress/compose';
 /**
  * Internal dependencies
  */
-import FieldErrors from './FieldErrors';
+import FieldErrors, { describedBy } from './FieldErrors';
 
 /**
  * A list of switches. Each switch sits at the start of its own full-width
@@ -60,7 +60,11 @@ export function SwitchItem( {
 				id={ id }
 				checked={ checked }
 				disabled={ disabled }
-				aria-describedby={ help ? `${ id }-help` : undefined }
+				aria-describedby={ describedBy(
+					help && `${ id }-help`,
+					errors.length > 0 && `${ id }-errors`
+				) }
+				aria-invalid={ errors.length > 0 || undefined }
 				onChange={ ( event ) => onChange( event.target.checked ) }
 			/>
 			<div className="lw-lms-switch__body">
@@ -75,7 +79,7 @@ export function SwitchItem( {
 						{ help }
 					</p>
 				) }
-				<FieldErrors errors={ errors } />
+				<FieldErrors errors={ errors } id={ `${ id }-errors` } />
 				{ children && (
 					<div className="lw-lms-switch__nested">{ children }</div>
 				) }

@@ -1,4 +1,9 @@
 /**
+ * Internal dependencies
+ */
+import FieldErrors from './FieldErrors';
+
+/**
  * Two-column settings row: title + help on the left, the control on the right.
  * Controls inside hide their own label from sight (hideLabelFromVision) or are
  * tied to the title through `htmlFor`, so each field has one accessible name.
@@ -11,6 +16,8 @@
  * @param {string}   props.htmlFor  Id of the control the title labels.
  * @param {boolean}  props.stacked  Control goes under the text (wide controls).
  * @param {string[]} props.errors   Server validation messages.
+ * @param {string}   props.errorId  Id of the message list; the control points
+ *                                  its aria-describedby at it.
  * @param {Element}  props.children The control(s).
  */
 export default function SettingRow( {
@@ -19,10 +26,10 @@ export default function SettingRow( {
 	htmlFor,
 	stacked = false,
 	errors = [],
+	errorId,
 	children,
 } ) {
 	const Title = htmlFor ? 'label' : 'span';
-	const errorId = htmlFor ? `${ htmlFor }-errors` : undefined;
 
 	return (
 		<div
@@ -38,13 +45,7 @@ export default function SettingRow( {
 			</div>
 			<div className="lw-admin-row__control">
 				{ children }
-				{ errors.length > 0 && (
-					<ul className="lw-admin-fielderror" id={ errorId }>
-						{ errors.map( ( message ) => (
-							<li key={ message }>{ message }</li>
-						) ) }
-					</ul>
-				) }
+				<FieldErrors errors={ errors } id={ errorId } />
 			</div>
 		</div>
 	);

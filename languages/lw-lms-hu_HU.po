@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LW LMS\n"
 "Report-Msgid-Bugs-To: https://github.com/lwplugins/lw-lms/issues\n"
-"POT-Creation-Date: 2026-09-26T06:38:05+00:00\n"
+"POT-Creation-Date: 2026-09-26T06:46:17+00:00\n"
 "PO-Revision-Date: 2026-09-26 12:00+0200\n"
 "Last-Translator: LW Plugins <info@lwplugins.com>\n"
 "Language-Team: LW Plugins <info@lwplugins.com>\n"
@@ -33,9 +33,9 @@ msgid ""
 "Headless LMS backend: courses, lessons, access, progress, quizzes, drip and "
 "a REST API. No frontend output; build your own on the lms/v1 REST API."
 msgstr ""
-"Headless LMS háttérrendszer: kurzusok, leckék, hozzáférés, haladás, "
-"kvízek, ütemezett leckék és REST API. Nincs saját frontend: a sajátodat az "
-"lms/v1 REST API-ra építheted."
+"Headless LMS háttérrendszer: kurzusok, leckék, hozzáférés, haladás, kvízek, "
+"ütemezett leckék és REST API. Nincs saját frontend: a sajátodat az lms/v1 "
+"REST API-ra építheted."
 
 #. Author of the plugin
 #: lw-lms.php includes/Admin/ParentPage.php:106
@@ -760,14 +760,14 @@ msgstr ""
 "linkért."
 
 #: includes/Api/Controllers/LessonsController.php:72
-#: includes/Api/Controllers/QuizController.php:79
+#: includes/Api/Controllers/QuizController.php:80
 #: includes/SiteManager/Service/ProgressService.php:105
 msgid "Lesson not found."
 msgstr "Lecke nem található."
 
 #: includes/Api/Controllers/LessonsController.php:84
 #: includes/Api/Controllers/ProgressController.php:146
-#: includes/Api/Controllers/QuizController.php:84
+#: includes/Api/Controllers/QuizController.php:85
 msgid "You do not have access to this lesson."
 msgstr "Nincs hozzáférésed ehhez a leckéhez."
 
@@ -789,7 +789,7 @@ msgstr "A lecke elvégzéséhez teljesítsd a lecke kvízét."
 msgid "Failed to update progress."
 msgstr "Nem sikerült frissíteni a haladást."
 
-#: includes/Api/Controllers/QuizController.php:96
+#: includes/Api/Controllers/QuizController.php:97
 msgid "This lesson has no quiz."
 msgstr "Ennek a leckének nincs kvíze."
 
@@ -1022,7 +1022,7 @@ msgstr "Kvízkitöltések"
 msgid "Answers"
 msgstr "Válaszok"
 
-#: includes/Quiz/QuizThrottle.php:96
+#: includes/Quiz/QuizThrottle.php:102
 msgid "Too many quiz attempts. Please wait before trying again."
 msgstr "Túl sok kvízkitöltés. Várj egy kicsit, mielőtt újra próbálod."
 
