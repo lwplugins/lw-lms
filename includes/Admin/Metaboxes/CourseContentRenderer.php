@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Admin\Metaboxes;
 
+use LightweightPlugins\LMS\Access\PreviewLessons;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 
@@ -19,6 +20,13 @@ use LightweightPlugins\LMS\PostTypes\Lesson;
 final class CourseContentRenderer {
 
 	/**
+	 * Preview lesson IDs of the course being rendered.
+	 *
+	 * @var array<int, int>
+	 */
+	private array $preview_ids = [];
+
+	/**
 	 * Render the metabox body for the given course.
 	 *
 	 * @param \WP_Post $post Course post.
@@ -27,8 +35,9 @@ final class CourseContentRenderer {
 	public function render( \WP_Post $post ): void {
 		wp_nonce_field( 'lw_lms_course_content', 'lw_lms_course_content_nonce' );
 
-		$sections = Options::get_post_meta( $post->ID, 'course_sections', [] );
-		$lessons  = self::fetch_course_lessons( $post->ID );
+		$sections          = Options::get_post_meta( $post->ID, 'course_sections', [] );
+		$lessons           = self::fetch_course_lessons( $post->ID );
+		$this->preview_ids = PreviewLessons::stored( $post->ID );
 		?>
 		<div class="lw-lms-course-builder">
 			<div class="lw-lms-toolbar">
@@ -45,7 +54,7 @@ final class CourseContentRenderer {
 			</div>
 
 			<input type="hidden" name="lw_lms_course_sections" id="lw-lms-course-sections" value="<?php echo esc_attr( wp_json_encode( $sections ) ); ?>" />
-			<input type="hidden" name="lw_lms_preview_lesson_ids" id="lw-lms-preview-lessons" value="<?php echo esc_attr( wp_json_encode( Options::get_post_meta( $post->ID, 'preview_lesson_ids', [] ) ) ); ?>" />
+			<input type="hidden" name="lw_lms_preview_lesson_ids" id="lw-lms-preview-lessons" value="<?php echo esc_attr( (string) wp_json_encode( $this->preview_ids ) ); ?>" />
 			<input type="hidden" name="<?php echo esc_attr( LessonAssignmentSaver::FIELD ); ?>" id="lw-lms-lesson-assignments" value="" />
 		</div>
 
@@ -128,7 +137,8 @@ final class CourseContentRenderer {
 	 * @return void
 	 */
 	private function render_lesson_item( \WP_Post $lesson ): void {
-		$preview = Options::get_post_meta( $lesson->ID, 'preview_lesson', false );
+		// Preview lessons are stored on the course, not on the lesson.
+		$preview = in_array( $lesson->ID, $this->preview_ids, true );
 		?>
 		<div class="lw-lms-lesson" data-lesson-id="<?php echo esc_attr( (string) $lesson->ID ); ?>">
 			<span class="dashicons dashicons-move lw-lms-drag-handle"></span>
