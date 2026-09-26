@@ -50,9 +50,11 @@ final class AccessRepositoryTest extends MonkeyTestCase {
 			public function get_var( array $prepared ): mixed {
 				[ $query, $args ] = $prepared;
 				$this->last       = $query;
-				[ $user, $course, $source, $source_id ] = $args;
+				$by_source_id     = ! str_contains( $query, 'source_id IS NULL' );
+				[ $user, $course, $key ] = $args;
 				foreach ( $this->rows as $id => $row ) {
-					if ( $row['user_id'] === $user && $row['course_id'] === $course && $row['source'] === $source && (int) ( $row['source_id'] ?? 0 ) === $source_id ) {
+					$match = $by_source_id ? $row['source_id'] === $key : ( null === $row['source_id'] && $row['source'] === $key );
+					if ( $row['user_id'] === $user && $row['course_id'] === $course && $match ) {
 						return (string) $id;
 					}
 				}
@@ -95,8 +97,18 @@ final class AccessRepositoryTest extends MonkeyTestCase {
 		AccessRepository::grant( 7, 42, 'manual' );
 
 		$this->assertCount( 1, $GLOBALS['wpdb']->rows );
-		$this->assertStringContainsString( 'COALESCE(source_id, 0) = %d', $GLOBALS['wpdb']->last );
+		$this->assertStringContainsString( 'source_id IS NULL', $GLOBALS['wpdb']->last );
 		$this->assertStringContainsString( 'source = %s', $GLOBALS['wpdb']->last );
+	}
+
+	public function test_order_grant_twice_keeps_one_row(): void {
+		Functions\when( 'do_action' )->justReturn( null );
+		$GLOBALS['wpdb'] = $this->table();
+
+		AccessRepository::grant( 7, 42, 'woocommerce', 555 );
+		AccessRepository::grant( 7, 42, 'woocommerce', 555 );
+
+		$this->assertCount( 1, $GLOBALS['wpdb']->rows );
 	}
 
 	public function test_manual_grant_does_not_reuse_another_sources_row(): void {

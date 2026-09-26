@@ -60,21 +60,34 @@ final class AccessRepository {
 
 		$table = AccessTable::get_table_name();
 
-		// One row per user, course, source and source ID. Manual and free
-		// grants store source_id as NULL, and NULL never equals 0 in SQL, so
-		// the comparison goes through COALESCE: granting twice updates the
-		// existing row instead of adding a second one.
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$existing = $wpdb->get_var(
-			$wpdb->prepare(
-				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
-				"SELECT id FROM {$table} WHERE user_id = %d AND course_id = %d AND source = %s AND COALESCE(source_id, 0) = %d ORDER BY id ASC LIMIT 1",
-				$user_id,
-				$course_id,
-				$source,
-				$source_id ? $source_id : 0
-			)
-		);
+		// Granting twice updates the existing row instead of adding another.
+		// With a source ID (an order), the row is found by user, course and
+		// source ID, exactly what the table's unique key covers. Without one
+		// (manual, free), source_id is NULL, which never equals anything in
+		// SQL, so the row is found by source and "source_id IS NULL".
+		if ( $source_id ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$existing = $wpdb->get_var(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
+					"SELECT id FROM {$table} WHERE user_id = %d AND course_id = %d AND source_id = %d ORDER BY id ASC LIMIT 1",
+					$user_id,
+					$course_id,
+					$source_id
+				)
+			);
+		} else {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$existing = $wpdb->get_var(
+				$wpdb->prepare(
+					// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
+					"SELECT id FROM {$table} WHERE user_id = %d AND course_id = %d AND source = %s AND source_id IS NULL ORDER BY id ASC LIMIT 1",
+					$user_id,
+					$course_id,
+					$source
+				)
+			);
+		}
 
 		if ( $existing ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
