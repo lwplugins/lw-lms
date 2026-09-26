@@ -2,21 +2,24 @@
 # This file is distributed under the GPL-2.0-or-later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Lightweight LMS 1.2.4\n"
+"Project-Id-Version: LW LMS 1.9.2\n"
 "Report-Msgid-Bugs-To: https://github.com/lwplugins/lw-lms/issues\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LW Plugins <info@lwplugins.com>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-07T08:43:29+00:00\n"
+"POT-Creation-Date: 2026-09-26T05:58:30+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lw-lms\n"
 
 #. Plugin Name of the plugin
 #: lw-lms.php
-msgid "Lightweight LMS"
+#: includes/Admin/SettingsPage.php:183
+#: includes/Privacy/PrivacyHooks.php:37
+#: includes/Privacy/PrivacyHooks.php:52
+msgid "LW LMS"
 msgstr ""
 
 #. Plugin URI of the plugin
@@ -26,14 +29,14 @@ msgstr ""
 
 #. Description of the plugin
 #: lw-lms.php
-msgid "Lightweight LMS plugin for WordPress - courses, lessons, and progress tracking."
+msgid "Lightweight LMS — courses, lessons, and progress tracking."
 msgstr ""
 
 #. Author of the plugin
 #: lw-lms.php
-#: includes/Admin/ParentPage.php:104
-#: includes/Admin/ParentPage.php:105
-#: includes/Admin/ParentPage.php:126
+#: includes/Admin/ParentPage.php:106
+#: includes/Admin/ParentPage.php:107
+#: includes/Admin/ParentPage.php:128
 msgid "LW Plugins"
 msgstr ""
 
@@ -42,61 +45,203 @@ msgstr ""
 msgid "https://lwplugins.com"
 msgstr ""
 
-#: includes/Admin/Assets.php:77
+#: includes/Admin/Assets.php:97
 msgid "Are you sure you want to remove this item?"
 msgstr ""
 
-#: includes/Admin/Assets.php:78
+#: includes/Admin/Assets.php:98
 msgid "New Section"
 msgstr ""
 
-#: includes/Admin/Assets.php:79
+#: includes/Admin/Assets.php:99
 msgid "Untitled"
 msgstr ""
 
-#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:27
-msgid "Open (anyone can access)"
+#: includes/Admin/Assets.php:100
+#: build/index.js:1
+msgid "Save"
+msgstr ""
+
+#: includes/Admin/Assets.php:101
+msgid "Cancel"
+msgstr ""
+
+#: includes/Admin/Assets.php:102
+msgid "Section title"
+msgstr ""
+
+#: includes/Admin/Assets.php:103
+msgid "after"
+msgstr ""
+
+#: includes/Admin/Assets.php:105
+msgid "Opens right away"
+msgstr ""
+
+#: includes/Admin/Assets.php:106
+msgid "Opens after enrollment"
+msgstr ""
+
+#: includes/Admin/Assets.php:107
+msgid "Opens after the previous section"
+msgstr ""
+
+#: includes/Admin/Assets.php:110
+#: includes/Admin/Metaboxes/DripFieldsTrait.php:94
+msgid "hours"
+msgstr ""
+
+#: includes/Admin/Assets.php:111
+#: includes/Admin/Metaboxes/DripFieldsTrait.php:95
+msgid "days"
+msgstr ""
+
+#: includes/Admin/Assets.php:112
+#: includes/Admin/Metaboxes/DripFieldsTrait.php:96
+msgid "weeks"
+msgstr ""
+
+#: includes/Admin/Assets.php:113
+#: includes/Admin/Metaboxes/DripFieldsTrait.php:97
+msgid "months"
+msgstr ""
+
+#: includes/Admin/Assets.php:116
+msgid "hour"
+msgstr ""
+
+#: includes/Admin/Assets.php:117
+msgid "day"
+msgstr ""
+
+#: includes/Admin/Assets.php:118
+msgid "week"
+msgstr ""
+
+#: includes/Admin/Assets.php:119
+msgid "month"
+msgstr ""
+
+#. translators: 1: number, 2: unit such as days.
+#: includes/Admin/Assets.php:122
+#, php-format
+msgid "opens %1$d %2$s after enrollment"
+msgstr ""
+
+#. translators: 1: number, 2: unit such as days.
+#: includes/Admin/Assets.php:124
+#, php-format
+msgid "opens %1$d %2$s after the previous section"
+msgstr ""
+
+#: includes/Admin/Assets.php:125
+msgid "opens with the previous section completed"
+msgstr ""
+
+#: includes/Admin/LessonListColumns.php:53
+#: includes/Admin/Metaboxes/LessonCourseMetabox.php:104
+msgid "Order"
+msgstr ""
+
+#: includes/Admin/LessonListColumns.php:54
+#: includes/Admin/Metaboxes/LessonCourseMetabox.php:37
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:81
+#: includes/Api/Admin/QuizAttemptsController.php:215
+#: includes/Privacy/PersonalDataExporter.php:50
+#: includes/Privacy/PersonalDataExporter.php:65
+#: build/index.js:5
+#: build/index.js:7
+#: build/index.js:10
+#: build/index.js:17
+#: build/index.js:18
+msgid "Course"
+msgstr ""
+
+#: includes/Admin/LessonListColumns.php:55
+#: includes/Admin/Metaboxes/LessonQuizMetabox.php:46
+msgid "Quiz"
+msgstr ""
+
+#: includes/Admin/LessonListColumns.php:131
+msgid "No quiz"
+msgstr ""
+
+#. translators: 1: number of questions, 2: pass percentage.
+#: includes/Admin/LessonListColumns.php:140
+#, php-format
+msgid "%1$d question, pass mark %2$s%%"
+msgid_plural "%1$d questions, pass mark %2$s%%"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/LessonListColumns.php:158
+#: includes/Admin/LessonListColumns.php:164
+msgid "No course"
 msgstr ""
 
 #: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:28
-#: includes/Admin/Settings/TabGeneral.php:85
-msgid "Free (login required)"
+msgid "Open (anyone can access)"
 msgstr ""
 
 #: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:29
-#: includes/Admin/Settings/TabGeneral.php:86
+#: build/index.js:16
+msgid "Free (login required)"
+msgstr ""
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:30
+#: build/index.js:16
 msgid "Paid (purchase required)"
 msgstr ""
 
-#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:50
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:51
 msgid "WooCommerce Products"
 msgstr ""
 
-#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:52
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:53
 msgid "Product IDs:"
 msgstr ""
 
-#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:55
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:56
 msgid "One per line. Format: product_id:days (e.g., 123:180). Without days = unlimited."
 msgstr ""
 
-#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:69
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:70
 msgid "Subscriptions"
 msgstr ""
 
-#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:71
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:72
 msgid "Subscription IDs:"
 msgstr ""
 
-#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:73
-msgid "Comma-separated subscription product IDs."
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:74
+msgid "Comma-separated subscription product IDs. Any active subscription on these parents grants access."
 msgstr ""
 
-#: includes/Admin/Metaboxes/CourseAccessMetabox.php:40
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:87
+msgid "Subscription Variations"
+msgstr ""
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:89
+msgid "Variation IDs:"
+msgstr ""
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:92
+msgid "One per line. Format: parent_id:variation_id (variable subscriptions only). Use this when only specific variations should grant access."
+msgstr ""
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:115
+msgid "Memberships"
+msgstr ""
+
+#: includes/Admin/Metaboxes/AccessMetaboxRenderer.php:116
+msgid "Active members of any checked plan get access."
+msgstr ""
+
+#: includes/Admin/Metaboxes/CourseAccessMetabox.php:39
 msgid "Access Settings"
 msgstr ""
 
-#: includes/Admin/Metaboxes/CourseAccessMetabox.php:72
+#: includes/Admin/Metaboxes/CourseAccessMetabox.php:76
 msgid "WooCommerce is required for paid courses."
 msgstr ""
 
@@ -104,28 +249,28 @@ msgstr ""
 msgid "Course Content"
 msgstr ""
 
-#: includes/Admin/Metaboxes/CourseContentMetabox.php:60
-msgid "+ Add Section"
+#: includes/Admin/Metaboxes/CourseContentRenderer.php:46
+msgid "Add Section"
 msgstr ""
 
-#: includes/Admin/Metaboxes/CourseContentMetabox.php:63
-msgid "+ Add Lesson"
+#: includes/Admin/Metaboxes/CourseContentRenderer.php:50
+msgid "Add Lesson"
 msgstr ""
 
-#: includes/Admin/Metaboxes/CourseContentMetabox.php:80
-#: includes/Admin/Metaboxes/CourseContentMetabox.php:122
-#: includes/Admin/Metaboxes/CourseContentMetabox.php:155
+#: includes/Admin/Metaboxes/CourseContentRenderer.php:69
+#: includes/Admin/Metaboxes/CourseContentRenderer.php:121
+#: includes/Admin/Metaboxes/CourseContentRenderer.php:152
 msgid "Edit"
 msgstr ""
 
-#: includes/Admin/Metaboxes/CourseContentMetabox.php:81
-#: includes/Admin/Metaboxes/CourseContentMetabox.php:123
+#: includes/Admin/Metaboxes/CourseContentRenderer.php:70
+#: includes/Admin/Metaboxes/CourseContentRenderer.php:122
 #: includes/Admin/Metaboxes/CourseDataMetabox.php:104
 #: includes/Admin/Metaboxes/LessonDataMetabox.php:98
 msgid "Remove"
 msgstr ""
 
-#: includes/Admin/Metaboxes/CourseContentMetabox.php:153
+#: includes/Admin/Metaboxes/CourseContentRenderer.php:150
 #: includes/Admin/Metaboxes/LessonVideoMetabox.php:68
 msgid "Preview"
 msgstr ""
@@ -161,9 +306,28 @@ msgstr ""
 msgid "Add Attachment"
 msgstr ""
 
-#: includes/Admin/Metaboxes/LessonCourseMetabox.php:37
-#: includes/Admin/UserProfile/EnrollmentRenderer.php:81
-msgid "Course"
+#: includes/Admin/Metaboxes/CourseDripMetabox.php:41
+msgid "Progression & Drip"
+msgstr ""
+
+#: includes/Admin/Metaboxes/CourseDripMetabox.php:63
+msgid "Progression"
+msgstr ""
+
+#: includes/Admin/Metaboxes/CourseDripMetabox.php:66
+msgid "Free — any lesson, any order"
+msgstr ""
+
+#: includes/Admin/Metaboxes/CourseDripMetabox.php:69
+msgid "Linear — one lesson after the other"
+msgstr ""
+
+#: includes/Admin/Metaboxes/CourseDripMetabox.php:75
+msgid "Course opens after enrollment"
+msgstr ""
+
+#: includes/Admin/Metaboxes/CourseDripMetabox.php:80
+msgid "Drip schedules — here, on the sections and on the lessons — only take effect in linear mode. Zero means the course opens immediately."
 msgstr ""
 
 #: includes/Admin/Metaboxes/LessonCourseMetabox.php:75
@@ -171,7 +335,9 @@ msgid "Select Course"
 msgstr ""
 
 #: includes/Admin/Metaboxes/LessonCourseMetabox.php:77
-msgid "— Select Course —"
+#: includes/Admin/UserProfile/EnrollmentRenderer.php:148
+#: build/index.js:7
+msgid "Select a course"
 msgstr ""
 
 #: includes/Admin/Metaboxes/LessonCourseMetabox.php:87
@@ -179,11 +345,7 @@ msgid "Section (optional)"
 msgstr ""
 
 #: includes/Admin/Metaboxes/LessonCourseMetabox.php:89
-msgid "— No Section —"
-msgstr ""
-
-#: includes/Admin/Metaboxes/LessonCourseMetabox.php:107
-msgid "Order"
+msgid "No section"
 msgstr ""
 
 #: includes/Admin/Metaboxes/LessonDataMetabox.php:36
@@ -192,6 +354,43 @@ msgstr ""
 
 #: includes/Admin/Metaboxes/LessonDataMetabox.php:59
 msgid "e.g., 15 min"
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonDripMetabox.php:41
+msgid "Drip"
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonDripMetabox.php:63
+msgid "Opens"
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonDripMetabox.php:74
+msgid "After"
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonDripMetabox.php:80
+msgid "This course uses free progression, so its lessons are never held back. Switch the course to linear for drip to apply."
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonDripMetabox.php:126
+msgid "Right away"
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonDripMetabox.php:127
+msgid "A while after enrollment"
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonDripMetabox.php:128
+msgid "A while after the previous lesson is completed"
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonQuizMetabox.php:109
+msgid "Invalid JSON:"
+msgstr ""
+
+#: includes/Admin/Metaboxes/LessonQuizMetabox.php:141
+#: includes/Admin/Metaboxes/LessonQuizMetabox.php:183
+msgid "Quiz not saved:"
 msgstr ""
 
 #: includes/Admin/Metaboxes/LessonVideoMetabox.php:37
@@ -212,144 +411,78 @@ msgstr ""
 msgid "Provider: %s"
 msgstr ""
 
-#: includes/Admin/ParentPage.php:127
+#: includes/Admin/ParentPage.php:129
 msgid "Lightweight plugins for WordPress - minimal footprint, maximum impact."
 msgstr ""
 
-#: includes/Admin/ParentPage.php:180
+#: includes/Admin/ParentPage.php:190
+#: build/index.js:5
+#: build/index.js:17
 msgid "Active"
 msgstr ""
 
-#: includes/Admin/ParentPage.php:187
+#: includes/Admin/ParentPage.php:197
+#: build/index.js:1
 msgid "Settings"
 msgstr ""
 
-#: includes/Admin/ParentPage.php:191
+#: includes/Admin/ParentPage.php:201
 msgid "Get Plugin"
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:34
-msgid "Advanced"
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:42
+msgid "Quiz JSON"
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:53
-msgid "Advanced Settings"
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:46
+msgid "Question types: single (exactly one correct option), boolean (true/false), open (free text, never scored). Leave empty to remove the quiz. Saved only if valid — the error names the exact field."
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:57
-msgid "Data Removal"
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:62
+msgid "Stored quiz:"
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:63
-msgid "Delete all data when plugin is uninstalled"
+#. translators: 1: number of questions, 2: pass percentage.
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:66
+#, php-format
+msgid "%1$d question, pass at %2$s%%"
+msgid_plural "%1$d questions, pass at %2$s%%"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:68
+msgid "the global default"
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:68
-msgid "Warning: This will permanently delete all courses, lessons, and progress data when the plugin is uninstalled."
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:115
+msgid "Correct:"
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:74
-msgid "REST API"
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:116
+msgid "true"
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:78
-msgid "API Namespace"
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:116
+msgid "false"
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:82
-msgid "Base URL:"
+#: includes/Admin/Quiz/QuizMetaboxRenderer.php:124
+msgid "Sample answer:"
 msgstr ""
 
-#: includes/Admin/Settings/TabAdvanced.php:89
-msgid "Available Endpoints"
-msgstr ""
-
-#: includes/Admin/Settings/TabAdvanced.php:92
-msgid "List courses"
-msgstr ""
-
-#: includes/Admin/Settings/TabAdvanced.php:93
-msgid "Course details"
-msgstr ""
-
-#: includes/Admin/Settings/TabAdvanced.php:94
-msgid "Lesson content"
-msgstr ""
-
-#: includes/Admin/Settings/TabAdvanced.php:95
-msgid "User progress"
-msgstr ""
-
-#: includes/Admin/Settings/TabAdvanced.php:96
-msgid "Update progress"
-msgstr ""
-
-#: includes/Admin/Settings/TabAdvanced.php:97
-msgid "Download attachment"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:34
-msgid "General"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:53
-msgid "General Settings"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:58
-msgid "Courses per Page"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:65
-msgid "Number of courses to show per page in API responses."
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:76
-msgid "Default Access Type"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:84
-msgid "Open (anyone)"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:91
-msgid "Default access type for new courses."
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:96
-msgid "Features"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:102
-msgid "Show progress bar in course listings"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:111
-msgid "Enable preview lessons feature"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:119
-msgid "WooCommerce"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:123
-msgid "Integration"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:129
-msgid "Enable WooCommerce integration for paid courses"
-msgstr ""
-
-#: includes/Admin/Settings/TabGeneral.php:134
-msgid "Requires WooCommerce. Enable to sell courses via WooCommerce products."
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:71
-msgid "LMS Settings"
-msgstr ""
-
-#: includes/Admin/SettingsPage.php:72
+#: includes/Admin/SettingsPage.php:79
+#: includes/Admin/SettingsPage.php:80
+#: includes/SiteManager/Integration.php:57
 msgid "LMS"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:89
+#: build/index.js:1
+msgid "Quiz results"
+msgstr ""
+
+#: includes/Admin/SettingsPage.php:184
+msgid "The admin screen files are missing. Re-install the plugin from a release ZIP, or run \"npm install && npm run build\" in the plugin directory."
 msgstr ""
 
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:40
@@ -365,14 +498,19 @@ msgid "No active enrollments."
 msgstr ""
 
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:82
+#: includes/Privacy/PersonalDataExporter.php:51
+#: build/index.js:5
+#: build/index.js:17
 msgid "Source"
 msgstr ""
 
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:83
+#: includes/Privacy/PersonalDataExporter.php:53
 msgid "Granted"
 msgstr ""
 
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:84
+#: includes/Privacy/PersonalDataExporter.php:54
 msgid "Expires"
 msgstr ""
 
@@ -381,10 +519,12 @@ msgid "Action"
 msgstr ""
 
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:100
+#: build/index.js:5
 msgid "Lifetime"
 msgstr ""
 
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:118
+#: build/index.js:6
 msgid "Revoke"
 msgstr ""
 
@@ -400,10 +540,6 @@ msgstr ""
 msgid "Course:"
 msgstr ""
 
-#: includes/Admin/UserProfile/EnrollmentRenderer.php:148
-msgid "-- Select Course --"
-msgstr ""
-
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:158
 msgid "Expires:"
 msgstr ""
@@ -412,41 +548,262 @@ msgstr ""
 msgid "(optional, empty = lifetime)"
 msgstr ""
 
-#: includes/Api/Controllers/CoursesController.php:143
-#: includes/Api/Controllers/CoursesController.php:151
+#: includes/Api/Admin/AdminFormat.php:95
+#: includes/Api/Admin/LookupController.php:141
+msgid "(no title)"
+msgstr ""
+
+#: includes/Api/Admin/AdminRoutes.php:109
+msgid "Some fields are not valid. Nothing was saved."
+msgstr ""
+
+#: includes/Api/Admin/AdminRoutes.php:121
+msgid "That item no longer exists."
+msgstr ""
+
+#: includes/Api/Admin/AdminRoutes.php:136
+msgid "The request is too large."
+msgstr ""
+
+#: includes/Api/Admin/Enrollments/GrantInput.php:62
+msgid "Choose an existing user."
+msgstr ""
+
+#: includes/Api/Admin/Enrollments/GrantInput.php:68
+msgid "Choose an existing course."
+msgstr ""
+
+#: includes/Api/Admin/Enrollments/GrantInput.php:103
+msgid "Enter a date like 2026-12-31, or leave it empty for lifetime access."
+msgstr ""
+
+#: includes/Api/Admin/Enrollments/GrantInput.php:108
+msgid "The end date cannot be in the past."
+msgstr ""
+
+#: includes/Api/Admin/EnrollmentsController.php:120
+msgid "The enrollment was not saved. Another plugin may have blocked it."
+msgstr ""
+
+#: includes/Api/Admin/ListParams.php:75
+msgid "This filter value is not valid."
+msgstr ""
+
+#. translators: %d: largest number of attempts.
+#: includes/Api/Admin/QuizAttemptsController.php:158
+#, php-format
+msgid "Select between 1 and %d attempts."
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:196
+#: includes/Privacy/PersonalDataExporter.php:85
+#: build/index.js:7
+msgid "Yes"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:196
+#: includes/Privacy/PersonalDataExporter.php:85
+#: build/index.js:7
+msgid "No"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:210
+msgid "Attempt ID"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:211
+#: includes/Privacy/PersonalDataExporter.php:83
+#: build/index.js:10
+#: build/index.js:11
+#: build/index.js:13
+msgid "Submitted"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:212
+msgid "User ID"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:213
+#: build/index.js:5
+#: build/index.js:6
+#: build/index.js:10
+#: build/index.js:11
+#: build/index.js:12
+msgid "Learner"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:214
+#: includes/Privacy/PersonalDataExporter.php:66
+#: includes/Privacy/PersonalDataExporter.php:82
+#: build/index.js:10
+#: build/index.js:11
+#: build/index.js:12
+#: build/index.js:18
+msgid "Lesson"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:216
+#: includes/Privacy/PersonalDataExporter.php:84
+#: build/index.js:10
+#: build/index.js:11
+#: build/index.js:12
+msgid "Score"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:217
+msgid "Scored questions"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:218
+msgid "Percentage"
+msgstr ""
+
+#: includes/Api/Admin/QuizAttemptsController.php:219
+#: includes/Privacy/PersonalDataExporter.php:85
+#: build/index.js:11
+#: build/index.js:13
+#: build/index.js:18
+msgid "Passed"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:25
+msgid "Anyone (access is checked per course and lesson)"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:26
+msgid "Logged-in users"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:29
+msgid "List courses"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:30
+msgid "Course details with sections and lessons"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:31
+msgid "Lesson content, video and quiz questions"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:32
+msgid "Submit a quiz attempt"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:33
+msgid "Progress of the current user"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:34
+msgid "Mark a lesson started or completed"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:35
+msgid "Progress of the current user in one course"
+msgstr ""
+
+#: includes/Api/Admin/Settings/PublicEndpoints.php:36
+msgid "Download a course or lesson attachment"
+msgstr ""
+
+#: includes/Api/Admin/Settings/SettingsInput.php:44
+#: includes/Api/Admin/Settings/SettingsInput.php:102
+msgid "Unknown setting."
+msgstr ""
+
+#: includes/Api/Admin/Settings/SettingsInput.php:86
+msgid "Must be on or off."
+msgstr ""
+
+#: includes/Api/Admin/Settings/SettingsInput.php:96
+msgid "Choose one of the listed options."
+msgstr ""
+
+#. translators: 1: smallest allowed number, 2: largest allowed number.
+#: includes/Api/Admin/Settings/SettingsInput.php:125
+#, php-format
+msgid "Enter a whole number from %1$d to %2$d."
+msgstr ""
+
+#: includes/Api/Admin/SettingsController.php:76
+msgid "Some settings are not valid. Nothing was saved."
+msgstr ""
+
+#: includes/Api/Controllers/CoursesController.php:89
+msgid "You are not allowed to list courses with this status."
+msgstr ""
+
+#: includes/Api/Controllers/CoursesController.php:179
+#: includes/SiteManager/Service/CourseService.php:73
+#: includes/SiteManager/Service/ProgressService.php:45
+#: includes/SiteManager/Service/ProgressService.php:109
 msgid "Course not found."
 msgstr ""
 
-#: includes/Api/Controllers/DownloadController.php:67
-#: includes/Api/Controllers/DownloadController.php:84
-msgid "File not found."
+#: includes/Api/Controllers/DownloadController.php:113
+msgid "This download link is invalid or has expired. Reload the page to get a new one."
 msgstr ""
 
-#: includes/Api/Controllers/DownloadController.php:179
-#: includes/Api/Controllers/ProgressController.php:80
-msgid "Authentication required."
-msgstr ""
-
-#: includes/Api/Controllers/DownloadController.php:188
-msgid "You do not have access to this content."
-msgstr ""
-
-#: includes/Api/Controllers/LessonsController.php:64
 #: includes/Api/Controllers/LessonsController.php:72
+#: includes/Api/Controllers/QuizController.php:79
+#: includes/SiteManager/Service/ProgressService.php:105
 msgid "Lesson not found."
 msgstr ""
 
 #: includes/Api/Controllers/LessonsController.php:84
-#: includes/Api/Controllers/ProgressController.php:143
+#: includes/Api/Controllers/ProgressController.php:146
+#: includes/Api/Controllers/QuizController.php:84
 msgid "You do not have access to this lesson."
 msgstr ""
 
-#: includes/Api/Controllers/ProgressController.php:153
+#: includes/Api/Controllers/ProgressController.php:83
+#: includes/Api/DownloadAccess.php:128
+msgid "Authentication required."
+msgstr ""
+
+#: includes/Api/Controllers/ProgressController.php:163
 msgid "Lesson does not belong to the specified course."
 msgstr ""
 
-#: includes/Api/Controllers/ProgressController.php:164
+#: includes/Api/Controllers/ProgressController.php:172
+msgid "Pass the lesson quiz to complete this lesson."
+msgstr ""
+
+#: includes/Api/Controllers/ProgressController.php:183
+#: includes/SiteManager/Service/ProgressService.php:121
 msgid "Failed to update progress."
+msgstr ""
+
+#: includes/Api/Controllers/QuizController.php:96
+msgid "This lesson has no quiz."
+msgstr ""
+
+#: includes/Api/DownloadAccess.php:76
+msgid "File not found."
+msgstr ""
+
+#: includes/Api/DownloadAccess.php:135
+msgid "You do not have access to this content."
+msgstr ""
+
+#: includes/Api/LessonLockError.php:45
+msgid "Finish the previous lesson to open this one."
+msgstr ""
+
+#: includes/Api/LessonLockError.php:46
+msgid "This lesson is not available yet."
+msgstr ""
+
+#: includes/Api/LessonRestGuard.php:54
+msgid "Lessons are available through the LMS API (/lms/v1/lessons)."
+msgstr ""
+
+#: includes/LwCookie/BlockedEmbed.php:44
+msgid "To watch this video, accept the required cookies."
+msgstr ""
+
+#: includes/LwCookie/BlockedEmbed.php:46
+msgid "Accept & play video"
 msgstr ""
 
 #: includes/PostTypes/Course.php:29
@@ -610,6 +967,149 @@ msgstr ""
 
 #: includes/PostTypes/Lesson.php:48
 msgid "Lessons list"
+msgstr ""
+
+#: includes/Privacy/PersonalDataEraser.php:59
+msgid "Active course enrollments were kept so the user keeps access to those courses. Revoke them on the user profile, then erase again, to remove them."
+msgstr ""
+
+#: includes/Privacy/PersonalDataExporter.php:47
+msgid "Course enrollments"
+msgstr ""
+
+#: includes/Privacy/PersonalDataExporter.php:52
+#: includes/Privacy/PersonalDataExporter.php:67
+#: build/index.js:5
+#: build/index.js:17
+msgid "Status"
+msgstr ""
+
+#: includes/Privacy/PersonalDataExporter.php:54
+msgid "Never"
+msgstr ""
+
+#: includes/Privacy/PersonalDataExporter.php:62
+msgid "Lesson progress"
+msgstr ""
+
+#: includes/Privacy/PersonalDataExporter.php:68
+msgid "Completed"
+msgstr ""
+
+#: includes/Privacy/PersonalDataExporter.php:79
+#: build/index.js:16
+msgid "Quiz attempts"
+msgstr ""
+
+#: includes/Privacy/PersonalDataExporter.php:86
+#: build/index.js:13
+msgid "Answers"
+msgstr ""
+
+#: includes/Quiz/QuizThrottle.php:96
+msgid "Too many quiz attempts. Please wait before trying again."
+msgstr ""
+
+#: includes/SiteManager/Abilities/CourseAbilities.php:41
+msgid "List Courses"
+msgstr ""
+
+#: includes/SiteManager/Abilities/CourseAbilities.php:42
+msgid "List all published courses with basic metadata."
+msgstr ""
+
+#: includes/SiteManager/Abilities/CourseAbilities.php:52
+msgid "Number of courses per page. Default: 20."
+msgstr ""
+
+#: includes/SiteManager/Abilities/CourseAbilities.php:56
+msgid "Page number. Default: 1."
+msgstr ""
+
+#: includes/SiteManager/Abilities/CourseAbilities.php:76
+msgid "Get Course"
+msgstr ""
+
+#: includes/SiteManager/Abilities/CourseAbilities.php:77
+msgid "Get full course details including lessons and sections."
+msgstr ""
+
+#: includes/SiteManager/Abilities/CourseAbilities.php:87
+#: includes/SiteManager/Abilities/ProgressAbilities.php:60
+#: includes/SiteManager/Abilities/ProgressAbilities.php:95
+msgid "Course post ID."
+msgstr ""
+
+#: includes/SiteManager/Abilities/OptionsAbilities.php:30
+msgid "Get LMS Options"
+msgstr ""
+
+#: includes/SiteManager/Abilities/OptionsAbilities.php:31
+msgid "Get global LW LMS plugin settings."
+msgstr ""
+
+#: includes/SiteManager/Abilities/ProgressAbilities.php:45
+msgid "Get Progress"
+msgstr ""
+
+#: includes/SiteManager/Abilities/ProgressAbilities.php:46
+msgid "Get user progress for a course, including per-lesson completion status."
+msgstr ""
+
+#: includes/SiteManager/Abilities/ProgressAbilities.php:56
+#: includes/SiteManager/Abilities/ProgressAbilities.php:91
+msgid "WordPress user ID."
+msgstr ""
+
+#: includes/SiteManager/Abilities/ProgressAbilities.php:80
+msgid "Set Progress"
+msgstr ""
+
+#: includes/SiteManager/Abilities/ProgressAbilities.php:81
+msgid "Update lesson completion status for a user. Reverting from completed loses the completion timestamp."
+msgstr ""
+
+#: includes/SiteManager/Abilities/ProgressAbilities.php:99
+msgid "Lesson post ID."
+msgstr ""
+
+#: includes/SiteManager/Abilities/ProgressAbilities.php:104
+msgid "Completion status: completed, in_progress, or not_started."
+msgstr ""
+
+#: includes/SiteManager/Integration.php:58
+msgid "Learning management system abilities"
+msgstr ""
+
+#: includes/SiteManager/Service/CourseService.php:67
+msgid "course_id is required."
+msgstr ""
+
+#: includes/SiteManager/Service/ProgressService.php:37
+msgid "user_id and course_id are required."
+msgstr ""
+
+#: includes/SiteManager/Service/ProgressService.php:41
+#: includes/SiteManager/Service/ProgressService.php:99
+msgid "User not found."
+msgstr ""
+
+#: includes/SiteManager/Service/ProgressService.php:86
+msgid "user_id, course_id, lesson_id, and status are required."
+msgstr ""
+
+#. translators: %s: allowed status values
+#: includes/SiteManager/Service/ProgressService.php:93
+#, php-format
+msgid "Invalid status. Allowed: %s."
+msgstr ""
+
+#: includes/SiteManager/Service/ProgressService.php:115
+msgid "The lesson does not belong to this course."
+msgstr ""
+
+#: includes/SiteManager/Service/ProgressService.php:126
+msgid "Progress updated."
 msgstr ""
 
 #: includes/Taxonomies/CourseCategory.php:31
@@ -794,22 +1294,689 @@ msgstr ""
 msgid "&larr; Back to Tags"
 msgstr ""
 
-#: includes/WooCommerce/WooCommerce.php:81
-msgid "LW LMS:"
-msgstr ""
-
-#: includes/WooCommerce/WooCommerce.php:82
-msgid "WooCommerce is required for paid courses. Please install and activate WooCommerce."
-msgstr ""
-
 #: includes/Video/EmbedRenderer.php:115
 msgid "Lesson video"
 msgstr ""
 
-#: includes/LwCookie/BlockedEmbed.php:44
-msgid "To watch this video, accept the required cookies."
+#: lw-lms.php:43
+msgid "Autoloader not found. Please run \"composer install\" in the plugin directory, or re-install the plugin from a release ZIP."
 msgstr ""
 
-#: includes/LwCookie/BlockedEmbed.php:46
-msgid "Accept & play video"
+#: build/index.js:1
+msgid "Loading…"
+msgstr ""
+
+#: build/index.js:1
+msgid "Try again"
+msgstr ""
+
+#: build/index.js:1
+msgid "That did not work. Reload the page and try again."
+msgstr ""
+
+#: build/index.js:1
+msgid "Settings saved."
+msgstr ""
+
+#: build/index.js:1
+msgid "Nothing was saved. Fix the highlighted fields and save again."
+msgstr ""
+
+#: build/index.js:1
+msgid "LW Plugins (opens in a new tab)"
+msgstr ""
+
+#: build/index.js:1
+msgid "Learners"
+msgstr ""
+
+#: build/index.js:1
+msgid "Overview"
+msgstr ""
+
+#: build/index.js:1
+msgid "Enrollments"
+msgstr ""
+
+#: build/index.js:1
+msgid "Access"
+msgstr ""
+
+#: build/index.js:1
+msgid "Course access"
+msgstr ""
+
+#: build/index.js:1
+msgid "Quizzes"
+msgstr ""
+
+#: build/index.js:1
+#: build/index.js:7
+msgid "WooCommerce"
+msgstr ""
+
+#: build/index.js:1
+msgid "Advanced"
+msgstr ""
+
+#: build/index.js:1
+#: build/index.js:7
+msgid "Off"
+msgstr ""
+
+#: build/index.js:1
+msgid "Has invalid settings"
+msgstr ""
+
+#: build/index.js:1
+msgid "LW LMS home"
+msgstr ""
+
+#: build/index.js:1
+msgid "LW LMS sections"
+msgstr ""
+
+#: build/index.js:1
+msgid "Documentation"
+msgstr ""
+
+#: build/index.js:1
+msgid "(opens in a new tab)"
+msgstr ""
+
+#: build/index.js:1
+msgid "Unsaved changes"
+msgstr ""
+
+#: build/index.js:1
+msgid "Discard"
+msgstr ""
+
+#: build/index.js:1
+msgid "Save changes"
+msgstr ""
+
+#. translators: %s: number of results.
+#: build/index.js:2
+#, js-format
+msgid "%s result"
+msgid_plural "%s results"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:2
+msgid "Previous page"
+msgstr ""
+
+#. translators: 1: current page, 2: number of pages.
+#: build/index.js:3
+#, js-format
+msgid "Page %1$d of %2$d"
+msgstr ""
+
+#: build/index.js:3
+msgid "Next page"
+msgstr ""
+
+#. translators: 1: title, 2: post status such as draft.
+#: build/index.js:4
+#, js-format
+msgid "%1$s (%2$s)"
+msgstr ""
+
+#. translators: 1: percentage, 2: completed lessons, 3: all lessons.
+#: build/index.js:5
+#, js-format
+msgid "%1$d%% (%2$d of %3$d)"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:17
+msgid "Expired"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:17
+msgid "Revoked"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:6
+#: build/index.js:10
+#: build/index.js:12
+msgid "Deleted user"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:6
+msgid "Deleted"
+msgstr ""
+
+#: build/index.js:5
+msgid "Progress"
+msgstr ""
+
+#: build/index.js:5
+msgid "Enrolled"
+msgstr ""
+
+#: build/index.js:5
+msgid "Access ends"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:11
+msgid "Actions"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:17
+msgid "Manual"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:17
+msgid "WooCommerce order"
+msgstr ""
+
+#: build/index.js:5
+#: build/index.js:17
+msgid "Free course"
+msgstr ""
+
+#: build/index.js:5
+msgid "Revoke access"
+msgstr ""
+
+#. translators: 1: learner name, 2: course title.
+#: build/index.js:6
+#, js-format
+msgid "Revoke access to %2$s for %1$s? Every active enrollment of this learner in the course ends, including ones from orders. Their progress is kept."
+msgstr ""
+
+#: build/index.js:6
+msgid "Type at least two letters of the name, username or email."
+msgstr ""
+
+#: build/index.js:6
+msgid "Enroll a learner"
+msgstr ""
+
+#: build/index.js:6
+msgid "Gives the learner access to the course, whatever its access type. Enrolling them again changes the end date."
+msgstr ""
+
+#. translators: 1: learner name, 2: course title.
+#: build/index.js:7
+#, js-format
+msgid "%1$s is enrolled in %2$s."
+msgstr ""
+
+#: build/index.js:7
+msgid "Enrollment saved."
+msgstr ""
+
+#: build/index.js:7
+msgid "Fix the highlighted fields and try again."
+msgstr ""
+
+#: build/index.js:7
+msgid "Access ends (optional)"
+msgstr ""
+
+#: build/index.js:7
+msgid "Leave empty for lifetime access. Access ends at the end of that day."
+msgstr ""
+
+#: build/index.js:7
+msgid "Enroll"
+msgstr ""
+
+#: build/index.js:7
+msgid "(active)"
+msgstr ""
+
+#: build/index.js:7
+msgid "(not active)"
+msgstr ""
+
+#: build/index.js:7
+msgid "On"
+msgstr ""
+
+#: build/index.js:7
+msgid "Orders grant access to the courses linked to their products."
+msgstr ""
+
+#: build/index.js:7
+msgid "The integration is off: orders do not grant or remove access. Turn it on under Settings, WooCommerce."
+msgstr ""
+
+#: build/index.js:7
+#: build/index.js:16
+msgid "Paid courses"
+msgstr ""
+
+#: build/index.js:7
+msgid "Active access from orders"
+msgstr ""
+
+#: build/index.js:7
+msgid "WooCommerce Subscriptions"
+msgstr ""
+
+#: build/index.js:7
+msgid "Detected"
+msgstr ""
+
+#: build/index.js:7
+msgid "WooCommerce Memberships"
+msgstr ""
+
+#. translators: %s: number of drafts.
+#: build/index.js:8
+#, js-format
+msgid "%s draft"
+msgid_plural "%s drafts"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:8
+msgid "True"
+msgstr ""
+
+#: build/index.js:8
+msgid "False"
+msgstr ""
+
+#: build/index.js:8
+#: build/index.js:16
+msgid "Right"
+msgstr ""
+
+#: build/index.js:8
+#: build/index.js:16
+msgid "Wrong"
+msgstr ""
+
+#: build/index.js:8
+#: build/index.js:16
+msgid "Not scored"
+msgstr ""
+
+#. translators: 1: question number, 2: question text.
+#: build/index.js:9
+#, js-format
+msgid "%1$d. %2$s"
+msgstr ""
+
+#: build/index.js:9
+msgid "No answer"
+msgstr ""
+
+#. translators: %s: the right answer.
+#: build/index.js:10
+#, js-format
+msgid "Right answer: %s"
+msgstr ""
+
+#. translators: 1: points, 2: scored questions, 3: percentage.
+#: build/index.js:11
+#, js-format
+msgid "%1$d of %2$d (%3$s%%)"
+msgstr ""
+
+#: build/index.js:11
+#: build/index.js:13
+#: build/index.js:18
+msgid "Result"
+msgstr ""
+
+#: build/index.js:11
+#: build/index.js:13
+#: build/index.js:18
+msgid "Not passed"
+msgstr ""
+
+#: build/index.js:11
+msgid "Only administrators see which answers were right."
+msgstr ""
+
+#: build/index.js:11
+msgid "This attempt has no stored answers."
+msgstr ""
+
+#: build/index.js:11
+msgid "Quiz attempt"
+msgstr ""
+
+#: build/index.js:11
+msgid "Select all on this page"
+msgstr ""
+
+#. translators: %d: attempt ID.
+#: build/index.js:12
+#, js-format
+msgid "Select attempt %d"
+msgstr ""
+
+#. translators: 1: percentage, 2: points, 3: scored questions.
+#: build/index.js:13
+#, js-format
+msgid "%1$s%% (%2$d of %3$d)"
+msgstr ""
+
+#: build/index.js:13
+msgid "Delete attempt"
+msgstr ""
+
+#: build/index.js:13
+#: build/index.js:18
+msgid "Delete"
+msgstr ""
+
+#: build/index.js:13
+msgid "Delete this attempt? This cannot be undone."
+msgstr ""
+
+#. translators: 1: attempts (e.g. "12 attempts"), 2: learners (e.g. "5 learners").
+#: build/index.js:14
+#, js-format
+msgid "%1$s by %2$s"
+msgstr ""
+
+#. translators: %d: number of attempts.
+#: build/index.js:15
+#, js-format
+msgid "%d attempt"
+msgid_plural "%d attempts"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of learners.
+#: build/index.js:16
+#, js-format
+msgid "%d learner"
+msgid_plural "%d learners"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:16
+msgid "Delete attempts"
+msgstr ""
+
+#: build/index.js:16
+msgid "Delete every attempt of this lesson quiz? This cannot be undone. Lessons learners already completed stay completed."
+msgstr ""
+
+#: build/index.js:16
+msgid "Delete all attempts"
+msgstr ""
+
+#: build/index.js:16
+msgid "Question"
+msgstr ""
+
+#: build/index.js:16
+msgid "Answered"
+msgstr ""
+
+#: build/index.js:16
+msgid "Right answers"
+msgstr ""
+
+#: build/index.js:16
+msgid "Question statistics use the latest 500 attempts."
+msgstr ""
+
+#: build/index.js:16
+msgid "New courses"
+msgstr ""
+
+#: build/index.js:16
+msgid "What a course you create starts with. You can change it on each course."
+msgstr ""
+
+#: build/index.js:16
+msgid "Default access type"
+msgstr ""
+
+#: build/index.js:16
+msgid "Open courses need no login, free courses need a login, paid courses need a purchase."
+msgstr ""
+
+#: build/index.js:16
+msgid "Open (anyone)"
+msgstr ""
+
+#: build/index.js:16
+msgid "Previews and staff"
+msgstr ""
+
+#: build/index.js:16
+msgid "Preview lessons"
+msgstr ""
+
+#: build/index.js:16
+msgid "Lessons you mark as a preview in the course builder can be opened by logged-in visitors without enrolling. When off, no lesson is treated as a preview; your choices are kept for when you turn it back on."
+msgstr ""
+
+#: build/index.js:16
+msgid "Give LMS managers access to every course"
+msgstr ""
+
+#: build/index.js:16
+msgid "Users with the manage_lms capability (administrators by default) can open every course and lesson without buying or enrolling. No enrollment is recorded, so no welcome emails or drip sequences are triggered."
+msgstr ""
+
+#: build/index.js:16
+msgid "Pass mark"
+msgstr ""
+
+#: build/index.js:16
+msgid "Default pass percentage"
+msgstr ""
+
+#: build/index.js:16
+msgid "Used when a lesson quiz does not set its own pass_percentage."
+msgstr ""
+
+#: build/index.js:16
+msgid "Graded quizzes"
+msgstr ""
+
+#: build/index.js:16
+msgid "Require passing the quiz to complete a lesson"
+msgstr ""
+
+#: build/index.js:16
+msgid "When on, a lesson with a quiz is marked completed when the learner passes it, and cannot be completed any other way. When off, quizzes are practice only."
+msgstr ""
+
+#: build/index.js:16
+msgid "Link products to a course on the course edit screen (Access Settings)."
+msgstr ""
+
+#: build/index.js:16
+msgid "Enable WooCommerce integration for paid courses"
+msgstr ""
+
+#: build/index.js:16
+msgid "When off, orders no longer grant or revoke course access, and WooCommerce purchases, subscriptions and memberships are not checked. Access already granted by past orders is kept."
+msgstr ""
+
+#: build/index.js:16
+msgid "Completed and processing orders grant access to the linked courses. A refunded, cancelled or failed order removes the access that order gave."
+msgstr ""
+
+#: build/index.js:16
+msgid "REST API"
+msgstr ""
+
+#: build/index.js:16
+msgid "Your front end or app reads courses and saves progress through these endpoints."
+msgstr ""
+
+#: build/index.js:16
+msgid "Courses per page"
+msgstr ""
+
+#: build/index.js:16
+msgid "How many courses GET /courses returns when the request does not set per_page."
+msgstr ""
+
+#: build/index.js:16
+msgid "Namespace"
+msgstr ""
+
+#: build/index.js:16
+msgid "Base URL"
+msgstr ""
+
+#: build/index.js:16
+msgid "Endpoint"
+msgstr ""
+
+#: build/index.js:16
+msgid "What it does"
+msgstr ""
+
+#: build/index.js:16
+msgid "Who may call it"
+msgstr ""
+
+#: build/index.js:16
+msgid "Data removal"
+msgstr ""
+
+#: build/index.js:16
+msgid "Delete all data when the plugin is deleted"
+msgstr ""
+
+#: build/index.js:16
+msgid "When the plugin is deleted from the Plugins screen, permanently remove all enrollments, progress, completion records and quiz attempts, the course and lesson settings (access, sections, drip, quizzes, attachments list), the learners' drip start dates, the LMS settings and the LMS capabilities. Course and lesson posts are kept. Leave this off to keep everything, for example when reinstalling."
+msgstr ""
+
+#: build/index.js:16
+msgid "Add a course"
+msgstr ""
+
+#: build/index.js:16
+#: build/index.js:17
+#: build/index.js:18
+msgid "All courses"
+msgstr ""
+
+#: build/index.js:16
+#: build/index.js:18
+msgid "All lessons"
+msgstr ""
+
+#: build/index.js:16
+msgid "Manage enrollments"
+msgstr ""
+
+#: build/index.js:16
+msgid "See quiz results"
+msgstr ""
+
+#: build/index.js:16
+msgid "Courses"
+msgstr ""
+
+#: build/index.js:16
+msgid "Published"
+msgstr ""
+
+#: build/index.js:16
+msgid "Lessons"
+msgstr ""
+
+#: build/index.js:16
+msgid "Active enrollments"
+msgstr ""
+
+#: build/index.js:16
+msgid "Learners with access right now"
+msgstr ""
+
+#. translators: %d: number of days.
+#: build/index.js:17
+#, js-format
+msgid "In the last %d day"
+msgid_plural "In the last %d days"
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:17
+msgid "Quick links"
+msgstr ""
+
+#: build/index.js:17
+msgid "No enrollments match these filters."
+msgstr ""
+
+#: build/index.js:17
+msgid "Access revoked."
+msgstr ""
+
+#: build/index.js:17
+#: build/index.js:18
+msgid "Search learners"
+msgstr ""
+
+#: build/index.js:17
+msgid "Any status"
+msgstr ""
+
+#: build/index.js:17
+msgid "Any source"
+msgstr ""
+
+#. translators: %d: number of deleted attempts.
+#: build/index.js:18
+#, js-format
+msgid "%d attempt deleted."
+msgid_plural "%d attempts deleted."
+msgstr[0] ""
+msgstr[1] ""
+
+#: build/index.js:18
+msgid "No quiz attempts match these filters."
+msgstr ""
+
+#: build/index.js:18
+msgid "Any result"
+msgstr ""
+
+#: build/index.js:18
+msgid "From"
+msgstr ""
+
+#: build/index.js:18
+msgid "To"
+msgstr ""
+
+#. translators: %d: number of selected attempts.
+#: build/index.js:19
+#, js-format
+msgid "Delete %d selected attempt? This cannot be undone."
+msgid_plural "Delete %d selected attempts? This cannot be undone."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: number of selected attempts.
+#: build/index.js:20
+#, js-format
+msgid "Delete selected (%d)"
+msgstr ""
+
+#. translators: %d: number of rows in the file.
+#: build/index.js:21
+#, js-format
+msgid "The file holds the newest %d attempts. Narrow the filters to export the rest."
+msgstr ""
+
+#: build/index.js:21
+msgid "Export CSV"
 msgstr ""
