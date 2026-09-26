@@ -18,8 +18,10 @@ final class QuizScorer {
 	 * Score answers.
 	 *
 	 * Missing or malformed answers count as wrong. Open questions are not
-	 * scored; a quiz with no scored questions passes at 100%. The correct
-	 * answer is revealed only for wrongly answered questions.
+	 * scored; a quiz with no scored questions passes at 100%. Each scored
+	 * question reports only whether it was answered correctly: the right
+	 * answer is never returned, or one submission would hand it out for the
+	 * next attempt and make a required pass meaningless.
 	 *
 	 * @param array<string, mixed> $quiz            Normalized quiz.
 	 * @param array<string, mixed> $answers         Answers keyed by question id.
@@ -82,17 +84,7 @@ final class QuizScorer {
 			}
 		}
 
-		if ( QuizOptions::resolve( $options, $answer ) === $correct_index ) {
-			return [ 'correct' => true ];
-		}
-
-		return [
-			'correct'           => false,
-			// Index kept for 1.8.0 clients; the id is what a client that
-			// received shuffled options can actually use.
-			'correct_option'    => $correct_index,
-			'correct_option_id' => QuizOptions::ids( $options )[ $correct_index ],
-		];
+		return [ 'correct' => QuizOptions::resolve( $options, $answer ) === $correct_index ];
 	}
 
 	/**
@@ -103,13 +95,6 @@ final class QuizScorer {
 	 * @return array<string, mixed>
 	 */
 	private static function check_boolean( bool $expected, mixed $answer ): array {
-		if ( $answer === $expected ) {
-			return [ 'correct' => true ];
-		}
-
-		return [
-			'correct'        => false,
-			'correct_answer' => $expected,
-		];
+		return [ 'correct' => $answer === $expected ];
 	}
 }

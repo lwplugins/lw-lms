@@ -151,7 +151,7 @@ wp lw-lms lesson delete-quiz <lesson>
 - An option may carry its own `id`. Recommended: without one it is addressed by position (`o0`, `o1`, …), so reordering options changes what a stored answer meant.
 - `pass_percentage` and `shuffle_options` are optional; the default threshold is set under **LW Plugins → LMS → General → Quizzes**.
 - Submit: `POST /lms/v1/lessons/{id}/quiz` with `{ "answers": { "<question id>": <option id | index | true/false | "text"> } }`. **Answer with the option id** — with `shuffle_options` on, the server sends the options in random order, and a positional index would mean something else.
-- The response reveals the right answer only for wrong answers (`correct_option_id`, `correct_option`, `correct_answer`); `GET` never contains one.
+- The response says per question only whether the answer was right (`"correct": true|false`); it never contains the right answer, and neither does `GET` (including `last_attempt.review`). The full record, right answers included, stays in the attempt table for the Quiz Results page.
 - `last_attempt` in `GET /lessons/{id}` carries `percentage`, `passed`, `attempts`, `best_percentage` and `review` — the stored snapshot of the last attempt, so a reload can show what was answered.
 - Hooks: `lw_lms_quiz_submitted( $lesson_id, $user_id, $percentage, $passed )`, `lw_lms_quiz_passed( $lesson_id, $user_id, $percentage )`.
 

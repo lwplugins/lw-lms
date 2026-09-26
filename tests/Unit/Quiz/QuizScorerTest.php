@@ -36,7 +36,12 @@ final class QuizScorerTest extends TestCase {
 		$this->assertFalse( $result['passed'] );
 	}
 
-	public function test_reveals_correct_answer_only_for_wrong_answers(): void {
+	/**
+	 * Regression: wrong answers used to carry the right one
+	 * (correct_option, correct_option_id, correct_answer), so one empty
+	 * submission revealed every answer for a 100% retry.
+	 */
+	public function test_never_reveals_the_correct_answer(): void {
 		$result = QuizScorer::score(
 			self::quiz(),
 			[
@@ -51,16 +56,9 @@ final class QuizScorerTest extends TestCase {
 		$this->assertSame(
 			[
 				'q_single_a' => [ 'correct' => true ],
-				'q_single_b' => [
-					'correct'           => false,
-					'correct_option'    => 2,
-					'correct_option_id' => 'o2',
-				],
+				'q_single_b' => [ 'correct' => false ],
 				'q_bool_a'   => [ 'correct' => true ],
-				'q_bool_b'   => [
-					'correct'        => false,
-					'correct_answer' => false,
-				],
+				'q_bool_b'   => [ 'correct' => false ],
 				'q_open'     => [
 					'scored' => false,
 					'sample' => 'Minta.',
@@ -115,14 +113,13 @@ final class QuizScorerTest extends TestCase {
 		$this->assertTrue( $result['results']['q_single_b']['correct'] );
 	}
 
-	public function test_names_the_correct_option_id_when_the_answer_is_wrong(): void {
+	public function test_wrong_option_id_reports_only_that_it_is_wrong(): void {
 		$quiz                               = self::quiz();
 		$quiz['questions'][1]['options'][2] = [ 'id' => 'opt_three' ] + $quiz['questions'][1]['options'][2];
 
 		$result = QuizScorer::score( $quiz, [ 'q_single_b' => 'o0' ], 50.0 );
 
-		$this->assertSame( 'opt_three', $result['results']['q_single_b']['correct_option_id'] );
-		$this->assertSame( 2, $result['results']['q_single_b']['correct_option'] );
+		$this->assertSame( [ 'correct' => false ], $result['results']['q_single_b'] );
 	}
 
 	/**

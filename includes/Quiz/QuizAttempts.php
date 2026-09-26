@@ -82,7 +82,8 @@ final class QuizAttempts {
 
 	/**
 	 * Summary of the last attempt, extended with the stored answer snapshot so
-	 * a learner can review what they got wrong after a page reload.
+	 * a learner can review what they got wrong after a page reload. The right
+	 * answers are removed from that copy.
 	 *
 	 * @param int $user_id   User ID.
 	 * @param int $lesson_id Lesson ID.
@@ -98,7 +99,7 @@ final class QuizAttempts {
 		$row     = QuizAttemptQueries::latest( $user_id, $lesson_id );
 		$answers = $row && $row->answers ? json_decode( (string) $row->answers, true ) : null;
 
-		$summary['review'] = is_array( $answers ) ? $answers : null;
+		$summary['review'] = is_array( $answers ) ? QuizSnapshot::without_answers( $answers ) : null;
 
 		return $summary;
 	}

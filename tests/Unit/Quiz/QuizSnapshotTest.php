@@ -102,6 +102,39 @@ final class QuizSnapshotTest extends TestCase {
 		$this->assertSame( [ 'q_single', 'q_bool', 'q_open' ], array_column( $snapshot, 'id' ) );
 	}
 
+	public function test_learner_copy_drops_every_right_answer(): void {
+		$stored = [
+			[
+				'id'           => 'q1',
+				'given'        => 'o0',
+				'correct'      => false,
+				'correct_text' => 'B',
+			],
+			[
+				'id'             => 'q2',
+				'given'          => false,
+				'correct'        => false,
+				'correct_answer' => true,
+			],
+		];
+
+		$this->assertSame(
+			[
+				[
+					'id'      => 'q1',
+					'given'   => 'o0',
+					'correct' => false,
+				],
+				[
+					'id'      => 'q2',
+					'given'   => false,
+					'correct' => false,
+				],
+			],
+			QuizSnapshot::without_answers( $stored )
+		);
+	}
+
 	public function test_survives_json_round_trip(): void {
 		$snapshot = self::snapshot( [ 'q_single' => 0, 'q_open' => 'ékezetes "idézet"' ] );
 

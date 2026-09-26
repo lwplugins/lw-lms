@@ -14,7 +14,9 @@ namespace LightweightPlugins\LMS\Quiz;
  *
  * Carries prompts and option texts, not only ids: a later `set-quiz` may
  * reword or reorder the quiz, and the stored attempt must stay readable
- * (and defensible) on its own. Pure: no WordPress calls.
+ * (and defensible) on its own. It also records the right answer of every
+ * wrongly answered question for the admin; the learner-facing copy drops it
+ * (see without_answers()). Pure: no WordPress calls.
  */
 final class QuizSnapshot {
 
@@ -91,8 +93,8 @@ final class QuizSnapshot {
 
 			$entry['correct'] = $correct;
 
-			if ( ! $correct && isset( $result['correct_option'] ) ) {
-				$entry['correct_text'] = $options[ $result['correct_option'] ]['text'];
+			if ( ! $correct ) {
+				$entry['correct_text'] = self::correct_text( $options );
 			}
 
 			return $entry;
@@ -106,5 +108,40 @@ final class QuizSnapshot {
 		}
 
 		return $entry;
+	}
+
+	/**
+	 * Text of the correct option of a single-choice question.
+	 *
+	 * @param array<int, array<string, mixed>> $options Options.
+	 * @return string
+	 */
+	private static function correct_text( array $options ): string {
+		foreach ( $options as $option ) {
+			if ( true === ( $option['correct'] ?? false ) ) {
+				return (string) $option['text'];
+			}
+		}
+
+		return '';
+	}
+
+	/**
+	 * The learner-facing copy of a stored snapshot: every right-answer field
+	 * removed, so reviewing a failed attempt does not reveal the answers.
+	 *
+	 * @param array<int, mixed> $snapshot Stored snapshot.
+	 * @return array<int, mixed>
+	 */
+	public static function without_answers( array $snapshot ): array {
+		return array_map(
+			static function ( $entry ) {
+				if ( is_array( $entry ) ) {
+					unset( $entry['correct_text'], $entry['correct_answer'], $entry['correct_option'], $entry['correct_option_id'] );
+				}
+				return $entry;
+			},
+			$snapshot
+		);
 	}
 }
