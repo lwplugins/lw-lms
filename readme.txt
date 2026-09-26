@@ -1,6 +1,6 @@
 === LW LMS ===
 Contributors: lwplugins
-Tags: lms, courses, lessons, learning, education
+Tags: lms, courses, lessons, headless, rest-api
 Requires at least: 6.6
 Tested up to: 7.1
 Stable tag: 1.9.2
@@ -8,63 +8,85 @@ Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Lightweight LMS plugin for WordPress - courses, lessons, and progress tracking without the bloat.
+Headless LMS backend for WordPress: courses, lessons, access, progress, quizzes, drip and a REST API. No frontend output; you build the learner UI.
 
 == Description ==
 
-LW LMS provides a simple yet powerful learning management system for WordPress. No upsells, no tracking, just clean and efficient course management.
+**LW LMS is backend-only (headless).** It provides the data model, the wp-admin screens, access control, progress tracking, quizzes, drip scheduling, the WooCommerce integration and a REST API. It does **not** display anything on your site: there are no templates, no shortcodes, no blocks and no theme output, and courses and lessons have no public URLs. You build the learner-facing frontend yourself (in your theme, a separate app or a headless site) on top of the `lms/v1` REST API.
+
+No upsells, no tracking.
 
 = Features =
 
-**Course Management**
+**Courses and lessons**
 
-* Custom post type for courses with Gutenberg support
-* Course sections for organizing lessons
-* Multiple access types: open, free (login required), paid (WooCommerce)
-* Course attachments and downloads
-* Course categories, tags, and difficulty levels
+* Course and lesson post types, edited in the block editor (not public, no front-end URLs)
+* Course sections (modules) and a drag-and-drop course builder for ordering lessons
+* Access types: open (anyone, no login), free (login required) and paid (WooCommerce)
+* Preview lessons that logged-in users can open without access to the course
+* Course duration, instructor, featured image and excerpt; lesson duration
+* Course categories, tags and difficulty levels
+* File attachments on courses and lessons, picked from the Media Library
+* Lesson video: YouTube, Vimeo, Wistia or a self-hosted file, with the provider detected from the URL
 
-**Lesson Management**
+**Progress**
 
-* Custom post type for lessons with Gutenberg support
-* Video support (YouTube, Vimeo, Wistia, self-hosted)
-* Lesson attachments and downloads
-* Automatic video provider detection
+* Per-user lesson completion and course completion percentage
+* Course completion is recorded once and stays at 100% when lessons are added later
+* Learners mark lessons completed through the REST API; admins can override it with WP-CLI or the abilities
 
-**Progress Tracking**
+**Quizzes**
 
-* Track user progress through courses
-* Mark lessons as completed
-* Course completion percentage
-* Per-user progress storage
+* One quiz per lesson, stored as a validated JSON document (single-choice, true/false and ungraded open questions)
+* Edited in a JSON editor on the lesson screen or with WP-CLI
+* Scored on the server; answers to learners never reveal the correct answer
+* Optional rule: a lesson with a quiz can only be completed after its quiz is passed
+* Every attempt is stored with its answers; submissions are throttled per learner and lesson
 
-**WooCommerce Integration**
+**Drip and linear progression**
 
-* Link courses to WooCommerce products
-* WooCommerce Subscriptions support
-* Automatic access control based on purchases
+* Free (any order) or linear progression per course
+* In linear mode the course, a section or a lesson can open N hours, days, weeks or months after enrollment, or after the previous section or lesson is completed
+* The REST payloads carry the lock reason and the unlock date
 
-**REST API**
+**WooCommerce**
 
-* Full REST API for headless implementations
-* Course and lesson endpoints
-* Progress endpoints
-* Protected download endpoints
+* Access is granted when an order linked to the course is processing or completed, and taken back when the order is refunded, cancelled or failed
+* Optional access duration per product (time-limited access)
+* WooCommerce Subscriptions, per subscription product or per variation
+* WooCommerce Memberships plans
 
-**Admin Interface**
+**REST API (`/wp-json/lms/v1/`)**
 
-* Intuitive course content builder
-* Drag-and-drop lesson ordering
-* Section management
-* Access control settings
-* One LMS screen: overview, enrollments with progress (grant and revoke), quiz results (answers, delete, CSV export) and settings
+* Courses (list with filters, single course with sections and lessons), lessons, progress, quiz submission and file downloads
+* Signed, time-limited download links for course and lesson attachments
+* Filters to add your own keys to the course and lesson payloads
+
+**Admin**
+
+* One LMS screen under LW Plugins: overview, enrollments with per-course progress (grant and revoke), quiz results (answers, per-question statistics, delete, CSV export) and settings
+* Manual enrollment on user profiles
+* A `manage_lms` capability for the learner sections
+
+**Also included**
+
+* WP-CLI commands for courses, lessons, sections, quizzes, drip, enrollments and completion
+* A WP-CLI importer that copies LearnDash courses and lessons into LW LMS (`wp lw-lms migrate-learndash`)
+* Abilities API integration (list and read courses, read and set progress, read settings), also used by LW Site Manager
+* Personal data export and erase (Tools → Export / Erase Personal Data)
+* LW Cookie (1.7.1+) integration: the lesson video player waits for cookie consent when LW Cookie blocks the video host. While LW Cookie blocks embeds, LW LMS loads one small script on the front end that makes the placeholder's "Accept & play video" button work; this is the only thing it adds to the front end
+
+= About downloads =
+
+Attachments are ordinary Media Library files. The REST API hands out signed download links (valid for one hour by default, see the `lw_lms_download_link_ttl` filter) and checks the learner's access when a file is requested through them. The files themselves stay in the uploads folder, so anyone who has a file's direct media URL can still open it. Do not rely on LW LMS alone for files that must stay private.
 
 = Requirements =
 
 * PHP 8.0 or higher
 * WordPress 6.6 or higher
+* A frontend of your own (theme, app or headless site) that uses the REST API to show courses to learners
 * WooCommerce (optional, for paid courses)
-* WooCommerce Subscriptions (optional, for subscription-based access)
+* WooCommerce Subscriptions or WooCommerce Memberships (optional, for subscription- or membership-based access)
 
 == Installation ==
 
@@ -76,7 +98,13 @@ Or install via Composer:
 
 `composer require lwplugins/lw-lms`
 
+Then build or connect the frontend that shows courses to your learners, using the REST API at `/wp-json/lms/v1/`.
+
 == Frequently Asked Questions ==
+
+= Does it display courses on my site? =
+
+No. LW LMS is backend-only: it adds no templates, shortcodes, blocks or theme output, and courses and lessons have no public pages. Your theme, a separate app or a headless site has to fetch courses, lessons and progress from the REST API at `/wp-json/lms/v1/` and render them. The one piece of markup it supplies is the ready video player in the lesson payload (`video.html`), for you to insert into your own page (plus, with LW Cookie blocking embeds, the small script behind that player's consent button).
 
 = Do I need WooCommerce? =
 
@@ -84,21 +112,29 @@ No, WooCommerce is only required if you want to sell courses. Open and free cour
 
 = Can I use this with a headless frontend? =
 
-Yes, LW LMS provides a full REST API at `/wp-json/lms/v1/` for headless implementations.
+Yes, that is how it is meant to be used. All learner-facing data is available from the REST API at `/wp-json/lms/v1/`.
 
 = How do I create a course? =
 
-Go to **Courses → Add New** in your WordPress admin. Use the Gutenberg editor for course content, then use the metaboxes to add sections, lessons, and configure access settings.
+Go to **Courses → Add New** in your WordPress admin. Write the course content in the block editor, then use the boxes below it to add sections and lessons, set the access type and configure drip.
 
 = How do I track user progress? =
 
-User progress is automatically tracked when users complete lessons via the REST API. You can see each learner's progress per course under **LW Plugins → LMS → Enrollments**, or query it via the API.
+Your frontend marks lessons completed with `POST /wp-json/lms/v1/progress`; progress is not recorded by viewing a lesson in wp-admin. You can see each learner's progress per course under **LW Plugins → LMS → Enrollments**, or read it from the API.
+
+= Are course files protected? =
+
+Partly. Download links in the API payloads are signed, expire and check access on every request, but the files remain regular Media Library uploads and are reachable at their direct URL. See "About downloads" above.
+
+= Can I import courses from LearnDash? =
+
+Yes. `wp lw-lms migrate-learndash` copies LearnDash courses and lessons (with sections, lesson order, access type, linked WooCommerce products, featured images and lesson video URLs) into LW LMS. Run it with `--dry-run` first to preview. Items that were already imported are skipped.
 
 == Screenshots ==
 
 1. Course editor with sections and lessons
 2. Lesson editor with video support
-3. Settings page
+3. LMS screen: overview, enrollments, quiz results and settings
 4. REST API response example
 
 == Changelog ==

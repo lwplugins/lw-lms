@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       LW LMS
  * Plugin URI:        https://github.com/lwplugins/lw-lms
- * Description:       Lightweight LMS — courses, lessons, and progress tracking.
+ * Description:       Headless LMS backend: courses, lessons, access, progress, quizzes, drip and a REST API. No frontend output; build your own on the lms/v1 REST API.
  * Version:           1.9.2
  * Requires at least: 6.6
  * Requires PHP:      8.0

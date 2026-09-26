@@ -1,6 +1,8 @@
 # LW LMS - Site Manager Abilities
 
-LW LMS registers abilities with [LW Site Manager](https://github.com/lwplugins/lw-site-manager) when both plugins are active. These abilities allow AI agents and REST API clients to read and update LMS data.
+LW LMS registers these abilities with the WordPress Abilities API. When [LW Site Manager](https://github.com/lwplugins/lw-site-manager) is active they are registered through it (and use its permission settings); without it they are registered directly with the Abilities API when that API is available. These abilities allow AI agents and REST API clients to read and update LMS data.
+
+LW LMS is backend-only: the `url` fields below are the WordPress permalinks of the course posts, but the plugin registers no front-end pages for them.
 
 ## Category
 
@@ -13,7 +15,7 @@ LW LMS registers abilities with [LW Site Manager](https://github.com/lwplugins/l
 **Type:** readonly
 **Permission:** `can_edit_posts`
 
-List all published courses with basic metadata.
+List published courses (ordered by title) with basic metadata.
 
 **Input:**
 
@@ -32,13 +34,16 @@ List all published courses with basic metadata.
       "id": 42,
       "title": "Intro to PHP",
       "status": "publish",
-      "url": "https://example.com/course/intro-to-php",
+      "url": "https://example.com/?post_type=course&p=42",
       "access_type": "free",
       "duration": "2h",
       "instructor": "Jane Doe"
     }
   ],
-  "total": 5
+  "total": 5,
+  "total_pages": 1,
+  "page": 1,
+  "per_page": 20
 }
 ```
 
@@ -49,7 +54,7 @@ List all published courses with basic metadata.
 **Type:** readonly
 **Permission:** `can_edit_posts`
 
-Get full course details including lessons and sections.
+Get full course details including lessons and sections. `lessons` lists the published lessons of the course, ordered by lesson order.
 
 **Input:**
 
@@ -66,7 +71,7 @@ Get full course details including lessons and sections.
     "id": 42,
     "title": "Intro to PHP",
     "status": "publish",
-    "url": "https://example.com/course/intro-to-php",
+    "url": "https://example.com/?post_type=course&p=42",
     "access_type": "free",
     "duration": "2h",
     "instructor": "Jane Doe",
@@ -172,6 +177,9 @@ Get global LW LMS plugin settings.
     "courses_per_page": 10,
     "enable_preview_lessons": true,
     "default_access_type": "free",
+    "auto_enroll_admins": false,
+    "quiz_pass_percentage": 80,
+    "require_quiz_pass": false,
     "woo_enabled": true,
     "delete_data_on_uninstall": false
   }
@@ -187,6 +195,7 @@ All abilities return a `WP_Error` on failure. Common error codes:
 | `missing_course_id` | 400 | `course_id` not provided |
 | `missing_params` | 400 | Required fields missing |
 | `invalid_status` | 400 | Status value not in allowed list |
+| `lesson_not_in_course` | 400 | The lesson does not belong to `course_id` (`set-progress`) |
 | `not_found` | 404 | Course not found |
 | `course_not_found` | 404 | Course not found (in progress endpoints) |
 | `user_not_found` | 404 | User not found |
