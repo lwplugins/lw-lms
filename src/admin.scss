@@ -27,20 +27,23 @@ $gap-xl: var(--wpds-dimension-gap-xl, 24px);
 $mono: var(--wpds-typography-font-family-mono, monospace);
 
 // Brand color ----------------------------------------------------------------
-// ONE variable: the admin theme color and the logo share it. Every
-// @wordpress/components control reads --wp-admin-theme-color, so toggles,
-// focus rings, selected states and links all follow. Set on body (not only
-// the root) so portaled modals and popovers inherit it too. The darker
-// shades are derived from it (core uses -5% / -10% lightness).
+// Two tokens. $lw-brand is the LW LMS green of the plugin mark, progress bars
+// and other accents. $lw-brand-strong is the same hue, darker, for anything
+// that carries text: every @wordpress/components control reads
+// --wp-admin-theme-color, so primary buttons (white text), links, toggles,
+// focus rings and selected states follow it. Set on body (not only the root)
+// so portaled modals and popovers inherit it too. The hover/active shades
+// are derived from it (core uses -5% / -10% lightness).
 //
-// LW LMS green (the plugin mark in the sidebar is drawn in it too) -- the
-// one token to swap for a new accent.
-// WCAG 2.x contrast (computed): white on #4a9c5d = 3.4:1, which meets AA
-// for large and bold UI text (3:1) but not for 13px body text (4.5:1); the
-// darker hover/active shades below raise it.
+// WCAG 2.x contrast (computed from relative luminance):
+// - white on $lw-brand #4a9c5d = 3.38:1, AA only for large text (3:1), so it
+//   is not used behind or as text;
+// - white on $lw-brand-strong #3b7d4a = 4.98:1, and #3b7d4a on the #fcfcfc
+//   page = 4.85:1, both AA for normal text (4.5:1).
 $lw-brand: #4a9c5d;
-$lw-brand-darker-10: color.adjust($lw-brand, $lightness: -5%);
-$lw-brand-darker-20: color.adjust($lw-brand, $lightness: -10%);
+$lw-brand-strong: #3b7d4a;
+$lw-brand-darker-10: color.adjust($lw-brand-strong, $lightness: -5%);
+$lw-brand-darker-20: color.adjust($lw-brand-strong, $lightness: -10%);
 
 @function rgb-list($c) {
 	@return color.channel($c, "red", $space: rgb), color.channel($c, "green", $space: rgb), color.channel($c, "blue", $space: rgb);
@@ -48,13 +51,13 @@ $lw-brand-darker-20: color.adjust($lw-brand, $lightness: -10%);
 
 body.lw-lms-screen,
 .lw-lms-root {
-	--wp-admin-theme-color: #{$lw-brand};
-	--wp-admin-theme-color--rgb: #{rgb-list($lw-brand)};
+	--wp-admin-theme-color: #{$lw-brand-strong};
+	--wp-admin-theme-color--rgb: #{rgb-list($lw-brand-strong)};
 	--wp-admin-theme-color-darker-10: #{$lw-brand-darker-10};
 	--wp-admin-theme-color-darker-10--rgb: #{rgb-list($lw-brand-darker-10)};
 	--wp-admin-theme-color-darker-20: #{$lw-brand-darker-20};
 	--wp-admin-theme-color-darker-20--rgb: #{rgb-list($lw-brand-darker-20)};
-	--wpds-color-stroke-focus: #{$lw-brand};
+	--wpds-color-stroke-focus: #{$lw-brand-strong};
 }
 
 // Focus rings: only for keyboard users. Core components draw the ring on
