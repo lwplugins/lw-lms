@@ -65,6 +65,35 @@ final class AccessQueries {
 	}
 
 	/**
+	 * Whether one specific grant (source + source ID, e.g. one order) is active.
+	 *
+	 * @param int    $user_id   User ID.
+	 * @param int    $course_id Course ID.
+	 * @param string $source    Access source.
+	 * @param int    $source_id Source ID.
+	 * @return bool
+	 */
+	public static function has_active_grant_from( int $user_id, int $course_id, string $source, int $source_id ): bool {
+		global $wpdb;
+
+		$table = AccessTable::get_table_name();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$result = $wpdb->get_var(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
+				"SELECT id FROM {$table} WHERE user_id = %d AND course_id = %d AND source = %s AND source_id = %d AND status = 'active' LIMIT 1",
+				$user_id,
+				$course_id,
+				$source,
+				$source_id
+			)
+		);
+
+		return null !== $result;
+	}
+
+	/**
 	 * Get active access record for a user and course.
 	 *
 	 * @param int $user_id   User ID.

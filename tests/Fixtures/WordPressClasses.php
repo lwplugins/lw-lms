@@ -82,3 +82,21 @@ if ( ! class_exists( 'WP_Error' ) ) {
 		}
 	}
 }
+
+if ( ! class_exists( 'WC_Order_Item_Product' ) ) {
+	/**
+	 * Stand-in for WooCommerce's WC_Order_Item_Product.
+	 */
+	class WC_Order_Item_Product {
+
+		private int $product_id;
+
+		public function __construct( int $product_id = 0 ) {
+			$this->product_id = $product_id;
+		}
+
+		public function get_product_id(): int {
+			return $this->product_id;
+		}
+	}
+}
