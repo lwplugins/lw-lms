@@ -2,6 +2,11 @@
 /**
  * Uninstall script for LW LMS.
  *
+ * Deletes data only on sites where "Delete all data when the plugin is
+ * deleted" is on (LW Plugins → LMS → Advanced). By default every enrollment,
+ * progress row, quiz attempt and setting is kept, so deleting the plugin to
+ * reinstall it loses nothing. See LightweightPlugins\LMS\Uninstall\Uninstaller.
+ *
  * @package LightweightPlugins\LMS
  */
 
@@ -10,55 +15,15 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 	exit;
 }
 
-global $wpdb;
+// The plugin file is not loaded during uninstall, so load the autoloader:
+// the local vendor (standalone/ZIP) or an already loaded root Composer one.
+if ( file_exists( __DIR__ . '/vendor/autoload.php' ) ) {
+	require_once __DIR__ . '/vendor/autoload.php';
+}
 
-// Delete options.
-delete_option( 'lw_lms_options' );
-delete_option( 'lw_lms_db_version' );
-
-// Delete post meta.
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall cleanup.
-$wpdb->query(
-	$wpdb->prepare(
-		"DELETE FROM {$wpdb->postmeta} WHERE meta_key LIKE %s",
-		'_lw_lms_%'
-	)
-);
-
-// Delete quiz attempt user meta (_lw_lms_quiz_{lesson_id}).
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall cleanup.
-$wpdb->query(
-	$wpdb->prepare(
-		"DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s",
-		$wpdb->esc_like( '_lw_lms_quiz_' ) . '%'
-	)
-);
-
-// Delete drip clock user meta (_lw_lms_course_start_{course_id}).
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- Uninstall cleanup.
-$wpdb->query(
-	$wpdb->prepare(
-		"DELETE FROM {$wpdb->usermeta} WHERE meta_key LIKE %s",
-		$wpdb->esc_like( '_lw_lms_course_start_' ) . '%'
-	)
-);
-
-// Drop custom tables.
-$lw_lms_progress_table = $wpdb->prefix . 'lms_progress';
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Uninstall cleanup.
-$wpdb->query( "DROP TABLE IF EXISTS {$lw_lms_progress_table}" );
-
-$lw_lms_quiz_attempts_table = $wpdb->prefix . 'lms_quiz_attempts';
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Uninstall cleanup.
-$wpdb->query( "DROP TABLE IF EXISTS {$lw_lms_quiz_attempts_table}" );
-
-$lw_lms_snapshots_table = $wpdb->prefix . 'lms_completion_snapshots';
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Uninstall cleanup.
-$wpdb->query( "DROP TABLE IF EXISTS {$lw_lms_snapshots_table}" );
-
-$lw_lms_access_table = $wpdb->prefix . 'lms_access';
-// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.DirectDatabaseQuery.SchemaChange, WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Uninstall cleanup.
-$wpdb->query( "DROP TABLE IF EXISTS {$lw_lms_access_table}" );
-
-// Flush rewrite rules.
-flush_rewrite_rules();
+if ( class_exists( LightweightPlugins\LMS\Uninstall\Uninstaller::class ) ) {
+	LightweightPlugins\LMS\Uninstall\Uninstaller::run();
+} else {
+	// phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_error_log -- No autoloader: the only way to say why the data was kept.
+	error_log( 'lw-lms uninstall: autoloader not found, all LMS data was kept.' );
+}

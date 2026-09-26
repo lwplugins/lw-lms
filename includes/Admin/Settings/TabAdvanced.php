@@ -60,12 +60,12 @@ final class TabAdvanced implements TabInterface {
 					$this->render_checkbox_field(
 						[
 							'name'  => 'delete_data_on_uninstall',
-							'label' => __( 'Delete all data when plugin is uninstalled', 'lw-lms' ),
+							'label' => __( 'Delete all data when the plugin is deleted', 'lw-lms' ),
 						]
 					);
 					?>
 					<p class="description">
-						<?php esc_html_e( 'Warning: This will permanently delete all courses, lessons, and progress data when the plugin is uninstalled.', 'lw-lms' ); ?>
+						<?php esc_html_e( 'When the plugin is deleted from the Plugins screen, permanently remove all enrollments, progress, completion records and quiz attempts, the course and lesson settings (access, sections, drip, quizzes, attachments list), the learners\' drip start dates, the LMS settings and the LMS capabilities. Course and lesson posts are kept. Leave this off to keep everything, for example when reinstalling.', 'lw-lms' ); ?>
 					</p>
 				</td>
 			</tr>
