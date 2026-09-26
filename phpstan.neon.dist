@@ -5,6 +5,13 @@ includes:
 parameters:
 	level: 5
 
+	# The plugin supports PHP 8.0 (composer.json, plugin header, readme).
+	# Analysing with 8.0 grammar turns 8.1+ syntax into parse errors and
+	# 8.1+ functions (array_is_list, …) into unknown functions. Do not remove.
+	phpVersion:
+		min: 80000
+		max: 80599
+
 	paths:
 		- lw-lms.php
 		- includes/

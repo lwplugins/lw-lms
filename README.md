@@ -8,8 +8,8 @@ Lightweight LMS plugin for WordPress - courses, lessons, and progress tracking w
 
 ## Requirements
 
-- PHP 8.1+
-- WordPress 6.0+
+- PHP 8.0+
+- WordPress 6.6+
 - WooCommerce (optional, for paid courses)
 - WooCommerce Subscriptions (optional, for subscription-based access)
 

@@ -69,7 +69,7 @@ final class QuizNormalizer {
 		}
 
 		$questions = $root['questions'] ?? null;
-		if ( ! is_array( $questions ) || [] === $questions || ! array_is_list( $questions ) ) {
+		if ( ! is_array( $questions ) || [] === $questions || ! self::is_list( $questions ) ) {
 			self::fail( 'quiz.questions must be a non-empty list of questions.' );
 		}
 
@@ -136,7 +136,7 @@ final class QuizNormalizer {
 	 * @return array<int, array<string, mixed>>
 	 */
 	private static function options( mixed $data, string $path ): array {
-		if ( ! is_array( $data ) || count( $data ) < 2 || ! array_is_list( $data ) ) {
+		if ( ! is_array( $data ) || count( $data ) < 2 || ! self::is_list( $data ) ) {
 			self::fail( "{$path} must be a list of at least 2 options." );
 		}
 
@@ -193,7 +193,7 @@ final class QuizNormalizer {
 	 * @return array<string, mixed>
 	 */
 	private static function object( mixed $data, string $path ): array {
-		if ( ! is_array( $data ) || ( [] !== $data && array_is_list( $data ) ) ) {
+		if ( ! is_array( $data ) || ( [] !== $data && self::is_list( $data ) ) ) {
 			self::fail( "{$path} must be an object." );
 		}
 
@@ -247,13 +247,30 @@ final class QuizNormalizer {
 	}
 
 	/**
+	 * Whether an array is a list (keys 0..n-1 in order).
+	 *
+	 * Local stand-in for array_is_list(), which needs PHP 8.1; the plugin
+	 * supports PHP 8.0.
+	 *
+	 * @param array<mixed> $data Array.
+	 * @return bool
+	 */
+	private static function is_list( array $data ): bool {
+		return array_values( $data ) === $data;
+	}
+
+	/**
 	 * Abort validation.
+	 *
+	 * Declared `void` with a `never` docblock type: the native `never` return
+	 * type needs PHP 8.1, and the plugin supports PHP 8.0. Static analysis
+	 * still knows the call does not return.
 	 *
 	 * @param string $message Plain-text message naming the offending path.
 	 * @return never
 	 * @throws InvalidQuizException Always.
 	 */
-	private static function fail( string $message ): never {
+	private static function fail( string $message ): void {
 		// phpcs:ignore WordPress.Security.EscapeOutput.ExceptionNotEscaped -- Plain-text message for WP-CLI / JSON, never rendered as HTML.
 		throw new InvalidQuizException( $message );
 	}

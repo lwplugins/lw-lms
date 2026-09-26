@@ -42,10 +42,10 @@
 
     <!-- PHP Compatibility -->
     <rule ref="PHPCompatibilityWP"/>
-    <config name="testVersion" value="8.2-"/>
+    <config name="testVersion" value="8.0-"/>
 
     <!-- WordPress minimum version -->
-    <config name="minimum_wp_version" value="6.0"/>
+    <config name="minimum_wp_version" value="6.6"/>
 
     <!-- Text domain -->
     <rule ref="WordPress.WP.I18n">

@@ -1,10 +1,10 @@
 === LW LMS ===
 Contributors: lwplugins
 Tags: lms, courses, lessons, learning, education
-Requires at least: 6.0
+Requires at least: 6.6
 Tested up to: 7.1
 Stable tag: 1.9.2
-Requires PHP: 8.2
+Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -60,8 +60,8 @@ LW LMS provides a simple yet powerful learning management system for WordPress. 
 
 = Requirements =
 
-* PHP 8.1 or higher
-* WordPress 6.0 or higher
+* PHP 8.0 or higher
+* WordPress 6.6 or higher
 * WooCommerce (optional, for paid courses)
 * WooCommerce Subscriptions (optional, for subscription-based access)
 

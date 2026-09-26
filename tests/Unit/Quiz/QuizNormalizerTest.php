@@ -115,6 +115,10 @@ final class QuizNormalizerTest extends TestCase {
 			'boolean without answer'   => [ static fn ( $q ) => self::with_question( $q, 1, [ 'correct' => 'yes' ] ), 'quiz.questions[1].correct' ],
 			'open with options'        => [ static fn ( $q ) => self::with_question( $q, 2, [ 'options' => [] ] ), 'quiz.questions[2] has unknown key(s): options' ],
 			'open sample not string'   => [ static fn ( $q ) => self::with_question( $q, 2, [ 'sample' => 5 ] ), 'quiz.questions[2].sample' ],
+			// The PHP 8.0 list check must treat keyed and gapped arrays like array_is_list() did.
+			'questions keyed'          => [ static fn ( $q ) => array_merge( $q, [ 'questions' => [ 'a' => $q['questions'][0] ] ] ), 'quiz.questions must be a non-empty list' ],
+			'questions with a gap'     => [ static fn ( $q ) => array_merge( $q, [ 'questions' => [ 1 => $q['questions'][0] ] ] ), 'quiz.questions must be a non-empty list' ],
+			'options with a gap'       => [ static fn ( $q ) => self::with_question( $q, 0, [ 'options' => [ 0 => [ 'text' => 'A', 'correct' => true ], 2 => [ 'text' => 'B' ] ] ] ), 'quiz.questions[0].options must be a list' ],
 		];
 	}
 
