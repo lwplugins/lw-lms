@@ -74,7 +74,7 @@ final class CoursesController {
 	 * @return WP_REST_Response|WP_Error
 	 */
 	public function get_courses( WP_REST_Request $request ): WP_REST_Response|WP_Error {
-		$per_page = $request->get_param( 'per_page' ) ?? Options::get( 'courses_per_page', 10 );
+		$per_page = self::per_page( $request->get_param( 'per_page' ) );
 		$page     = $request->get_param( 'page' ) ?? 1;
 		$category = $request->get_param( 'category' );
 		$level    = $request->get_param( 'level' );
@@ -145,6 +145,19 @@ final class CoursesController {
 	}
 
 	/**
+	 * Page size: the requested one, else the "Courses per page" setting,
+	 * kept within 1–100.
+	 *
+	 * @param mixed $requested per_page parameter (null when not sent).
+	 * @return int
+	 */
+	public static function per_page( mixed $requested ): int {
+		$value = null !== $requested ? (int) $requested : (int) Options::get( 'courses_per_page', 10 );
+
+		return max( 1, min( 100, $value ) );
+	}
+
+	/**
 	 * Get single course.
 	 *
 	 * @param WP_REST_Request $request Request object.
@@ -181,8 +194,9 @@ final class CoursesController {
 	 */
 	private function get_collection_params(): array {
 		return [
+			// No default here: the "Courses per page" setting is the default
+			// (a route default would always win over it).
 			'per_page' => [
-				'default'           => 10,
 				'validate_callback' => function ( $param ) {
 					return is_numeric( $param ) && $param > 0 && $param <= 100;
 				},
