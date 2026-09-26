@@ -59,7 +59,7 @@ final class SectionSanitizer {
 	 * @param mixed $raw Submitted id.
 	 * @return string
 	 */
-	private static function section_id( mixed $raw ): string {
+	public static function section_id( mixed $raw ): string {
 		if ( ! is_string( $raw ) && ! is_numeric( $raw ) ) {
 			return '';
 		}

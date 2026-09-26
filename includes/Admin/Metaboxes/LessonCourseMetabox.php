@@ -70,7 +70,7 @@ final class LessonCourseMetabox {
 			]
 		);
 		?>
-		<div class="lw-lms-lesson-course">
+		<div class="lw-lms-lesson-course" data-sections="<?php echo esc_attr( (string) wp_json_encode( self::sections_by_course( $courses ) ) ); ?>">
 			<p>
 				<label for="lw_lms_lesson_course_id"><strong><?php esc_html_e( 'Select Course', 'lw-lms' ); ?></strong></label>
 				<select id="lw_lms_lesson_course_id" name="lw_lms_lesson_course_id" class="widefat">
@@ -88,16 +88,13 @@ final class LessonCourseMetabox {
 				<select id="lw_lms_lesson_section_id" name="lw_lms_lesson_section_id" class="widefat">
 					<option value=""><?php esc_html_e( '— No Section —', 'lw-lms' ); ?></option>
 					<?php
-					if ( $course_id ) {
-						$sections = Options::get_post_meta( $course_id, 'course_sections', [] );
-						foreach ( $sections as $section ) {
-							printf(
-								'<option value="%s" %s>%s</option>',
-								esc_attr( $section['id'] ),
-								selected( $section_id, $section['id'], false ),
-								esc_html( $section['title'] )
-							);
-						}
+					foreach ( $course_id ? LessonPlacement::sections( $course_id ) : [] as $id => $title ) {
+						printf(
+							'<option value="%s" %s>%s</option>',
+							esc_attr( $id ),
+							selected( $section_id, $id, false ),
+							esc_html( $title )
+						);
 					}
 					?>
 				</select>
@@ -109,6 +106,28 @@ final class LessonCourseMetabox {
 			</p>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Sections of every listed course, for the section select to follow the
+	 * course select (assets/js/admin.js).
+	 *
+	 * @param array<int, \WP_Post> $courses Courses.
+	 * @return array<int, array<int, array{id: string, title: string}>>
+	 */
+	private static function sections_by_course( array $courses ): array {
+		$map = [];
+
+		foreach ( $courses as $course ) {
+			foreach ( LessonPlacement::sections( $course->ID ) as $id => $title ) {
+				$map[ $course->ID ][] = [
+					'id'    => $id,
+					'title' => $title,
+				];
+			}
+		}
+
+		return $map;
 	}
 
 	/**
@@ -134,14 +153,15 @@ final class LessonCourseMetabox {
 			return;
 		}
 
-		// Save course ID.
+		// Save course ID (only a real course) and a section of that course.
+		// The section ID keeps its case: sanitize_key() lowercased it, which
+		// detached lessons from sections whose IDs contain capitals.
 		if ( isset( $_POST['lw_lms_lesson_course_id'] ) ) {
-			Options::set_post_meta( $post_id, 'lesson_course_id', absint( $_POST['lw_lms_lesson_course_id'] ) );
-		}
+			$course_id = LessonPlacement::course( absint( $_POST['lw_lms_lesson_course_id'] ) );
+			$section   = isset( $_POST['lw_lms_lesson_section_id'] ) ? sanitize_text_field( wp_unslash( $_POST['lw_lms_lesson_section_id'] ) ) : '';
 
-		// Save section ID.
-		if ( isset( $_POST['lw_lms_lesson_section_id'] ) ) {
-			Options::set_post_meta( $post_id, 'lesson_section_id', sanitize_key( $_POST['lw_lms_lesson_section_id'] ) );
+			Options::set_post_meta( $post_id, 'lesson_course_id', $course_id );
+			Options::set_post_meta( $post_id, 'lesson_section_id', LessonPlacement::section( $section, $course_id ) );
 		}
 
 		// Save order.

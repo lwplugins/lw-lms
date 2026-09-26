@@ -181,10 +181,47 @@
 		);
 	}
 
+	/**
+	 * Lesson screen: the section select follows the chosen course.
+	 */
+	function initLessonSections() {
+		var $box = $( '.lw-lms-lesson-course' );
+
+		if ( ! $box.length) {
+			return;
+		}
+
+		var sections  = $box.data( 'sections' ) || {};
+		var $course   = $box.find( '#lw_lms_lesson_course_id' );
+		var $wrap     = $box.find( '.lw-lms-section-select' );
+		var $section  = $box.find( '#lw_lms_lesson_section_id' );
+		var $noneItem = $section.find( 'option[value=""]' ).first().clone();
+
+		$course.on(
+			'change',
+			function () {
+				var courseId = $( this ).val();
+				var list     = sections[ courseId ] || [];
+
+				$section.empty().append( $noneItem.clone() );
+
+				list.forEach(
+					function (item) {
+						$section.append( $( '<option>' ).val( item.id ).text( item.title ) );
+					}
+				);
+
+				$section.val( '' );
+				$wrap.toggle( !! courseId );
+			}
+		);
+	}
+
 	$( document ).ready(
 		function () {
 			initTabs();
 			initAttachments();
+			initLessonSections();
 		}
 	);
 
