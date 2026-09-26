@@ -58,6 +58,7 @@ use LightweightPlugins\LMS\Access\NewCourseDefaults;
 use LightweightPlugins\LMS\WooCommerce\WooCommerce;
 use LightweightPlugins\LMS\SiteManager\Integration as SiteManagerIntegration;
 use LightweightPlugins\LMS\LwCookie\Integration as LwCookieIntegration;
+use LightweightPlugins\LMS\Privacy\PrivacyHooks;
 
 /**
  * Main plugin class.
@@ -106,6 +107,9 @@ final class Plugin {
 
 		// New courses start with the configured default access type.
 		NewCourseDefaults::register();
+
+		// Personal data export/erase and cleanup of deleted users.
+		PrivacyHooks::register();
 
 		// Completing a lesson can open the next one in the same request.
 		add_action( 'lw_lms_lesson_completed', [ LessonLocks::class, 'flush' ] );

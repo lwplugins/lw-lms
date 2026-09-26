@@ -160,6 +160,10 @@ wp lw-lms lesson delete-quiz <lesson>
 
 Editors get a validated JSON editor on the lesson screen and a **LW Plugins → Quiz Results** page (per-learner attempts and per-question statistics). Every submission is stored in `{prefix}lms_quiz_attempts` with its answer snapshot.
 
+## Privacy
+
+LW LMS registers with **Tools → Export Personal Data** and **Tools → Erase Personal Data**. The export contains the user's course enrollments, lesson progress and quiz attempts with their answers. Erasing removes progress, completion records, quiz attempts, quiz summaries, drip start dates and ended enrollments; active enrollments are kept so the person keeps access they were granted (return `true` from the `lw_lms_privacy_erase_active_enrollments` filter to erase them too). Deleting a user removes all of their LMS rows.
+
 ## Capabilities
 
 Courses and lessons use the regular WordPress post capabilities (`capability_type` `post`), in wp-admin and in the APIs alike:
