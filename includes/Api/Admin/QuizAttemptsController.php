@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Admin;
 
+use LightweightPlugins\LMS\Privacy\EmailVisibility;
 use LightweightPlugins\LMS\Api\Admin\QuizAttempts\AttemptCsv;
 use LightweightPlugins\LMS\Api\Admin\QuizAttempts\AttemptPresenter;
 use LightweightPlugins\LMS\Quiz\QuizAttemptQueries;
@@ -87,6 +88,8 @@ final class QuizAttemptsController {
 		if ( [] !== $params->errors ) {
 			return AdminRoutes::invalid( $params->errors );
 		}
+
+		$params->filters[ EmailVisibility::SEARCH_FLAG ] = EmailVisibility::allowed();
 
 		$total = QuizAttemptSearch::count( $params->filters );
 		$pages = $params->clamp( $total );
@@ -187,6 +190,8 @@ final class QuizAttemptsController {
 		if ( [] !== $params->errors ) {
 			return AdminRoutes::invalid( $params->errors );
 		}
+
+		$params->filters[ EmailVisibility::SEARCH_FLAG ] = EmailVisibility::allowed();
 
 		$total = QuizAttemptSearch::count( $params->filters );
 		$rows  = AttemptPresenter::rows( QuizAttemptSearch::rows( $params->filters, AttemptCsv::MAX_ROWS, 0 ) );

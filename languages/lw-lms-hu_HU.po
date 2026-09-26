@@ -4,7 +4,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: LW LMS\n"
 "Report-Msgid-Bugs-To: https://github.com/lwplugins/lw-lms/issues\n"
-"POT-Creation-Date: 2026-09-26T05:58:30+00:00\n"
+"POT-Creation-Date: 2026-09-26T06:38:05+00:00\n"
 "PO-Revision-Date: 2026-09-26 12:00+0200\n"
 "Last-Translator: LW Plugins <info@lwplugins.com>\n"
 "Language-Team: LW Plugins <info@lwplugins.com>\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Generator: WP-CLI 2.12.0\n"
 
 #. Plugin Name of the plugin
-#: lw-lms.php includes/Admin/SettingsPage.php:183
+#: lw-lms.php includes/Admin/SettingsPage.php:186
 #: includes/Privacy/PrivacyHooks.php:37 includes/Privacy/PrivacyHooks.php:52
 msgid "LW LMS"
 msgstr "LW LMS"
@@ -29,8 +29,13 @@ msgstr "https://github.com/lwplugins/lw-lms"
 
 #. Description of the plugin
 #: lw-lms.php
-msgid "Lightweight LMS — courses, lessons, and progress tracking."
-msgstr "Könnyűsúlyú LMS: kurzusok, leckék és haladáskövetés."
+msgid ""
+"Headless LMS backend: courses, lessons, access, progress, quizzes, drip and "
+"a REST API. No frontend output; build your own on the lms/v1 REST API."
+msgstr ""
+"Headless LMS háttérrendszer: kurzusok, leckék, hozzáférés, haladás, "
+"kvízek, ütemezett leckék és REST API. Nincs saját frontend: a sajátodat az "
+"lms/v1 REST API-ra építheted."
 
 #. Author of the plugin
 #: lw-lms.php includes/Admin/ParentPage.php:106
@@ -143,7 +148,7 @@ msgstr "Sorrend"
 #: includes/Admin/LessonListColumns.php:54
 #: includes/Admin/Metaboxes/LessonCourseMetabox.php:37
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:81
-#: includes/Api/Admin/QuizAttemptsController.php:215
+#: includes/Api/Admin/QuizAttemptsController.php:221
 #: includes/Privacy/PersonalDataExporter.php:50
 #: includes/Privacy/PersonalDataExporter.php:65 build/index.js:5
 #: build/index.js:7 build/index.js:10 build/index.js:17 build/index.js:18
@@ -486,16 +491,16 @@ msgstr "hamis"
 msgid "Sample answer:"
 msgstr "Mintaválasz:"
 
-#: includes/Admin/SettingsPage.php:79 includes/Admin/SettingsPage.php:80
+#: includes/Admin/SettingsPage.php:80 includes/Admin/SettingsPage.php:81
 #: includes/SiteManager/Integration.php:57
 msgid "LMS"
 msgstr "LMS"
 
-#: includes/Admin/SettingsPage.php:89 build/index.js:1
+#: includes/Admin/SettingsPage.php:90 build/index.js:1
 msgid "Quiz results"
 msgstr "Kvízeredmények"
 
-#: includes/Admin/SettingsPage.php:184
+#: includes/Admin/SettingsPage.php:187
 msgid ""
 "The admin screen files are missing. Re-install the plugin from a release "
 "ZIP, or run \"npm install && npm run build\" in the plugin directory."
@@ -566,20 +571,20 @@ msgstr "Lejár:"
 msgid "(optional, empty = lifetime)"
 msgstr "(opcionális, üres = élethosszig)"
 
-#: includes/Api/Admin/AdminFormat.php:95
-#: includes/Api/Admin/LookupController.php:141
+#: includes/Api/Admin/AdminFormat.php:101
+#: includes/Api/Admin/LookupController.php:150
 msgid "(no title)"
 msgstr "(nincs cím)"
 
-#: includes/Api/Admin/AdminRoutes.php:109
+#: includes/Api/Admin/AdminRoutes.php:119
 msgid "Some fields are not valid. Nothing was saved."
 msgstr "Néhány mező érvénytelen. Semmi sem mentődött."
 
-#: includes/Api/Admin/AdminRoutes.php:121
+#: includes/Api/Admin/AdminRoutes.php:131
 msgid "That item no longer exists."
 msgstr "Ez az elem már nem létezik."
 
-#: includes/Api/Admin/AdminRoutes.php:136
+#: includes/Api/Admin/AdminRoutes.php:146
 msgid "The request is too large."
 msgstr "A kérés túl nagy."
 
@@ -601,7 +606,7 @@ msgstr ""
 msgid "The end date cannot be in the past."
 msgstr "A záró dátum nem lehet a múltban."
 
-#: includes/Api/Admin/EnrollmentsController.php:120
+#: includes/Api/Admin/EnrollmentsController.php:124
 msgid "The enrollment was not saved. Another plugin may have blocked it."
 msgstr ""
 "A feliratkozás nem mentődött. Lehet, hogy egy másik bővítmény megakadályozta."
@@ -611,62 +616,62 @@ msgid "This filter value is not valid."
 msgstr "Ez a szűrőérték érvénytelen."
 
 #. translators: %d: largest number of attempts.
-#: includes/Api/Admin/QuizAttemptsController.php:158
+#: includes/Api/Admin/QuizAttemptsController.php:162
 #, php-format
 msgid "Select between 1 and %d attempts."
 msgstr "Jelölj ki legalább 1 és legfeljebb %d kitöltést."
 
-#: includes/Api/Admin/QuizAttemptsController.php:196
+#: includes/Api/Admin/QuizAttemptsController.php:202
 #: includes/Privacy/PersonalDataExporter.php:85 build/index.js:7
 msgid "Yes"
 msgstr "Igen"
 
-#: includes/Api/Admin/QuizAttemptsController.php:196
+#: includes/Api/Admin/QuizAttemptsController.php:202
 #: includes/Privacy/PersonalDataExporter.php:85 build/index.js:7
 msgid "No"
 msgstr "Nem"
 
-#: includes/Api/Admin/QuizAttemptsController.php:210
+#: includes/Api/Admin/QuizAttemptsController.php:216
 msgid "Attempt ID"
 msgstr "Kitöltés azonosító"
 
-#: includes/Api/Admin/QuizAttemptsController.php:211
+#: includes/Api/Admin/QuizAttemptsController.php:217
 #: includes/Privacy/PersonalDataExporter.php:83 build/index.js:10
 #: build/index.js:11 build/index.js:13
 msgid "Submitted"
 msgstr "Beküldve"
 
-#: includes/Api/Admin/QuizAttemptsController.php:212
+#: includes/Api/Admin/QuizAttemptsController.php:218
 msgid "User ID"
 msgstr "Felhasználó azonosító"
 
-#: includes/Api/Admin/QuizAttemptsController.php:213 build/index.js:5
+#: includes/Api/Admin/QuizAttemptsController.php:219 build/index.js:5
 #: build/index.js:6 build/index.js:10 build/index.js:11 build/index.js:12
 msgid "Learner"
 msgstr "Tanuló"
 
-#: includes/Api/Admin/QuizAttemptsController.php:214
+#: includes/Api/Admin/QuizAttemptsController.php:220
 #: includes/Privacy/PersonalDataExporter.php:66
 #: includes/Privacy/PersonalDataExporter.php:82 build/index.js:10
 #: build/index.js:11 build/index.js:12 build/index.js:18
 msgid "Lesson"
 msgstr "Lecke"
 
-#: includes/Api/Admin/QuizAttemptsController.php:216
+#: includes/Api/Admin/QuizAttemptsController.php:222
 #: includes/Privacy/PersonalDataExporter.php:84 build/index.js:10
 #: build/index.js:11 build/index.js:12
 msgid "Score"
 msgstr "Pontszám"
 
-#: includes/Api/Admin/QuizAttemptsController.php:217
+#: includes/Api/Admin/QuizAttemptsController.php:223
 msgid "Scored questions"
 msgstr "Pontozott kérdések"
 
-#: includes/Api/Admin/QuizAttemptsController.php:218
+#: includes/Api/Admin/QuizAttemptsController.php:224
 msgid "Percentage"
 msgstr "Százalék"
 
-#: includes/Api/Admin/QuizAttemptsController.php:219
+#: includes/Api/Admin/QuizAttemptsController.php:225
 #: includes/Privacy/PersonalDataExporter.php:85 build/index.js:11
 #: build/index.js:13 build/index.js:18
 msgid "Passed"
@@ -739,8 +744,8 @@ msgstr "Néhány beállítás érvénytelen. Semmi sem mentődött."
 msgid "You are not allowed to list courses with this status."
 msgstr "Nincs jogosultságod ilyen állapotú kurzusok listázásához."
 
-#: includes/Api/Controllers/CoursesController.php:179
-#: includes/SiteManager/Service/CourseService.php:73
+#: includes/Api/Controllers/CoursesController.php:199
+#: includes/SiteManager/Service/CourseService.php:80
 #: includes/SiteManager/Service/ProgressService.php:45
 #: includes/SiteManager/Service/ProgressService.php:109
 msgid "Course not found."
@@ -1097,7 +1102,7 @@ msgstr "Elvégzési állapot: completed, in_progress vagy not_started."
 msgid "Learning management system abilities"
 msgstr "Tanuláskezelő rendszer képességei"
 
-#: includes/SiteManager/Service/CourseService.php:67
+#: includes/SiteManager/Service/CourseService.php:68
 msgid "course_id is required."
 msgstr "A course_id megadása kötelező."
 
@@ -1506,6 +1511,10 @@ msgstr ""
 msgid "Type at least two letters of the name, username or email."
 msgstr ""
 "Írj be legalább két betűt a névből, felhasználónévből vagy e-mail-címből."
+
+#: build/index.js:6
+msgid "Type at least two letters of the name or username."
+msgstr "Írj be legalább két betűt a névből vagy a felhasználónévből."
 
 #: build/index.js:6
 msgid "Enroll a learner"
@@ -2033,3 +2042,6 @@ msgstr ""
 #: build/index.js:21
 msgid "Export CSV"
 msgstr "CSV exportálás"
+
+#~ msgid "Lightweight LMS — courses, lessons, and progress tracking."
+#~ msgstr "Könnyűsúlyú LMS: kurzusok, leckék és haladáskövetés."

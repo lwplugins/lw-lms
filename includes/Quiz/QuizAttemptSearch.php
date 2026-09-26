@@ -9,10 +9,13 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Quiz;
 
+use LightweightPlugins\LMS\Privacy\EmailVisibility;
+
 /**
  * Filtered, paginated reads of the attempt table across lessons.
  *
- * Filters: course, lesson, user (ints), search (user login, email or name),
+ * Filters: course, lesson, user (ints), search (user login or name; also
+ * the email when the EmailVisibility::SEARCH_FLAG filter is set),
  * passed (bool), from / to (Y-m-d, site time, inclusive).
  */
 final class QuizAttemptSearch {
@@ -145,10 +148,10 @@ final class QuizAttemptSearch {
 		}
 
 		if ( '' !== $search_like ) {
-			$from     .= " INNER JOIN {$users_table} u ON u.ID = q.user_id";
-			$clauses[] = '(u.user_login LIKE %s OR u.user_email LIKE %s OR u.display_name LIKE %s)';
-			$like      = '%' . $search_like . '%';
-			array_push( $args, $like, $like, $like );
+			$from               .= " INNER JOIN {$users_table} u ON u.ID = q.user_id";
+			[ $clause, $values ] = EmailVisibility::search_clause( $search_like, ! empty( $filters[ EmailVisibility::SEARCH_FLAG ] ) );
+			$clauses[]           = $clause;
+			array_push( $args, ...$values );
 		}
 
 		return [ $from, implode( ' AND ', $clauses ), $args ];

@@ -9,11 +9,14 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Access;
 
+use LightweightPlugins\LMS\Privacy\EmailVisibility;
+
 /**
  * Filtered, paginated reads of the access table: one row per grant. An
  * "active" row whose expiry has passed is reported as expired.
  *
- * Filters: course (int), user (int), search (user login, email or name),
+ * Filters: course (int), user (int), search (user login or name; also the
+ * email when the EmailVisibility::SEARCH_FLAG filter is set),
  * status (active|expired|revoked), source (string).
  */
 final class EnrollmentList {
@@ -147,10 +150,10 @@ final class EnrollmentList {
 		}
 
 		if ( '' !== $search_like ) {
-			$from     .= " INNER JOIN {$users_table} u ON u.ID = a.user_id";
-			$clauses[] = '(u.user_login LIKE %s OR u.user_email LIKE %s OR u.display_name LIKE %s)';
-			$like      = '%' . $search_like . '%';
-			array_push( $args, $like, $like, $like );
+			$from               .= " INNER JOIN {$users_table} u ON u.ID = a.user_id";
+			[ $clause, $values ] = EmailVisibility::search_clause( $search_like, ! empty( $filters[ EmailVisibility::SEARCH_FLAG ] ) );
+			$clauses[]           = $clause;
+			array_push( $args, ...$values );
 		}
 
 		return [ $from, implode( ' AND ', $clauses ), $args ];

@@ -53,7 +53,7 @@ final class QuizAttemptSearchTest extends MonkeyTestCase {
 		[ $from, $where, $args ] = QuizAttemptSearch::where( [], 'wp_users', 'kiss' );
 
 		$this->assertStringContainsString( 'INNER JOIN wp_users u ON u.ID = q.user_id', $from );
-		$this->assertStringContainsString( 'u.user_email LIKE %s', $where );
-		$this->assertSame( [ '%kiss%', '%kiss%', '%kiss%' ], $args );
+		$this->assertStringContainsString( 'u.user_login LIKE %s', $where );
+		$this->assertSame( [ '%kiss%', '%kiss%' ], $args );
 	}
 }

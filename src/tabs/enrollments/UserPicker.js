@@ -10,9 +10,11 @@ import { __ } from '@wordpress/i18n';
  * Internal dependencies
  */
 import { api } from '../../data/api';
+import { CAN_SEE_EMAILS } from '../../data/boot';
 
 /**
- * Pick a user by typing part of their name, username or email.
+ * Pick a user by typing part of their name or username (or email, for
+ * users who may list users).
  *
  * @param {Object}                  props
  * @param {string}                  props.value    Selected user ID ('' = none).
@@ -31,7 +33,7 @@ export default function UserPicker( { value, onChange } ) {
 					const chosen = prev.filter( ( o ) => o.value === value );
 					const found = users.map( ( user ) => ( {
 						value: String( user.id ),
-						label: `${ user.name } (${ user.email })`,
+						label: `${ user.name } (${ user.email || user.login })`,
 					} ) );
 					return [
 						...chosen,
@@ -47,10 +49,17 @@ export default function UserPicker( { value, onChange } ) {
 			__next40pxDefaultSize
 			__nextHasNoMarginBottom
 			label={ __( 'Learner', 'lw-lms' ) }
-			help={ __(
-				'Type at least two letters of the name, username or email.',
-				'lw-lms'
-			) }
+			help={
+				CAN_SEE_EMAILS
+					? __(
+							'Type at least two letters of the name, username or email.',
+							'lw-lms'
+						)
+					: __(
+							'Type at least two letters of the name or username.',
+							'lw-lms'
+						)
+			}
 			value={ value || null }
 			options={ options }
 			onFilterValueChange={ search }

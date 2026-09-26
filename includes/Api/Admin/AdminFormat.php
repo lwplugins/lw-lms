@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Admin;
 
+use LightweightPlugins\LMS\Privacy\EmailVisibility;
+
 /**
  * Dates, users and posts as the admin screens show them. Dates are formatted
  * on the server with the site's own date and time formats.
@@ -52,11 +54,14 @@ final class AdminFormat {
 	/**
 	 * A user as the lists show them, or null when the user no longer exists.
 	 *
-	 * @param int  $user_id    User ID.
-	 * @param bool $with_email Include the email address.
+	 * Name and login always; the email address only for users who may see
+	 * it (EmailVisibility), unless $with_email says otherwise.
+	 *
+	 * @param int       $user_id    User ID.
+	 * @param bool|null $with_email Include the email address (null = when allowed).
 	 * @return array<string, mixed>|null
 	 */
-	public static function user( int $user_id, bool $with_email = true ): ?array {
+	public static function user( int $user_id, ?bool $with_email = null ): ?array {
 		$user = get_userdata( $user_id );
 
 		if ( ! $user ) {
@@ -64,11 +69,12 @@ final class AdminFormat {
 		}
 
 		$out = [
-			'id'   => $user_id,
-			'name' => '' !== $user->display_name ? $user->display_name : $user->user_login,
+			'id'    => $user_id,
+			'name'  => '' !== $user->display_name ? $user->display_name : $user->user_login,
+			'login' => $user->user_login,
 		];
 
-		if ( $with_email ) {
+		if ( $with_email ?? EmailVisibility::allowed() ) {
 			$out['email'] = $user->user_email;
 		}
 

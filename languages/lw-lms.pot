@@ -9,14 +9,14 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-09-26T06:04:50+00:00\n"
+"POT-Creation-Date: 2026-09-26T06:38:05+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: lw-lms\n"
 
 #. Plugin Name of the plugin
 #: lw-lms.php
-#: includes/Admin/SettingsPage.php:183
+#: includes/Admin/SettingsPage.php:186
 #: includes/Privacy/PrivacyHooks.php:37
 #: includes/Privacy/PrivacyHooks.php:52
 msgid "LW LMS"
@@ -29,7 +29,7 @@ msgstr ""
 
 #. Description of the plugin
 #: lw-lms.php
-msgid "Lightweight LMS — courses, lessons, and progress tracking."
+msgid "Headless LMS backend: courses, lessons, access, progress, quizzes, drip and a REST API. No frontend output; build your own on the lms/v1 REST API."
 msgstr ""
 
 #. Author of the plugin
@@ -146,7 +146,7 @@ msgstr ""
 #: includes/Admin/LessonListColumns.php:54
 #: includes/Admin/Metaboxes/LessonCourseMetabox.php:37
 #: includes/Admin/UserProfile/EnrollmentRenderer.php:81
-#: includes/Api/Admin/QuizAttemptsController.php:215
+#: includes/Api/Admin/QuizAttemptsController.php:221
 #: includes/Privacy/PersonalDataExporter.php:50
 #: includes/Privacy/PersonalDataExporter.php:65
 #: build/index.js:5
@@ -470,18 +470,18 @@ msgstr ""
 msgid "Sample answer:"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:79
 #: includes/Admin/SettingsPage.php:80
+#: includes/Admin/SettingsPage.php:81
 #: includes/SiteManager/Integration.php:57
 msgid "LMS"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:89
+#: includes/Admin/SettingsPage.php:90
 #: build/index.js:1
 msgid "Quiz results"
 msgstr ""
 
-#: includes/Admin/SettingsPage.php:184
+#: includes/Admin/SettingsPage.php:187
 msgid "The admin screen files are missing. Re-install the plugin from a release ZIP, or run \"npm install && npm run build\" in the plugin directory."
 msgstr ""
 
@@ -548,20 +548,20 @@ msgstr ""
 msgid "(optional, empty = lifetime)"
 msgstr ""
 
-#: includes/Api/Admin/AdminFormat.php:95
-#: includes/Api/Admin/LookupController.php:141
+#: includes/Api/Admin/AdminFormat.php:101
+#: includes/Api/Admin/LookupController.php:150
 msgid "(no title)"
 msgstr ""
 
-#: includes/Api/Admin/AdminRoutes.php:109
+#: includes/Api/Admin/AdminRoutes.php:119
 msgid "Some fields are not valid. Nothing was saved."
 msgstr ""
 
-#: includes/Api/Admin/AdminRoutes.php:121
+#: includes/Api/Admin/AdminRoutes.php:131
 msgid "That item no longer exists."
 msgstr ""
 
-#: includes/Api/Admin/AdminRoutes.php:136
+#: includes/Api/Admin/AdminRoutes.php:146
 msgid "The request is too large."
 msgstr ""
 
@@ -581,7 +581,7 @@ msgstr ""
 msgid "The end date cannot be in the past."
 msgstr ""
 
-#: includes/Api/Admin/EnrollmentsController.php:120
+#: includes/Api/Admin/EnrollmentsController.php:124
 msgid "The enrollment was not saved. Another plugin may have blocked it."
 msgstr ""
 
@@ -590,28 +590,28 @@ msgid "This filter value is not valid."
 msgstr ""
 
 #. translators: %d: largest number of attempts.
-#: includes/Api/Admin/QuizAttemptsController.php:158
+#: includes/Api/Admin/QuizAttemptsController.php:162
 #, php-format
 msgid "Select between 1 and %d attempts."
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:196
+#: includes/Api/Admin/QuizAttemptsController.php:202
 #: includes/Privacy/PersonalDataExporter.php:85
 #: build/index.js:7
 msgid "Yes"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:196
+#: includes/Api/Admin/QuizAttemptsController.php:202
 #: includes/Privacy/PersonalDataExporter.php:85
 #: build/index.js:7
 msgid "No"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:210
+#: includes/Api/Admin/QuizAttemptsController.php:216
 msgid "Attempt ID"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:211
+#: includes/Api/Admin/QuizAttemptsController.php:217
 #: includes/Privacy/PersonalDataExporter.php:83
 #: build/index.js:10
 #: build/index.js:11
@@ -619,11 +619,11 @@ msgstr ""
 msgid "Submitted"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:212
+#: includes/Api/Admin/QuizAttemptsController.php:218
 msgid "User ID"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:213
+#: includes/Api/Admin/QuizAttemptsController.php:219
 #: build/index.js:5
 #: build/index.js:6
 #: build/index.js:10
@@ -632,7 +632,7 @@ msgstr ""
 msgid "Learner"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:214
+#: includes/Api/Admin/QuizAttemptsController.php:220
 #: includes/Privacy/PersonalDataExporter.php:66
 #: includes/Privacy/PersonalDataExporter.php:82
 #: build/index.js:10
@@ -642,7 +642,7 @@ msgstr ""
 msgid "Lesson"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:216
+#: includes/Api/Admin/QuizAttemptsController.php:222
 #: includes/Privacy/PersonalDataExporter.php:84
 #: build/index.js:10
 #: build/index.js:11
@@ -650,15 +650,15 @@ msgstr ""
 msgid "Score"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:217
+#: includes/Api/Admin/QuizAttemptsController.php:223
 msgid "Scored questions"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:218
+#: includes/Api/Admin/QuizAttemptsController.php:224
 msgid "Percentage"
 msgstr ""
 
-#: includes/Api/Admin/QuizAttemptsController.php:219
+#: includes/Api/Admin/QuizAttemptsController.php:225
 #: includes/Privacy/PersonalDataExporter.php:85
 #: build/index.js:11
 #: build/index.js:13
@@ -733,8 +733,8 @@ msgstr ""
 msgid "You are not allowed to list courses with this status."
 msgstr ""
 
-#: includes/Api/Controllers/CoursesController.php:179
-#: includes/SiteManager/Service/CourseService.php:73
+#: includes/Api/Controllers/CoursesController.php:199
+#: includes/SiteManager/Service/CourseService.php:80
 #: includes/SiteManager/Service/ProgressService.php:45
 #: includes/SiteManager/Service/ProgressService.php:109
 msgid "Course not found."
@@ -1081,7 +1081,7 @@ msgstr ""
 msgid "Learning management system abilities"
 msgstr ""
 
-#: includes/SiteManager/Service/CourseService.php:67
+#: includes/SiteManager/Service/CourseService.php:68
 msgid "course_id is required."
 msgstr ""
 
@@ -1496,6 +1496,10 @@ msgstr ""
 
 #: build/index.js:6
 msgid "Type at least two letters of the name, username or email."
+msgstr ""
+
+#: build/index.js:6
+msgid "Type at least two letters of the name or username."
 msgstr ""
 
 #: build/index.js:6

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Admin;
 
+use LightweightPlugins\LMS\Privacy\EmailVisibility;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
@@ -78,7 +79,8 @@ final class LookupController {
 	}
 
 	/**
-	 * Users whose login, email or display name contains ?search=.
+	 * Users whose login or display name (or email, with list_users)
+	 * contains ?search=.
 	 *
 	 * @param WP_REST_Request $request Request.
 	 * @return WP_REST_Response
@@ -90,10 +92,11 @@ final class LookupController {
 			return new WP_REST_Response( [] );
 		}
 
-		$users = get_users(
+		$with_email = EmailVisibility::allowed();
+		$users      = get_users(
 			[
 				'search'         => '*' . mb_substr( $search, 0, 100 ) . '*',
-				'search_columns' => [ 'user_login', 'user_email', 'display_name' ],
+				'search_columns' => $with_email ? [ 'user_login', 'user_email', 'display_name' ] : [ 'user_login', 'display_name' ],
 				'number'         => self::MAX_USERS,
 				'orderby'        => 'display_name',
 			]
@@ -102,11 +105,17 @@ final class LookupController {
 		$out = [];
 
 		foreach ( $users as $user ) {
-			$out[] = [
+			$row = [
 				'id'    => (int) $user->ID,
 				'name'  => '' !== $user->display_name ? $user->display_name : $user->user_login,
-				'email' => $user->user_email,
+				'login' => $user->user_login,
 			];
+
+			if ( $with_email ) {
+				$row['email'] = $user->user_email;
+			}
+
+			$out[] = $row;
 		}
 
 		return new WP_REST_Response( $out );

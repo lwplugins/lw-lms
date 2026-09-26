@@ -11,6 +11,8 @@ export const DOCS_URL =
 export const CAN_MANAGE_LEARNERS = !! boot.canManageLearners;
 // The settings sections need manage_options (the REST route checks it too).
 export const CAN_MANAGE_SETTINGS = !! boot.canManageSettings;
+// Email addresses are shown and searchable only with list_users.
+export const CAN_SEE_EMAILS = !! boot.canSeeEmails;
 // Today in site time (Y-m-d): the earliest end date of a grant.
 export const TODAY = boot.today || '';
 export const LINKS = boot.links || {};

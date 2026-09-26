@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Admin;
 
+use LightweightPlugins\LMS\Privacy\EmailVisibility;
 use LightweightPlugins\LMS\Access\AccessRepository;
 use LightweightPlugins\LMS\Access\EnrollmentList;
 use LightweightPlugins\LMS\Api\Admin\Enrollments\EnrollmentPresenter;
@@ -81,6 +82,8 @@ final class EnrollmentsController {
 		if ( [] !== $params->errors ) {
 			return AdminRoutes::invalid( $params->errors );
 		}
+
+		$params->filters[ EmailVisibility::SEARCH_FLAG ] = EmailVisibility::allowed();
 
 		$now   = current_time( 'mysql', true );
 		$total = EnrollmentList::count( $params->filters );

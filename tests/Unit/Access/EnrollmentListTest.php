@@ -44,6 +44,8 @@ final class EnrollmentListTest extends MonkeyTestCase {
 				'user'   => 9,
 				'source' => "manual' OR 1=1 --",
 				'status' => 'active',
+				// The email column is searched too (users with list_users).
+				'search_email' => true,
 			],
 			self::NOW,
 			'wp_users',

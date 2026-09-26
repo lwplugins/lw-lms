@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Admin;
 
+use LightweightPlugins\LMS\Privacy\EmailVisibility;
 use LightweightPlugins\LMS\Api\Admin\AdminRoutes;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
@@ -133,6 +134,7 @@ final class SettingsPage {
 			'docsUrl'           => self::DOCS_URL,
 			'canManageLearners' => AdminRoutes::can_manage_learners(),
 			'canManageSettings' => AdminRoutes::can_manage_settings(),
+			'canSeeEmails'      => EmailVisibility::allowed(),
 			'woocommerce'       => WooCommerce::is_active(),
 			'today'             => wp_date( 'Y-m-d' ),
 			'links'             => [

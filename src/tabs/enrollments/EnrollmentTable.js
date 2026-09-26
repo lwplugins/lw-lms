@@ -13,7 +13,8 @@ import { LINKS } from '../../data/boot';
 import { STATUS, sourceLabel } from './labels';
 
 /**
- * Learner cell: name (profile link) and email; "Deleted user" when gone.
+ * Learner cell: name (profile link) and email (login without list_users);
+ * "Deleted user" when gone.
  *
  * @param {Object} props
  * @param {Object} props.row Enrollment row.
@@ -31,7 +32,9 @@ function Learner( { row } ) {
 			<a href={ `${ LINKS.userEdit }${ row.userId }` }>
 				{ row.user.name }
 			</a>
-			<span className="lw-admin-hint">{ row.user.email }</span>
+			<span className="lw-admin-hint">
+				{ row.user.email || row.user.login }
+			</span>
 		</span>
 	);
 }
