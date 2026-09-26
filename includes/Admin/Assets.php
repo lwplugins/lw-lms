@@ -71,9 +71,7 @@ final class Assets {
 			'lw-lms-admin',
 			'lwLmsAdmin',
 			[
-				'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-				'nonce'   => wp_create_nonce( 'lw_lms_admin' ),
-				'i18n'    => self::strings(),
+				'i18n' => self::strings(),
 			]
 		);
 

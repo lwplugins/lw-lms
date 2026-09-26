@@ -55,8 +55,10 @@ final class Course {
 			'show_ui'            => true,
 			'show_in_menu'       => true,
 			'show_in_rest'       => true,
-			'query_var'          => true,
-			'rewrite'            => [ 'slug' => 'course' ],
+			// Headless: no front-end URLs, so no query var and no rewrite rules
+			// (both default to on, even for non-queryable types).
+			'query_var'          => false,
+			'rewrite'            => false,
 			'capability_type'    => 'post',
 			'has_archive'        => false,
 			'hierarchical'       => false,

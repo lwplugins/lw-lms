@@ -55,8 +55,10 @@ final class Lesson {
 			'show_ui'            => true,
 			'show_in_menu'       => 'edit.php?post_type=' . Course::POST_TYPE,
 			'show_in_rest'       => true,
-			'query_var'          => true,
-			'rewrite'            => [ 'slug' => 'lesson' ],
+			// Headless: no front-end URLs, so no query var and no rewrite rules
+			// (both default to on, even for non-queryable types).
+			'query_var'          => false,
+			'rewrite'            => false,
 			'capability_type'    => 'post',
 			'has_archive'        => false,
 			'hierarchical'       => false,
