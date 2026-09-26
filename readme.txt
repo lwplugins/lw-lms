@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, headless, rest-api
 Requires at least: 6.6
 Tested up to: 7.1
-Stable tag: 2.0.0
+Stable tag: 2.0.1
 Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -138,6 +138,9 @@ Yes. `wp lw-lms migrate-learndash` copies LearnDash courses and lessons (with se
 4. REST API response example
 
 == Changelog ==
+
+= 2.0.1 =
+* Change: the LW Plugins overview page is now a searchable table showing each LW plugin's status and version, with one-click activation for installed plugins; it always uses the newest version shipped by any active LW plugin.
 
 = 2.0.0 =
 * New: Redesigned LMS screen under LW Plugins: Overview, Enrollments, Quiz results and the settings in one place, with a side menu, Save / Discard in the top bar, Ctrl/Cmd+S and an unsaved-changes warning.
