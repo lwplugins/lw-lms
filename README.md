@@ -42,7 +42,15 @@ Or upload the `lw-lms` folder to `/wp-content/plugins/` and activate.
 | POST | `/lms/v1/lessons/{id}/quiz` | Submit quiz answers (scored server-side) |
 | POST | `/lms/v1/progress` | Update lesson progress |
 | GET | `/lms/v1/progress` | Get user progress |
-| GET | `/lms/v1/download/{id}` | Download attachment |
+| GET | `/lms/v1/download/{id}` | Download attachment (use the signed `download_url` from the payloads) |
+
+### Downloads
+
+Every attachment in a course or lesson payload carries a `download_url`. Use it as is, for example as a plain `<a href>`: it is a signed link (`lw_user`, `lw_expires`, `lw_signature` query arguments) issued to the user who fetched the payload, so it works without a REST nonce and without cookies. It is valid for one hour; change that with the `lw_lms_download_link_ttl` filter (seconds). An expired or altered link answers 403 `download_link_expired`, so fetch the course or lesson again for a fresh one.
+
+The access check still runs when the file is requested, for the user the link was issued to: revoking access also stops links already handed out. A request without a signature is checked for the REST-authenticated user (cookie + `X-WP-Nonce`, application password).
+
+Only files listed as attachments of a course or lesson are served, and only when that course or lesson is visible to the user and the user has access to it. Anything else answers 404.
 
 ### Extending the payloads
 

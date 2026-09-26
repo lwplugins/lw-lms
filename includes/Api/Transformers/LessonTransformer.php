@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Transformers;
 
+use LightweightPlugins\LMS\Api\DownloadLink;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
@@ -42,7 +43,7 @@ final class LessonTransformer {
 			'order'       => (int) Options::get_post_meta( $post->ID, 'lesson_order', 0 ),
 			'duration'    => Options::get_post_meta( $post->ID, 'duration', '' ),
 			'video'       => EmbedRenderer::payload( $video ),
-			'attachments' => self::get_attachments( $post->ID ),
+			'attachments' => self::get_attachments( $post->ID, $user_id ),
 			'navigation'  => self::get_navigation( $post->ID, $course_id, $section_id ),
 			'quiz'        => QuizPublicView::for_lesson( $post->ID, $user_id ),
 		];
@@ -124,9 +125,10 @@ final class LessonTransformer {
 	 * Get attachments for a lesson.
 	 *
 	 * @param int $lesson_id Lesson ID.
+	 * @param int $user_id   User the download links are issued to.
 	 * @return array
 	 */
-	private static function get_attachments( int $lesson_id ): array {
+	private static function get_attachments( int $lesson_id, int $user_id ): array {
 		$attachments = Options::get_post_meta( $lesson_id, 'attachments', [] );
 		$result      = [];
 
@@ -149,7 +151,7 @@ final class LessonTransformer {
 				'filename'     => basename( $file_path ),
 				'mime_type'    => get_post_mime_type( $id ),
 				'size'         => file_exists( $file_path ) ? filesize( $file_path ) : 0,
-				'download_url' => rest_url( 'lms/v1/download/' . $id ),
+				'download_url' => DownloadLink::url( (int) $id, $user_id ),
 			];
 		}
 

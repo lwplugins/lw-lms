@@ -9,16 +9,12 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Controllers;
 
-use LightweightPlugins\LMS\Api\AttachmentMetaPattern;
-use LightweightPlugins\LMS\Api\LessonLockError;
+use LightweightPlugins\LMS\Api\AttachmentOwners;
+use LightweightPlugins\LMS\Api\DownloadAccess;
+use LightweightPlugins\LMS\Api\DownloadLink;
 use LightweightPlugins\LMS\Api\RestApi;
-use LightweightPlugins\LMS\Access\AccessChecker;
-use LightweightPlugins\LMS\Options;
-use LightweightPlugins\LMS\PostTypes\Course;
-use LightweightPlugins\LMS\PostTypes\Lesson;
 use WP_REST_Server;
 use WP_REST_Request;
-use WP_REST_Response;
 use WP_Error;
 
 /**
@@ -59,33 +55,28 @@ final class DownloadController {
 	 */
 	public function download( WP_REST_Request $request ) {
 		$attachment_id = (int) $request->get_param( 'id' );
-		$user_id       = get_current_user_id();
+		$user_id       = $this->resolve_user( $request, $attachment_id );
 
-		// Check if attachment exists.
+		if ( is_wp_error( $user_id ) ) {
+			return $user_id;
+		}
+
 		$attachment = get_post( $attachment_id );
 		if ( ! $attachment || 'attachment' !== $attachment->post_type ) {
-			return new WP_Error(
-				'not_found',
-				__( 'File not found.', 'lw-lms' ),
-				[ 'status' => 404 ]
-			);
+			return DownloadAccess::not_found();
 		}
 
-		// Find parent (course or lesson).
-		$access_granted = $this->check_attachment_access( $attachment_id, $user_id );
+		// Default deny: only files listed by a course or lesson the user can
+		// see and access are served.
+		$denied = DownloadAccess::check( AttachmentOwners::find( $attachment_id ), $user_id );
 
-		if ( is_wp_error( $access_granted ) ) {
-			return $access_granted;
+		if ( null !== $denied ) {
+			return $denied;
 		}
 
-		// Get file path.
 		$file_path = get_attached_file( $attachment_id );
 		if ( ! $file_path || ! file_exists( $file_path ) ) {
-			return new WP_Error(
-				'not_found',
-				__( 'File not found.', 'lw-lms' ),
-				[ 'status' => 404 ]
-			);
+			return DownloadAccess::not_found();
 		}
 
 		// Fire action.
@@ -97,111 +88,34 @@ final class DownloadController {
 	}
 
 	/**
-	 * Check if user has access to attachment.
+	 * The user a download is checked for.
 	 *
-	 * @param int $attachment_id Attachment ID.
-	 * @param int $user_id       User ID.
-	 * @return bool|WP_Error
+	 * A signed link (see DownloadLink) names its user; otherwise the REST
+	 * authentication decides (cookie + nonce, application password, …).
+	 *
+	 * @param WP_REST_Request $request       Request object.
+	 * @param int             $attachment_id Attachment ID.
+	 * @return int|WP_Error
 	 */
-	private function check_attachment_access( int $attachment_id, int $user_id ): bool|WP_Error {
-		// Find which course or lesson this attachment belongs to.
-		$parent = $this->find_attachment_parent( $attachment_id );
+	private function resolve_user( WP_REST_Request $request, int $attachment_id ) {
+		$signature = $request->get_param( DownloadLink::ARG_SIGNATURE );
 
-		if ( ! $parent ) {
-			// Not attached to any LMS content - allow download.
-			return true;
+		if ( null === $signature ) {
+			return get_current_user_id();
 		}
 
-		// Check access based on parent type.
-		if ( 'course' === $parent['type'] ) {
-			if ( ! AccessChecker::has_course_access( $parent['id'], $user_id ) ) {
-				return $this->get_access_error( $parent['id'], $user_id );
-			}
-		} elseif ( 'lesson' === $parent['type'] ) {
-			if ( ! AccessChecker::has_lesson_access( $parent['id'], $user_id ) ) {
-				$course_id = (int) Options::get_post_meta( $parent['id'], 'lesson_course_id', 0 );
-				return $this->get_access_error( $course_id, $user_id );
-			}
+		$user_id = absint( $request->get_param( DownloadLink::ARG_USER ) );
+		$expires = absint( $request->get_param( DownloadLink::ARG_EXPIRES ) );
 
-			$locked = LessonLockError::check( $parent['id'], $user_id );
-
-			if ( null !== $locked ) {
-				return $locked;
-			}
-		}
-
-		return true;
-	}
-
-	/**
-	 * Find the parent (course or lesson) of an attachment.
-	 *
-	 * @param int $attachment_id Attachment ID.
-	 * @return array|null
-	 */
-	private function find_attachment_parent( int $attachment_id ): ?array {
-		global $wpdb;
-
-		// The meta is a serialized PHP array, so the attachment id has to be
-		// matched in that shape — a JSON-shaped pattern finds nothing, and
-		// an unowned file is served to everyone.
-		$fragments = AttachmentMetaPattern::fragments( $attachment_id );
-
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$course_id = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT post_id FROM {$wpdb->postmeta}
-				WHERE meta_key = %s
-				AND ( meta_value LIKE %s OR meta_value LIKE %s )
-				LIMIT 1",
-				Options::META_PREFIX . 'attachments',
-				'%' . $wpdb->esc_like( $fragments[0] ) . '%',
-				'%' . $wpdb->esc_like( $fragments[1] ) . '%'
-			)
-		);
-
-		if ( $course_id ) {
-			$post = get_post( $course_id );
-			if ( $post && Course::POST_TYPE === $post->post_type ) {
-				return [
-					'type' => 'course',
-					'id'   => (int) $course_id,
-				];
-			}
-			if ( $post && Lesson::POST_TYPE === $post->post_type ) {
-				return [
-					'type' => 'lesson',
-					'id'   => (int) $course_id,
-				];
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get access denied error with purchase info.
-	 *
-	 * @param int $course_id Course ID.
-	 * @param int $user_id   User ID.
-	 * @return WP_Error
-	 */
-	private function get_access_error( int $course_id, int $user_id ): WP_Error {
-		if ( ! $user_id ) {
+		if ( ! DownloadLink::verify( $attachment_id, $user_id, $expires, (string) $signature ) ) {
 			return new WP_Error(
-				'unauthorized',
-				__( 'Authentication required.', 'lw-lms' ),
-				[ 'status' => 401 ]
+				'download_link_expired',
+				__( 'This download link is invalid or has expired. Reload the page to get a new one.', 'lw-lms' ),
+				[ 'status' => 403 ]
 			);
 		}
 
-		$access_info = AccessChecker::get_access_info( $course_id, $user_id );
-
-		return new WP_Error(
-			'forbidden',
-			__( 'You do not have access to this content.', 'lw-lms' ),
-			array_merge( [ 'status' => 403 ], $access_info )
-		);
+		return $user_id;
 	}
 
 	/**

@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api\Transformers;
 
+use LightweightPlugins\LMS\Api\DownloadLink;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\Access\AccessChecker;
 use LightweightPlugins\LMS\Drip\DripSettings;
@@ -117,7 +118,7 @@ final class CourseTransformer {
 		// Always include sections and lessons structure.
 		$data['sections']                = self::get_sections_with_lessons( $post->ID, $user_id, $has_access );
 		$data['lessons_without_section'] = self::get_orphan_lessons( $post->ID, $user_id, $has_access );
-		$data['attachments']             = $has_access ? self::get_attachments( $post->ID ) : [];
+		$data['attachments']             = $has_access ? self::get_attachments( $post->ID, $user_id ) : [];
 
 		// Progress for authenticated users.
 		if ( $user_id ) {
@@ -342,9 +343,10 @@ final class CourseTransformer {
 	 * Get attachments for a course.
 	 *
 	 * @param int $course_id Course ID.
+	 * @param int $user_id   User the download links are issued to.
 	 * @return array
 	 */
-	private static function get_attachments( int $course_id ): array {
+	private static function get_attachments( int $course_id, int $user_id ): array {
 		$attachments = Options::get_post_meta( $course_id, 'attachments', [] );
 		$result      = [];
 
@@ -359,13 +361,15 @@ final class CourseTransformer {
 				continue;
 			}
 
+			$file_path = (string) get_attached_file( $id );
+
 			$result[] = [
 				'id'           => $id,
 				'title'        => $attachment['title'] ? $attachment['title'] : $post->post_title,
-				'filename'     => basename( get_attached_file( $id ) ),
+				'filename'     => basename( $file_path ),
 				'mime_type'    => get_post_mime_type( $id ),
-				'size'         => filesize( get_attached_file( $id ) ),
-				'download_url' => rest_url( 'lms/v1/download/' . $id ),
+				'size'         => '' !== $file_path && file_exists( $file_path ) ? filesize( $file_path ) : 0,
+				'download_url' => DownloadLink::url( (int) $id, $user_id ),
 			];
 		}
 
