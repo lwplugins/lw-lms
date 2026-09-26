@@ -65,7 +65,7 @@ final class LessonsController {
 		if (
 			! $post
 			|| Lesson::POST_TYPE !== $post->post_type
-			|| ! StatusPermission::can_read( $post->post_status, Lesson::POST_TYPE )
+			|| ! StatusPermission::can_read_post( $post, get_current_user_id() )
 		) {
 			return new WP_Error(
 				'not_found',

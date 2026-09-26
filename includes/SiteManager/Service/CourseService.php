@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\SiteManager\Service;
 
+use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
@@ -69,7 +70,13 @@ final class CourseService {
 
 		$post = get_post( $course_id );
 
-		if ( ! $post || Course::POST_TYPE !== $post->post_type ) {
+		// A draft or private course is only returned to users who may read
+		// that post (the ability itself only needs edit_posts).
+		if (
+			! $post instanceof \WP_Post
+			|| Course::POST_TYPE !== $post->post_type
+			|| ! StatusPermission::can_read_post( $post, get_current_user_id() )
+		) {
 			return new \WP_Error( 'not_found', __( 'Course not found.', 'lw-lms' ), [ 'status' => 404 ] );
 		}
 

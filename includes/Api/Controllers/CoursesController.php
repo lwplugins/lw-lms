@@ -126,7 +126,10 @@ final class CoursesController {
 		$query   = new \WP_Query( $args );
 		$courses = [];
 
-		foreach ( $query->posts as $post ) {
+		// The status gate above is type-wide (edit_posts); like core REST,
+		// each item is also checked, so a Contributor sees only the drafts
+		// they may edit, not everyone's.
+		foreach ( self::readable( $query->posts, get_current_user_id() ) as $post ) {
 			$courses[] = CourseTransformer::transform_list_item( $post );
 		}
 
@@ -141,6 +144,22 @@ final class CoursesController {
 				],
 			],
 			200
+		);
+	}
+
+	/**
+	 * The posts a user may read in their current status.
+	 *
+	 * @param array<int, mixed> $posts   Query results.
+	 * @param int               $user_id User ID (0 = guest).
+	 * @return array<int, \WP_Post>
+	 */
+	public static function readable( array $posts, int $user_id ): array {
+		return array_values(
+			array_filter(
+				$posts,
+				static fn ( mixed $post ): bool => $post instanceof \WP_Post && StatusPermission::can_read_post( $post, $user_id )
+			)
 		);
 	}
 
@@ -166,13 +185,14 @@ final class CoursesController {
 	public function get_course( WP_REST_Request $request ): WP_REST_Response|WP_Error {
 		$course_id = (int) $request->get_param( 'id' );
 		$post      = get_post( $course_id );
+		$user_id   = get_current_user_id();
 
 		// Non-published courses stay a 404 (not 403) for users without the
 		// matching capability, so their existence is not disclosed.
 		if (
 			! $post
 			|| Course::POST_TYPE !== $post->post_type
-			|| ! StatusPermission::can_read( $post->post_status, Course::POST_TYPE )
+			|| ! StatusPermission::can_read_post( $post, $user_id )
 		) {
 			return new WP_Error(
 				'not_found',
@@ -181,8 +201,7 @@ final class CoursesController {
 			);
 		}
 
-		$user_id = get_current_user_id();
-		$data    = CourseTransformer::transform_full( $post, $user_id );
+		$data = CourseTransformer::transform_full( $post, $user_id );
 
 		return new WP_REST_Response( $data, 200 );
 	}
