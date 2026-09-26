@@ -15,7 +15,11 @@ import {
 /**
  * Internal dependencies
  */
-import { CAN_MANAGE_LEARNERS, WOOCOMMERCE } from '../data/boot';
+import {
+	CAN_MANAGE_LEARNERS,
+	CAN_MANAGE_SETTINGS,
+	WOOCOMMERCE,
+} from '../data/boot';
 
 /**
  * Nav groups, in order. A tab without a group sits above them.
@@ -28,8 +32,8 @@ export const GROUPS = [
 /**
  * Tab registry. `save` = the tab edits lw_lms_options (top bar Save shown).
  * `fields` maps option keys to the tab, so a failed save can flag the tab
- * holding an invalid field. `learners` = needs manage_lms; `woocommerce` =
- * only while WooCommerce is active.
+ * holding an invalid field. `learners` = needs manage_lms; `save` tabs need
+ * manage_options; `woocommerce` = only while WooCommerce is active.
  */
 const ALL_TABS = [
 	{
@@ -103,6 +107,7 @@ const ALL_TABS = [
 export const TABS = ALL_TABS.filter(
 	( tab ) =>
 		( ! tab.learners || CAN_MANAGE_LEARNERS ) &&
+		( ! tab.save || CAN_MANAGE_SETTINGS ) &&
 		( ! tab.woocommerce || WOOCOMMERCE )
 );
 
@@ -125,5 +130,6 @@ export const ALIASES = {
 export const tabOfField = ( field ) =>
 	(
 		TABS.find( ( tab ) => tab.fields?.includes( field ) ) ||
-		TABS.find( ( tab ) => tab.save )
+		TABS.find( ( tab ) => tab.save ) ||
+		TABS[ 0 ]
 	).id;

@@ -71,7 +71,7 @@ final class SettingsPage {
 		ParentPage::maybe_register();
 
 		// LMS managers and administrators both open the screen; the learner
-		// sections inside need manage_lms.
+		// sections inside need manage_lms, the settings manage_options.
 		$capability = current_user_can( 'manage_lms' ) ? 'manage_lms' : 'manage_options';
 
 		$hook = add_submenu_page(
@@ -132,6 +132,7 @@ final class SettingsPage {
 			'namespace'         => AdminRoutes::NAMESPACE,
 			'docsUrl'           => self::DOCS_URL,
 			'canManageLearners' => AdminRoutes::can_manage_learners(),
+			'canManageSettings' => AdminRoutes::can_manage_settings(),
 			'woocommerce'       => WooCommerce::is_active(),
 			'today'             => wp_date( 'Y-m-d' ),
 			'links'             => [
@@ -173,7 +174,7 @@ final class SettingsPage {
 	 * @return void
 	 */
 	public function render(): void {
-		if ( ! AdminRoutes::can_manage_settings() ) {
+		if ( ! AdminRoutes::can_open_screen() ) {
 			return;
 		}
 

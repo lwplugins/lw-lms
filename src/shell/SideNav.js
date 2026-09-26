@@ -102,21 +102,28 @@ export default function SideNav( { tabs, groups, current, meta = {} } ) {
 				aria-label={ __( 'LW LMS sections', 'lw-lms' ) }
 			>
 				<ul>{ tabs.filter( ( tab ) => ! tab.group ).map( item ) }</ul>
-				{ groups.map( ( group ) => (
-					<div key={ group.id } className="lw-admin-sidenav__group">
-						<h2
-							className="lw-admin-sidenav__heading"
-							id={ `${ navId }-${ group.id }` }
+				{ groups
+					.filter( ( group ) =>
+						tabs.some( ( tab ) => tab.group === group.id )
+					)
+					.map( ( group ) => (
+						<div
+							key={ group.id }
+							className="lw-admin-sidenav__group"
 						>
-							{ group.label }
-						</h2>
-						<ul aria-labelledby={ `${ navId }-${ group.id }` }>
-							{ tabs
-								.filter( ( tab ) => tab.group === group.id )
-								.map( item ) }
-						</ul>
-					</div>
-				) ) }
+							<h2
+								className="lw-admin-sidenav__heading"
+								id={ `${ navId }-${ group.id }` }
+							>
+								{ group.label }
+							</h2>
+							<ul aria-labelledby={ `${ navId }-${ group.id }` }>
+								{ tabs
+									.filter( ( tab ) => tab.group === group.id )
+									.map( item ) }
+							</ul>
+						</div>
+					) ) }
 			</nav>
 			<div className="lw-admin-sidebar__foot">
 				<a

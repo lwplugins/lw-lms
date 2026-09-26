@@ -9,6 +9,8 @@ export const DOCS_URL =
 	boot.docsUrl || 'https://github.com/lwplugins/lw-lms#readme';
 // Enrollments and Quiz results need manage_lms (the REST routes check it too).
 export const CAN_MANAGE_LEARNERS = !! boot.canManageLearners;
+// The settings sections need manage_options (the REST route checks it too).
+export const CAN_MANAGE_SETTINGS = !! boot.canManageSettings;
 // Today in site time (Y-m-d): the earliest end date of a grant.
 export const TODAY = boot.today || '';
 export const LINKS = boot.links || {};

@@ -4,6 +4,7 @@
 import FormSkeleton from './components/FormSkeleton';
 import LoadError from './components/LoadError';
 import Notices from './components/Notices';
+import { CAN_MANAGE_SETTINGS } from './data/boot';
 import useSettingsStore from './data/useSettingsStore';
 import Footer from './shell/Footer';
 import navMeta from './shell/navMeta';
@@ -46,7 +47,7 @@ const INITIAL_TAB =
  * tabs the top bar only offers Save while settings edits are pending.
  */
 export default function App() {
-	const settings = useSettingsStore();
+	const settings = useSettingsStore( CAN_MANAGE_SETTINGS );
 	const tab = useTab(
 		TABS.map( ( t ) => t.id ),
 		INITIAL_TAB

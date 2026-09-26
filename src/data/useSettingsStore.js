@@ -56,9 +56,11 @@ export function rebaseDraft( saved, sent, live ) {
  * Cmd/Ctrl+S). A `400 lw_lms_invalid` keeps the draft and puts
  * `data.fields` next to each field; the server saved nothing.
  *
+ * @param {boolean} enabled Load the settings (false for users without
+ *                          manage_options: the route would refuse them).
  * @return {Object} Store: data { options, meta }, set, hasEdits, save, discard…
  */
-export default function useSettingsStore() {
+export default function useSettingsStore( enabled = true ) {
 	const [ server, setServer ] = useState( null );
 	const [ options, setOptions ] = useState( null );
 	const [ error, setError ] = useState( null );
@@ -74,11 +76,14 @@ export default function useSettingsStore() {
 	}, [] );
 
 	const reload = useCallback( () => {
+		if ( ! enabled ) {
+			return Promise.resolve();
+		}
 		setError( null );
 		return api
 			.settings()
 			.then( apply, ( e ) => setError( errorMessage( e ) ) );
-	}, [ apply ] );
+	}, [ apply, enabled ] );
 
 	useEffect( () => {
 		reload();

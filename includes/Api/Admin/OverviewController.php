@@ -40,7 +40,7 @@ final class OverviewController {
 			'/admin/overview',
 			[ WP_REST_Server::READABLE => 'get_overview' ],
 			$this,
-			[ AdminRoutes::class, 'can_manage_settings' ]
+			[ AdminRoutes::class, 'can_open_screen' ]
 		);
 	}
 

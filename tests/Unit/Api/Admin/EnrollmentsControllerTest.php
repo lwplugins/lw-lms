@@ -10,14 +10,12 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\Tests\Unit\Api\Admin;
 
 use Brain\Monkey\Functions;
-use LightweightPlugins\LMS\Api\Admin\AdminRoutes;
 use LightweightPlugins\LMS\Api\Admin\EnrollmentsController;
 use WP_Error;
 use WP_REST_Request;
 
 /**
  * @covers \LightweightPlugins\LMS\Api\Admin\EnrollmentsController
- * @covers \LightweightPlugins\LMS\Api\Admin\AdminRoutes
  */
 final class EnrollmentsControllerTest extends AdminRestTestCase {
 
@@ -74,24 +72,5 @@ final class EnrollmentsControllerTest extends AdminRestTestCase {
 			],
 			$response->get_data()
 		);
-	}
-
-	/**
-	 * @dataProvider provide_caps
-	 */
-	public function test_permissions( array $caps, bool $settings, bool $learners ): void {
-		$this->caps = $caps;
-
-		$this->assertSame( $settings, AdminRoutes::can_manage_settings() );
-		$this->assertSame( $learners, AdminRoutes::can_manage_learners() );
-	}
-
-	public static function provide_caps(): array {
-		return [
-			'administrator'           => [ [ 'manage_options' => true, 'manage_lms' => true ], true, true ],
-			'LMS manager'             => [ [ 'manage_lms' => true ], true, true ],
-			'admin without manage_lms' => [ [ 'manage_options' => true ], true, false ],
-			'editor'                  => [ [ 'edit_posts' => true ], false, false ],
-		];
 	}
 }

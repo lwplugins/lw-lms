@@ -42,12 +42,22 @@ final class AdminRoutes {
 	}
 
 	/**
-	 * Settings and the overview: LMS managers and administrators.
+	 * The LMS screen and its Overview: LMS managers and administrators.
+	 *
+	 * @return bool
+	 */
+	public static function can_open_screen(): bool {
+		return current_user_can( 'manage_lms' ) || current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * The plugin settings: administrators only (manage_options), as before
+	 * 2.0. LMS managers keep the Overview and the learner sections.
 	 *
 	 * @return bool
 	 */
 	public static function can_manage_settings(): bool {
-		return current_user_can( 'manage_lms' ) || current_user_can( 'manage_options' );
+		return current_user_can( 'manage_options' );
 	}
 
 	/**
