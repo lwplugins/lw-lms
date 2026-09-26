@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS;
 
+use LightweightPlugins\LMS\Admin\Hub\Hub;
 use LightweightPlugins\LMS\Admin\LessonListColumns;
 use LightweightPlugins\LMS\Admin\NoticeManager;
 use LightweightPlugins\LMS\Admin\SettingsPage;
@@ -70,6 +71,7 @@ final class Plugin {
 	public function __construct() {
 		$this->maybe_upgrade();
 		$this->init_hooks();
+		Hub::init( LW_LMS_FILE );
 		$this->init_components();
 		$this->register_cli_commands();
 	}

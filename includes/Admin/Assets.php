@@ -33,19 +33,13 @@ final class Assets {
 	public function enqueue_assets( string $hook ): void {
 		$screen = get_current_screen();
 
-		// The LW Plugins overview (plugin cards). The LMS screen itself is
-		// the React app and brings its own styles (SettingsPage).
-		$lw_pages = [
-			'toplevel_page_' . ParentPage::SLUG,
-		];
-
-		// Load on course and lesson edit pages.
+		// Course/lesson edit pages and user profiles. The LMS settings
+		// screen is the React app and brings its own styles (SettingsPage).
 		$is_course_page  = $screen && Course::POST_TYPE === $screen->post_type;
 		$is_lesson_page  = $screen && Lesson::POST_TYPE === $screen->post_type;
-		$is_lw_page      = in_array( $hook, $lw_pages, true );
 		$is_profile_page = in_array( $hook, [ 'profile.php', 'user-edit.php' ], true );
 
-		if ( ! $is_lw_page && ! $is_course_page && ! $is_lesson_page && ! $is_profile_page ) {
+		if ( ! $is_course_page && ! $is_lesson_page && ! $is_profile_page ) {
 			return;
 		}
 

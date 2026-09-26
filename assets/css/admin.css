@@ -241,30 +241,3 @@
 .lw-lms-add-enrollment-fields input[type="date"] {
 	min-width: 160px;
 }
-
-/* LW Plugins Overview Cards */
-.lw-plugins-cards {
-	display: flex;
-	gap: 20px;
-	flex-wrap: wrap;
-	margin-top: 20px;
-}
-
-.lw-plugin-card {
-	background: #fff;
-	border: 1px solid #ccd0d4;
-	border-radius: 4px;
-	padding: 20px;
-	width: 300px;
-}
-
-.lw-plugin-card h2 {
-	margin-top: 0;
-	display: flex;
-	align-items: center;
-}
-
-.lw-plugin-card h2 .dashicons {
-	margin-right: 8px;
-}
-
