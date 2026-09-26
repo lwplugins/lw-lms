@@ -16,6 +16,7 @@ use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Quiz\QuizRepository;
 use LightweightPlugins\LMS\Quiz\QuizSubmission;
+use LightweightPlugins\LMS\Quiz\QuizSubmitLock;
 use LightweightPlugins\LMS\Quiz\QuizThrottle;
 use WP_REST_Server;
 use WP_REST_Request;
@@ -96,13 +97,27 @@ final class QuizController {
 			return new WP_Error( 'no_quiz', __( 'This lesson has no quiz.', 'lw-lms' ), [ 'status' => 404 ] );
 		}
 
-		$throttled = QuizThrottle::check( $user_id, $lesson_id );
+		// The throttle check and the stored attempt must be one step, or
+		// parallel requests all pass the check (QuizSubmitLock).
+		$lock = QuizSubmitLock::acquire( $user_id, $lesson_id );
 
-		if ( null !== $throttled ) {
-			return $throttled;
+		if ( false === $lock ) {
+			return QuizThrottle::error( 1 );
 		}
 
-		$result = QuizSubmission::submit( $lesson_id, $user_id, $quiz, (array) $request->get_param( 'answers' ) );
+		try {
+			$throttled = QuizThrottle::check( $user_id, $lesson_id );
+
+			if ( null !== $throttled ) {
+				return $throttled;
+			}
+
+			$result = QuizSubmission::submit( $lesson_id, $user_id, $quiz, (array) $request->get_param( 'answers' ) );
+		} finally {
+			if ( true === $lock ) {
+				QuizSubmitLock::release( $user_id, $lesson_id );
+			}
+		}
 
 		return new WP_REST_Response( $result, 200 );
 	}

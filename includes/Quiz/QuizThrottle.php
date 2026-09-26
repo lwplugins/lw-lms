@@ -87,10 +87,16 @@ final class QuizThrottle {
 			$limit
 		);
 
-		if ( null === $retry_after ) {
-			return null;
-		}
+		return null === $retry_after ? null : self::error( $retry_after );
+	}
 
+	/**
+	 * The 429 error telling the learner to wait.
+	 *
+	 * @param int $retry_after Seconds to wait.
+	 * @return WP_Error
+	 */
+	public static function error( int $retry_after ): WP_Error {
 		return new WP_Error(
 			'quiz_rate_limited',
 			__( 'Too many quiz attempts. Please wait before trying again.', 'lw-lms' ),
