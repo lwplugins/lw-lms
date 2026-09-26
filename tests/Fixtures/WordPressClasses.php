@@ -103,7 +103,7 @@ if ( ! class_exists( 'WC_Order_Item_Product' ) ) {
 
 if ( ! class_exists( 'WP_REST_Request' ) ) {
 	/**
-	 * Stand-in for WP_REST_Request (parameters only).
+	 * Stand-in for WP_REST_Request (parameters and a JSON body).
 	 */
 	class WP_REST_Request {
 
@@ -114,15 +114,19 @@ if ( ! class_exists( 'WP_REST_Request' ) ) {
 
 		private string $route;
 
+		private string $body;
+
 		/**
 		 * @param array<string, mixed> $params Parameters.
 		 * @param string               $method HTTP method.
 		 * @param string               $route  Route.
+		 * @param string|null          $body   Raw body; null = the params as JSON.
 		 */
-		public function __construct( array $params = [], string $method = 'GET', string $route = '' ) {
+		public function __construct( array $params = [], string $method = 'GET', string $route = '', ?string $body = null ) {
 			$this->params = $params;
 			$this->method = $method;
 			$this->route  = $route;
+			$this->body   = $body ?? (string) json_encode( $params );
 		}
 
 		/**
@@ -139,6 +143,32 @@ if ( ! class_exists( 'WP_REST_Request' ) ) {
 		public function get_route(): string {
 			return $this->route;
 		}
+
+		public function get_body(): string {
+			return $this->body;
+		}
+
+		/**
+		 * @return array<string, mixed>|null
+		 */
+		public function get_json_params() {
+			$decoded = json_decode( $this->body, true );
+
+			return is_array( $decoded ) ? $decoded : null;
+		}
+	}
+}
+
+if ( ! class_exists( 'WP_REST_Server' ) ) {
+	/**
+	 * Stand-in for WP_REST_Server (method constants only).
+	 */
+	class WP_REST_Server {
+		const READABLE   = 'GET';
+		const CREATABLE  = 'POST';
+		const EDITABLE   = 'POST, PUT, PATCH';
+		const DELETABLE  = 'DELETE';
+		const ALLMETHODS = 'GET, POST, PUT, PATCH, DELETE';
 	}
 }
 

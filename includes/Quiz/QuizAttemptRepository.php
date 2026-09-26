@@ -69,4 +69,28 @@ final class QuizAttemptRepository {
 
 		return is_int( $deleted ) ? $deleted : 0;
 	}
+
+	/**
+	 * Delete attempts by ID.
+	 *
+	 * @param array<int, int> $ids Attempt IDs.
+	 * @return int Rows deleted.
+	 */
+	public static function delete_ids( array $ids ): int {
+		global $wpdb;
+
+		$ids = array_values( array_unique( array_filter( array_map( 'intval', $ids ), static fn ( int $id ): bool => $id > 0 ) ) );
+
+		if ( [] === $ids ) {
+			return 0;
+		}
+
+		$table        = QuizAttemptTable::get_table_name();
+		$placeholders = implode( ', ', array_fill( 0, count( $ids ), '%d' ) );
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, WordPress.DB.PreparedSQLPlaceholders.UnfinishedPrepare -- Table from $wpdb->prefix; one %d per ID.
+		$deleted = $wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE id IN ({$placeholders})", ...$ids ) );
+
+		return is_int( $deleted ) ? $deleted : 0;
+	}
 }

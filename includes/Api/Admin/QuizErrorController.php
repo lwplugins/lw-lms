@@ -28,7 +28,7 @@ final class QuizErrorController {
 	/**
 	 * Admin namespace (kept out of the public lms/v1 API).
 	 */
-	public const NAMESPACE = 'lw-lms/v1';
+	public const NAMESPACE = AdminRoutes::NAMESPACE;
 
 	/**
 	 * Register the route.

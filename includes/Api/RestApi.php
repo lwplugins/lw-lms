@@ -9,7 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api;
 
-use LightweightPlugins\LMS\Api\Admin\QuizErrorController;
+use LightweightPlugins\LMS\Api\Admin\AdminRoutes;
 use LightweightPlugins\LMS\Api\Controllers\CoursesController;
 use LightweightPlugins\LMS\Api\Controllers\LessonsController;
 use LightweightPlugins\LMS\Api\Controllers\ProgressController;
@@ -48,11 +48,13 @@ final class RestApi {
 			new ProgressController(),
 			new DownloadController(),
 			new QuizController(),
-			new QuizErrorController(),
 		];
 
 		foreach ( $controllers as $controller ) {
 			$controller->register_routes();
 		}
+
+		// The React admin's routes (lw-lms/v1/admin/*), separate from lms/v1.
+		AdminRoutes::register_routes();
 	}
 }
