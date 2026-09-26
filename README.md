@@ -153,6 +153,7 @@ wp lw-lms lesson delete-quiz <lesson>
 - Submit: `POST /lms/v1/lessons/{id}/quiz` with `{ "answers": { "<question id>": <option id | index | true/false | "text"> } }`. **Answer with the option id** — with `shuffle_options` on, the server sends the options in random order, and a positional index would mean something else.
 - The response says per question only whether the answer was right (`"correct": true|false`); it never contains the right answer, and neither does `GET` (including `last_attempt.review`). The full record, right answers included, stays in the attempt table for the Quiz Results page.
 - `last_attempt` in `GET /lessons/{id}` carries `percentage`, `passed`, `attempts`, `best_percentage` and `review` — the stored snapshot of the last attempt, so a reload can show what was answered.
+- Submissions are throttled per learner and lesson: at least 15 seconds apart and at most 20 in any 24 hours. Beyond that the endpoint answers 429 `quiz_rate_limited` with `retry_after` (seconds) in the error data. Change the limits with the `lw_lms_quiz_attempt_cooldown` and `lw_lms_quiz_daily_attempt_limit` filters (`int $value, int $user_id, int $lesson_id`; 0 turns a limit off).
 - Hooks: `lw_lms_quiz_submitted( $lesson_id, $user_id, $percentage, $passed )`, `lw_lms_quiz_passed( $lesson_id, $user_id, $percentage )`.
 
 Editors get a validated JSON editor on the lesson screen and a **LW Plugins → Quiz Results** page (per-learner attempts and per-question statistics). Every submission is stored in `{prefix}lms_quiz_attempts` with its answer snapshot.

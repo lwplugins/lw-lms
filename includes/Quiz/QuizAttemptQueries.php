@@ -44,6 +44,36 @@ final class QuizAttemptQueries {
 	}
 
 	/**
+	 * How many attempts a user made on a lesson since a moment, and the
+	 * oldest of them.
+	 *
+	 * @param int    $user_id   User ID.
+	 * @param int    $lesson_id Lesson ID.
+	 * @param string $since     Site-local MySQL datetime (same clock as submitted_at).
+	 * @return array{count: int, oldest: string|null}
+	 */
+	public static function recent( int $user_id, int $lesson_id, string $since ): array {
+		global $wpdb;
+		$table = QuizAttemptTable::get_table_name();
+
+		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+		$row = $wpdb->get_row(
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name from $wpdb->prefix.
+				"SELECT COUNT(*) AS attempts, MIN(submitted_at) AS oldest FROM {$table} WHERE user_id = %d AND lesson_id = %d AND submitted_at >= %s",
+				$user_id,
+				$lesson_id,
+				$since
+			)
+		);
+
+		return [
+			'count'  => $row ? (int) $row->attempts : 0,
+			'oldest' => $row && $row->oldest ? (string) $row->oldest : null,
+		];
+	}
+
+	/**
 	 * Attempts of a lesson, newest first.
 	 *
 	 * @param int $lesson_id Lesson ID.

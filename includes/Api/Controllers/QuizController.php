@@ -16,6 +16,7 @@ use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Quiz\QuizRepository;
 use LightweightPlugins\LMS\Quiz\QuizSubmission;
+use LightweightPlugins\LMS\Quiz\QuizThrottle;
 use WP_REST_Server;
 use WP_REST_Request;
 use WP_REST_Response;
@@ -93,6 +94,12 @@ final class QuizController {
 
 		if ( null === $quiz ) {
 			return new WP_Error( 'no_quiz', __( 'This lesson has no quiz.', 'lw-lms' ), [ 'status' => 404 ] );
+		}
+
+		$throttled = QuizThrottle::check( $user_id, $lesson_id );
+
+		if ( null !== $throttled ) {
+			return $throttled;
 		}
 
 		$result = QuizSubmission::submit( $lesson_id, $user_id, $quiz, (array) $request->get_param( 'answers' ) );
