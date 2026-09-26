@@ -6,6 +6,8 @@
 
 Lightweight LMS backend for WordPress - courses, lessons, access, progress, quizzes and drip, served over a REST API, without the bloat.
 
+![LW LMS admin: Enrollments](.github/screenshot.png)
+
 ## Requirements
 
 - PHP 8.0+
