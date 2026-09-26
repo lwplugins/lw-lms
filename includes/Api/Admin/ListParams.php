@@ -85,6 +85,20 @@ final class ListParams {
 	}
 
 	/**
+	 * Page count for a total, pulling the page back onto the last page when
+	 * it points past the end (after deleting the last rows of that page).
+	 *
+	 * @param int $total Matching rows.
+	 * @return int Page count (0 when nothing matches).
+	 */
+	public function clamp( int $total ): int {
+		$pages      = (int) ceil( max( 0, $total ) / $this->per_page );
+		$this->page = max( 1, min( $this->page, $pages ) );
+
+		return $pages;
+	}
+
+	/**
 	 * Rows to skip for the current page.
 	 *
 	 * @return int

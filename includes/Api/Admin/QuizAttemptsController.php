@@ -89,12 +89,13 @@ final class QuizAttemptsController {
 		}
 
 		$total = QuizAttemptSearch::count( $params->filters );
+		$pages = $params->clamp( $total );
 		$data  = [
 			'items'   => AttemptPresenter::rows( QuizAttemptSearch::rows( $params->filters, $params->per_page, $params->offset() ) ),
 			'total'   => $total,
 			'page'    => $params->page,
 			'perPage' => $params->per_page,
-			'pages'   => (int) ceil( $total / $params->per_page ),
+			'pages'   => $pages,
 			'summary' => null,
 		];
 

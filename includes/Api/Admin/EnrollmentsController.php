@@ -84,6 +84,7 @@ final class EnrollmentsController {
 
 		$now   = current_time( 'mysql', true );
 		$total = EnrollmentList::count( $params->filters );
+		$pages = $params->clamp( $total );
 		$rows  = EnrollmentList::rows( $params->filters, $params->per_page, $params->offset() );
 
 		return new WP_REST_Response(
@@ -92,7 +93,7 @@ final class EnrollmentsController {
 				'total'   => $total,
 				'page'    => $params->page,
 				'perPage' => $params->per_page,
-				'pages'   => (int) ceil( $total / $params->per_page ),
+				'pages'   => $pages,
 			]
 		);
 	}

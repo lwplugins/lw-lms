@@ -112,4 +112,28 @@ final class ListParamsTest extends MonkeyTestCase {
 		$this->assertSame( ListParams::MAX_PER_PAGE, $params->per_page );
 		$this->assertSame( 2 * ListParams::MAX_PER_PAGE, $params->offset() );
 	}
+
+	/**
+	 * @dataProvider provide_clamps
+	 */
+	public function test_clamp_pulls_the_page_back_onto_the_last_page( int $page, int $total, int $pages, int $expected ): void {
+		$params = $this->parse(
+			[
+				'page'     => $page,
+				'per_page' => 20,
+			]
+		);
+
+		$this->assertSame( $pages, $params->clamp( $total ) );
+		$this->assertSame( $expected, $params->page );
+	}
+
+	public static function provide_clamps(): array {
+		return [
+			'last row of page 2 deleted' => [ 2, 20, 1, 1 ],
+			'page inside the range'      => [ 2, 21, 2, 2 ],
+			'nothing matches'            => [ 3, 0, 0, 1 ],
+			'far past the end'           => [ 9, 45, 3, 3 ],
+		];
+	}
 }

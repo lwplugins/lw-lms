@@ -25,7 +25,8 @@ const clean = ( filters ) =>
 /**
  * A filtered, paginated server list. Changing a filter goes back to page 1.
  * The previous page stays on screen while the next one loads (no flash), and
- * a slow response never overwrites a newer one.
+ * a slow response never overwrites a newer one. A page past the end (after
+ * deleting its last rows) falls back to the last page.
  *
  * @param {(query: Object) => Promise} fetcher        API call.
  * @param {Object}                     initialFilters Filters on first load.
@@ -45,10 +46,16 @@ export default function useList( fetcher, initialFilters = {} ) {
 		setError( null );
 		return fetcher( { ...clean( filters ), page } ).then(
 			( result ) => {
-				if ( ticket === latest.current ) {
-					setData( result );
-					setIsFetching( false );
+				if ( ticket !== latest.current ) {
+					return;
 				}
+				// Deleting the last rows of the last page: go back to the
+				// page that is now last instead of showing an empty page.
+				if ( result?.pages > 0 && page > result.pages ) {
+					setPage( result.pages );
+				}
+				setData( result );
+				setIsFetching( false );
 			},
 			( e ) => {
 				if ( ticket === latest.current ) {
@@ -57,8 +64,7 @@ export default function useList( fetcher, initialFilters = {} ) {
 				}
 			}
 		);
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ filters, page ] );
+	}, [ fetcher, filters, page ] );
 
 	useEffect( () => {
 		reload();
