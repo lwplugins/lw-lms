@@ -141,6 +141,7 @@ Yes. `wp lw-lms migrate-learndash` copies LearnDash courses and lessons (with se
 
 = 2.0.1 =
 * Change: the LW Plugins overview page is now a searchable table showing each LW plugin's status and version, with one-click activation for installed plugins; it always uses the newest version shipped by any active LW plugin.
+* Fix: LW Site Manager's MCP server now lists this plugin's abilities (they were only reachable through REST).
 
 = 2.0.0 =
 * New: Redesigned LMS screen under LW Plugins: Overview, Enrollments, Quiz results and the settings in one place, with a side menu, Save / Discard in the top bar, Ctrl/Cmd+S and an unsaved-changes warning.
