@@ -55,6 +55,44 @@ final class StatusPermission {
 	}
 
 	/**
+	 * Whether a user may read one course or lesson in its current status.
+	 *
+	 * Per-post variant of can_read() for a given user (not only the current
+	 * one), built on the core meta capabilities: a private post needs
+	 * read_post, a draft/pending/future post needs edit_post. Those map
+	 * through the post type's own capabilities, so authors keep access to
+	 * their own drafts. Other statuses (trash, auto-draft, …) and other post
+	 * types are never readable here.
+	 *
+	 * @param \WP_Post $post    Course or lesson.
+	 * @param int      $user_id User ID (0 = guest).
+	 * @return bool
+	 */
+	public static function can_read_post( \WP_Post $post, int $user_id ): bool {
+		if ( ! isset( self::CAP_PLURALS[ $post->post_type ] ) ) {
+			return false;
+		}
+
+		if ( 'publish' === $post->post_status ) {
+			return true;
+		}
+
+		if ( $user_id <= 0 ) {
+			return false;
+		}
+
+		if ( 'private' === $post->post_status ) {
+			return user_can( $user_id, 'read_post', $post->ID );
+		}
+
+		if ( in_array( $post->post_status, [ 'draft', 'pending', 'future' ], true ) ) {
+			return user_can( $user_id, 'edit_post', $post->ID );
+		}
+
+		return false;
+	}
+
+	/**
 	 * Capability needed for a non-published status (null = never readable).
 	 *
 	 * @param string $status    Post status, or 'any'.

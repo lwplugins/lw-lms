@@ -54,4 +54,46 @@ final class StatusPermissionTest extends MonkeyTestCase {
 			'draft of unknown type, edit_posts' => [ 'draft', 'post', 'edit_posts', false ],
 		];
 	}
+
+	/**
+	 * @dataProvider provide_post_rules
+	 */
+	public function test_post_readability_uses_meta_caps_for_the_given_user(
+		string $status,
+		string $post_type,
+		int $user_id,
+		string $granted_cap,
+		bool $expected
+	): void {
+		Functions\when( 'user_can' )->alias(
+			static fn ( int $user, string $cap, int $post ): bool => $user === $user_id && $cap === $granted_cap && 5 === $post
+		);
+
+		$post = new \WP_Post(
+			[
+				'ID'          => 5,
+				'post_type'   => $post_type,
+				'post_status' => $status,
+			]
+		);
+
+		$this->assertSame( $expected, StatusPermission::can_read_post( $post, $user_id ) );
+	}
+
+	public static function provide_post_rules(): array {
+		return [
+			'published course, guest'        => [ 'publish', 'course', 0, '', true ],
+			'published lesson, guest'        => [ 'publish', 'lesson', 0, '', true ],
+			'published page is not LMS'      => [ 'publish', 'page', 0, '', false ],
+			'draft course, guest'            => [ 'draft', 'course', 0, 'edit_post', false ],
+			'draft course, editor'           => [ 'draft', 'course', 3, 'edit_post', true ],
+			'draft course, reader only'      => [ 'draft', 'course', 3, 'read_post', false ],
+			'pending lesson, editor'         => [ 'pending', 'lesson', 3, 'edit_post', true ],
+			'future lesson, no cap'          => [ 'future', 'lesson', 3, '', false ],
+			'private course, read_post'      => [ 'private', 'course', 3, 'read_post', true ],
+			'private course, no cap'         => [ 'private', 'course', 3, '', false ],
+			'trash course, edit_post'        => [ 'trash', 'course', 3, 'edit_post', false ],
+			'auto-draft lesson, edit_post'   => [ 'auto-draft', 'lesson', 3, 'edit_post', false ],
+		];
+	}
 }

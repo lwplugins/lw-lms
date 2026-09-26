@@ -26,6 +26,14 @@ final class AccessCheckerTest extends MonkeyTestCase {
 		Functions\when( 'wp_parse_args' )->alias(
 			static fn ( mixed $args, array $defaults = [] ): array => array_merge( $defaults, (array) $args )
 		);
+		Functions\when( 'get_post' )->alias(
+			static fn ( int $id ): \WP_Post => new \WP_Post(
+				[
+					'ID'        => $id,
+					'post_type' => 'course',
+				]
+			)
+		);
 	}
 
 	protected function tearDown(): void {
@@ -109,6 +117,149 @@ final class AccessCheckerTest extends MonkeyTestCase {
 		$GLOBALS['wpdb'] = $this->empty_access_table();
 
 		$this->assertFalse( AccessChecker::has_course_access( 456, 7 ) );
+	}
+
+	/**
+	 * Stub get_post() with a fixed set of posts (anything else is missing).
+	 *
+	 * @param array<int, array<string, mixed>> $posts Post fields by ID.
+	 */
+	private function posts( array $posts ): void {
+		Functions\when( 'get_post' )->alias(
+			static fn ( int $id ): ?\WP_Post => isset( $posts[ $id ] )
+				? new \WP_Post( [ 'ID' => $id ] + $posts[ $id ] )
+				: null
+		);
+	}
+
+	/**
+	 * Meta by post ID and key (unprefixed); missing keys return ''.
+	 *
+	 * @param array<int, array<string, mixed>> $meta Meta by post ID.
+	 */
+	private function meta( array $meta ): void {
+		Functions\when( 'get_post_meta' )->alias(
+			static fn ( int $id, string $key ): mixed => $meta[ $id ][ substr( $key, strlen( Options::META_PREFIX ) ) ] ?? ''
+		);
+	}
+
+	public function test_lesson_of_deleted_course_is_not_accessible(): void {
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		$this->posts( [ 10 => [ 'post_type' => 'lesson' ] ] );
+		$this->meta( [ 10 => [ 'lesson_course_id' => 42 ] ] );
+
+		// A missing course used to read as access type "free".
+		$this->assertFalse( AccessChecker::has_lesson_access( 10, 7 ) );
+	}
+
+	public function test_lesson_pointing_at_a_non_course_post_is_not_accessible(): void {
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		$this->posts(
+			[
+				10 => [ 'post_type' => 'lesson' ],
+				42 => [ 'post_type' => 'page' ],
+			]
+		);
+		$this->meta( [ 10 => [ 'lesson_course_id' => 42 ] ] );
+
+		$this->assertFalse( AccessChecker::has_lesson_access( 10, 7 ) );
+	}
+
+	public function test_lesson_of_draft_open_course_is_hidden_from_learners(): void {
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\when( 'user_can' )->justReturn( false );
+		$this->posts(
+			[
+				10 => [ 'post_type' => 'lesson' ],
+				42 => [
+					'post_type'   => 'course',
+					'post_status' => 'draft',
+				],
+			]
+		);
+		$this->meta(
+			[
+				10 => [ 'lesson_course_id' => 42 ],
+				42 => [ 'access_type' => 'open' ],
+			]
+		);
+
+		$this->assertFalse( AccessChecker::has_lesson_access( 10, 0 ) );
+		$this->assertFalse( AccessChecker::has_lesson_access( 10, 7 ) );
+	}
+
+	public function test_lesson_of_private_course_needs_read_post(): void {
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\when( 'user_can' )->alias(
+			static fn ( int $user, string $cap, int $post ): bool => 1 === $user && 'read_post' === $cap && 42 === $post
+		);
+		$this->posts(
+			[
+				10 => [ 'post_type' => 'lesson' ],
+				42 => [
+					'post_type'   => 'course',
+					'post_status' => 'private',
+				],
+			]
+		);
+		$this->meta(
+			[
+				10 => [ 'lesson_course_id' => 42 ],
+				42 => [ 'access_type' => 'open' ],
+			]
+		);
+
+		$this->assertTrue( AccessChecker::has_lesson_access( 10, 1 ) );
+		$this->assertFalse( AccessChecker::has_lesson_access( 10, 7 ) );
+	}
+
+	public function test_draft_lesson_of_open_course_is_not_accessible_by_id(): void {
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		Functions\when( 'user_can' )->justReturn( false );
+		$this->posts(
+			[
+				10 => [
+					'post_type'   => 'lesson',
+					'post_status' => 'draft',
+				],
+				42 => [ 'post_type' => 'course' ],
+			]
+		);
+		$this->meta(
+			[
+				10 => [ 'lesson_course_id' => 42 ],
+				42 => [ 'access_type' => 'open' ],
+			]
+		);
+
+		$this->assertFalse( AccessChecker::has_lesson_access( 10, 7 ) );
+	}
+
+	public function test_published_lesson_of_published_open_course_stays_accessible(): void {
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		$this->posts(
+			[
+				10 => [ 'post_type' => 'lesson' ],
+				42 => [ 'post_type' => 'course' ],
+			]
+		);
+		$this->meta(
+			[
+				10 => [ 'lesson_course_id' => 42 ],
+				42 => [ 'access_type' => 'open' ],
+			]
+		);
+
+		$this->assertTrue( AccessChecker::has_lesson_access( 10, 0 ) );
+	}
+
+	public function test_missing_course_grants_nothing_even_to_staff(): void {
+		Functions\when( 'get_option' )->justReturn( [ 'auto_enroll_admins' => true ] );
+		Functions\when( 'user_can' )->justReturn( true );
+		Functions\when( 'apply_filters' )->returnArg( 2 );
+		$this->posts( [] );
+
+		$this->assertFalse( AccessChecker::has_course_access( 42, 1 ) );
 	}
 
 	/**

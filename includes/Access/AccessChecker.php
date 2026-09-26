@@ -9,7 +9,10 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Access;
 
+use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\Options;
+use LightweightPlugins\LMS\PostTypes\Course;
+use LightweightPlugins\LMS\PostTypes\Lesson;
 
 /**
  * Handles access control for courses and lessons.
@@ -33,6 +36,13 @@ final class AccessChecker {
 	public static function has_course_access( int $course_id, ?int $user_id = null ): bool {
 		if ( null === $user_id ) {
 			$user_id = get_current_user_id();
+		}
+
+		// Fail closed: a missing course, a non-course post or a course the
+		// user may not read in its current status (draft, private, trash)
+		// grants nothing, whatever its access type says.
+		if ( ! self::is_readable( $course_id, Course::POST_TYPE, $user_id ) ) {
+			return false;
 		}
 
 		$access_type = Options::get_post_meta( $course_id, 'access_type', self::ACCESS_FREE );
@@ -105,9 +115,18 @@ final class AccessChecker {
 			$user_id = get_current_user_id();
 		}
 
+		// The lesson itself must be readable in its status: a draft lesson is
+		// not opened (or completed) by guessing its ID.
+		if ( ! self::is_readable( $lesson_id, Lesson::POST_TYPE, $user_id ) ) {
+			return false;
+		}
+
 		$course_id = (int) Options::get_post_meta( $lesson_id, 'lesson_course_id', 0 );
 
-		if ( ! $course_id ) {
+		// Fail closed when the parent course is gone, is not a course, or is
+		// not readable (draft/private): its lessons must not fall back to the
+		// default "free" access type.
+		if ( ! $course_id || ! self::is_readable( $course_id, Course::POST_TYPE, $user_id ) ) {
 			return false;
 		}
 
@@ -138,6 +157,22 @@ final class AccessChecker {
 		 * @param int  $user_id    User ID.
 		 */
 		return apply_filters( 'lw_lms_has_lesson_access', $has_access, $lesson_id, $user_id );
+	}
+
+	/**
+	 * Whether a post exists, has the expected type and is readable by the user.
+	 *
+	 * @param int    $post_id   Post ID.
+	 * @param string $post_type Expected post type.
+	 * @param int    $user_id   User ID (0 = guest).
+	 * @return bool
+	 */
+	private static function is_readable( int $post_id, string $post_type, int $user_id ): bool {
+		$post = get_post( $post_id );
+
+		return $post instanceof \WP_Post
+			&& $post_type === $post->post_type
+			&& StatusPermission::can_read_post( $post, $user_id );
 	}
 
 	/**
