@@ -17,9 +17,9 @@ use LightweightPlugins\LMS\PostTypes\Lesson;
  * post status over REST (follows the core WP_REST_Posts_Controller model).
  *
  * - publish            → everyone
- * - private            → read_private_{courses|lessons}
+ * - private            → the type's read_private_posts capability
  * - draft/pending/future and the 'any' query pseudo-status
- *                      → edit_{courses|lessons}
+ *                      → the type's edit_posts capability
  * - anything else (trash, auto-draft, …) → nobody
  */
 final class StatusPermission {
@@ -30,11 +30,11 @@ final class StatusPermission {
 	private const EDIT_STATUSES = [ 'draft', 'pending', 'future', 'any' ];
 
 	/**
-	 * Capability suffix per post type.
+	 * Post types these rules apply to.
 	 */
 	private const CAP_PLURALS = [
-		Course::POST_TYPE => 'courses',
-		Lesson::POST_TYPE => 'lessons',
+		Course::POST_TYPE => true,
+		Lesson::POST_TYPE => true,
 	];
 
 	/**
@@ -95,21 +95,29 @@ final class StatusPermission {
 	/**
 	 * Capability needed for a non-published status (null = never readable).
 	 *
+	 * Taken from the post type object, so the REST API checks the same
+	 * capabilities as wp-admin (both types use capability_type "post": an
+	 * Editor who can edit a draft course in wp-admin can also list it here).
+	 *
 	 * @param string $status    Post status, or 'any'.
 	 * @param string $post_type Post type.
 	 * @return string|null
 	 */
 	private static function required_capability( string $status, string $post_type ): ?string {
-		$plural = self::CAP_PLURALS[ $post_type ] ?? null;
+		if ( ! isset( self::CAP_PLURALS[ $post_type ] ) ) {
+			return null;
+		}
 
-		if ( null === $plural ) {
+		$object = get_post_type_object( $post_type );
+
+		if ( ! $object ) {
 			return null;
 		}
 
 		if ( 'private' === $status ) {
-			return 'read_private_' . $plural;
+			return $object->cap->read_private_posts;
 		}
 
-		return in_array( $status, self::EDIT_STATUSES, true ) ? 'edit_' . $plural : null;
+		return in_array( $status, self::EDIT_STATUSES, true ) ? $object->cap->edit_posts : null;
 	}
 }

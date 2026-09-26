@@ -158,6 +158,20 @@ wp lw-lms lesson delete-quiz <lesson>
 
 Editors get a validated JSON editor on the lesson screen and a **LW Plugins → Quiz Results** page (per-learner attempts and per-question statistics). Every submission is stored in `{prefix}lms_quiz_attempts` with its answer snapshot.
 
+## Capabilities
+
+Courses and lessons use the regular WordPress post capabilities (`capability_type` `post`), in wp-admin and in the APIs alike:
+
+| Who | Can |
+|-----|-----|
+| Anyone who can edit a course or lesson (`edit_post` on it) | edit it, its LMS settings through core REST, and read it through `/wp/v2/lesson/{id}` |
+| `edit_posts` / `read_private_posts` | list draft / private courses and lessons through `GET /lms/v1/courses?status=…` |
+| `edit_others_posts` | list lessons through `/wp/v2/lesson` |
+| `manage_lms` (administrators) | quiz results, enrollments on user profiles, the `lw-lms/get-progress` and `lw-lms/set-progress` abilities, staff access to every course (when enabled), every core lesson route |
+| `manage_options` | the settings screen, the `lw-lms/get-options` ability |
+
+`manage_lms` is the plugin's only custom capability.
+
 ## Development
 
 ```bash

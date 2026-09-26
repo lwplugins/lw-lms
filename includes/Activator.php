@@ -73,33 +73,21 @@ final class Activator {
 	}
 
 	/**
-	 * Add capabilities to admin role.
+	 * Add the LMS management capability to the administrator role.
+	 *
+	 * Courses and lessons use the regular post capabilities (capability_type
+	 * "post"), so manage_lms is the only custom capability: it opens quiz
+	 * results, enrollments, the progress abilities and the staff access.
+	 * Earlier versions also added edit_courses, read_private_lessons, … which
+	 * nothing checked; uninstall removes those leftovers.
 	 *
 	 * @return void
 	 */
 	private static function add_capabilities(): void {
 		$admin = get_role( 'administrator' );
 
-		if ( ! $admin ) {
-			return;
-		}
-
-		$capabilities = [
-			'manage_lms',
-			'edit_courses',
-			'edit_others_courses',
-			'publish_courses',
-			'read_private_courses',
-			'delete_courses',
-			'edit_lessons',
-			'edit_others_lessons',
-			'publish_lessons',
-			'read_private_lessons',
-			'delete_lessons',
-		];
-
-		foreach ( $capabilities as $cap ) {
-			$admin->add_cap( $cap );
+		if ( $admin ) {
+			$admin->add_cap( 'manage_lms' );
 		}
 	}
 

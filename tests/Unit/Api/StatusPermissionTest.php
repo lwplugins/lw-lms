@@ -30,28 +30,39 @@ final class StatusPermissionTest extends MonkeyTestCase {
 		Functions\when( 'current_user_can' )->alias(
 			static fn ( string $cap ): bool => $cap === $granted_cap
 		);
+		// Both LMS types use capability_type "post".
+		Functions\when( 'get_post_type_object' )->justReturn(
+			(object) [
+				'cap' => (object) [
+					'edit_posts'         => 'edit_posts',
+					'read_private_posts' => 'read_private_posts',
+				],
+			]
+		);
 
 		$this->assertSame( $expected, StatusPermission::can_read( $status, $post_type ) );
 	}
 
 	public static function provide_status_rules(): array {
 		return [
-			'publish course, no caps'           => [ 'publish', 'course', '', true ],
-			'private course, read_private'      => [ 'private', 'course', 'read_private_courses', true ],
-			'private course, edit only'         => [ 'private', 'course', 'edit_courses', false ],
-			'private course, no caps'           => [ 'private', 'course', '', false ],
-			'draft course, edit_courses'        => [ 'draft', 'course', 'edit_courses', true ],
-			'draft course, read_private only'   => [ 'draft', 'course', 'read_private_courses', false ],
-			'pending course, edit_courses'      => [ 'pending', 'course', 'edit_courses', true ],
-			'future course, edit_courses'       => [ 'future', 'course', 'edit_courses', true ],
-			'any courses, edit_courses'         => [ 'any', 'course', 'edit_courses', true ],
-			'any courses, no caps'              => [ 'any', 'course', '', false ],
-			'trash course, edit_courses'        => [ 'trash', 'course', 'edit_courses', false ],
-			'auto-draft course, edit_courses'   => [ 'auto-draft', 'course', 'edit_courses', false ],
-			'draft lesson, edit_lessons'        => [ 'draft', 'lesson', 'edit_lessons', true ],
-			'draft lesson, edit_courses only'   => [ 'draft', 'lesson', 'edit_courses', false ],
-			'private lesson, read_private'      => [ 'private', 'lesson', 'read_private_lessons', true ],
-			'draft of unknown type, edit_posts' => [ 'draft', 'post', 'edit_posts', false ],
+			'publish course, no caps'            => [ 'publish', 'course', '', true ],
+			'private course, read_private_posts' => [ 'private', 'course', 'read_private_posts', true ],
+			'private course, edit only'          => [ 'private', 'course', 'edit_posts', false ],
+			'private course, no caps'            => [ 'private', 'course', '', false ],
+			// Regression: the custom edit_courses cap (never mapped to the
+			// post type) used to be required, so Editors got 403 on drafts.
+			'draft course, edit_posts'           => [ 'draft', 'course', 'edit_posts', true ],
+			'draft course, old edit_courses cap' => [ 'draft', 'course', 'edit_courses', false ],
+			'draft course, read_private only'    => [ 'draft', 'course', 'read_private_posts', false ],
+			'pending course, edit_posts'         => [ 'pending', 'course', 'edit_posts', true ],
+			'future course, edit_posts'          => [ 'future', 'course', 'edit_posts', true ],
+			'any courses, edit_posts'            => [ 'any', 'course', 'edit_posts', true ],
+			'any courses, no caps'               => [ 'any', 'course', '', false ],
+			'trash course, edit_posts'           => [ 'trash', 'course', 'edit_posts', false ],
+			'auto-draft course, edit_posts'      => [ 'auto-draft', 'course', 'edit_posts', false ],
+			'draft lesson, edit_posts'           => [ 'draft', 'lesson', 'edit_posts', true ],
+			'private lesson, read_private_posts' => [ 'private', 'lesson', 'read_private_posts', true ],
+			'draft of unknown type, edit_posts'  => [ 'draft', 'post', 'edit_posts', false ],
 		];
 	}
 
