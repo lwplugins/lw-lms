@@ -145,7 +145,7 @@ final class EnrollmentRenderer {
 		echo esc_html__( 'Course:', 'lw-lms' );
 		echo '</strong></label> ';
 		echo '<select name="lw_lms_grant_course_id" id="lw_lms_grant_course_id">';
-		echo '<option value="">' . esc_html__( '-- Select Course --', 'lw-lms' ) . '</option>';
+		echo '<option value="">' . esc_html__( 'Select a course', 'lw-lms' ) . '</option>';
 		foreach ( $courses as $course ) {
 			echo '<option value="' . esc_attr( (string) $course->ID ) . '">';
 			echo esc_html( $course->post_title );

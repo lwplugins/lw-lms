@@ -42,10 +42,12 @@ final class CourseContentRenderer {
 		<div class="lw-lms-course-builder">
 			<div class="lw-lms-toolbar">
 				<button type="button" class="button lw-lms-add-section">
-					<?php esc_html_e( '+ Add Section', 'lw-lms' ); ?>
+					<span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
+					<?php esc_html_e( 'Add Section', 'lw-lms' ); ?>
 				</button>
 				<a href="<?php echo esc_url( admin_url( 'post-new.php?post_type=' . Lesson::POST_TYPE . '&course_id=' . $post->ID ) ); ?>" class="button">
-					<?php esc_html_e( '+ Add Lesson', 'lw-lms' ); ?>
+					<span class="dashicons dashicons-plus-alt2" aria-hidden="true"></span>
+					<?php esc_html_e( 'Add Lesson', 'lw-lms' ); ?>
 				</a>
 			</div>
 

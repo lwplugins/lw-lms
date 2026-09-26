@@ -128,7 +128,7 @@ final class LessonListColumns {
 		$quiz = QuizRepository::get( $lesson_id );
 
 		if ( null === $quiz ) {
-			echo '—';
+			self::render_none( __( 'No quiz', 'lw-lms' ) );
 			return;
 		}
 
@@ -137,7 +137,7 @@ final class LessonListColumns {
 		echo esc_html(
 			sprintf(
 				/* translators: 1: number of questions, 2: pass percentage. */
-				_n( '%1$d question · %2$s%%', '%1$d questions · %2$s%%', $count, 'lw-lms' ),
+				_n( '%1$d question, pass mark %2$s%%', '%1$d questions, pass mark %2$s%%', $count, 'lw-lms' ),
 				$count,
 				(string) QuizSettings::pass_percentage( $quiz )
 			)
@@ -145,7 +145,7 @@ final class LessonListColumns {
 	}
 
 	/**
-	 * Render a clickable link to the lesson's parent course (or an em-dash
+	 * Render a clickable link to the lesson's parent course (or "No course"
 	 * when the lesson is unattached).
 	 *
 	 * @param int $lesson_id Lesson id.
@@ -155,13 +155,13 @@ final class LessonListColumns {
 		$course_id = (int) Options::get_post_meta( $lesson_id, 'lesson_course_id', 0 );
 
 		if ( $course_id <= 0 ) {
-			echo '—';
+			self::render_none( __( 'No course', 'lw-lms' ) );
 			return;
 		}
 
 		$course = get_post( $course_id );
 		if ( ! $course || Course::POST_TYPE !== $course->post_type ) {
-			echo '—';
+			self::render_none( __( 'No course', 'lw-lms' ) );
 			return;
 		}
 
@@ -170,5 +170,15 @@ final class LessonListColumns {
 			esc_url( (string) get_edit_post_link( $course_id ) ),
 			esc_html( get_the_title( $course_id ) )
 		);
+	}
+
+	/**
+	 * Muted text for an empty cell.
+	 *
+	 * @param string $text Text.
+	 * @return void
+	 */
+	private static function render_none( string $text ): void {
+		printf( '<span class="lw-lms-muted">%s</span>', esc_html( $text ) );
 	}
 }

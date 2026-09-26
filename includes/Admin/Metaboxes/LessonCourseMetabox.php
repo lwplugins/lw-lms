@@ -74,7 +74,7 @@ final class LessonCourseMetabox {
 			<p>
 				<label for="lw_lms_lesson_course_id"><strong><?php esc_html_e( 'Select Course', 'lw-lms' ); ?></strong></label>
 				<select id="lw_lms_lesson_course_id" name="lw_lms_lesson_course_id" class="widefat">
-					<option value=""><?php esc_html_e( '— Select Course —', 'lw-lms' ); ?></option>
+					<option value=""><?php esc_html_e( 'Select a course', 'lw-lms' ); ?></option>
 					<?php foreach ( $courses as $course ) : ?>
 						<option value="<?php echo esc_attr( (string) $course->ID ); ?>" <?php selected( $course_id, $course->ID ); ?>>
 							<?php echo esc_html( $course->post_title ); ?>
@@ -86,7 +86,7 @@ final class LessonCourseMetabox {
 			<p class="lw-lms-section-select" style="<?php echo ! $course_id ? 'display:none;' : ''; ?>">
 				<label for="lw_lms_lesson_section_id"><strong><?php esc_html_e( 'Section (optional)', 'lw-lms' ); ?></strong></label>
 				<select id="lw_lms_lesson_section_id" name="lw_lms_lesson_section_id" class="widefat">
-					<option value=""><?php esc_html_e( '— No Section —', 'lw-lms' ); ?></option>
+					<option value=""><?php esc_html_e( 'No section', 'lw-lms' ); ?></option>
 					<?php
 					foreach ( $course_id ? LessonPlacement::sections( $course_id ) : [] as $id => $title ) {
 						printf(

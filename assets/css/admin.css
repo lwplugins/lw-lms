@@ -144,6 +144,18 @@
 	margin-right: 8px;
 }
 
+.lw-lms-toolbar .button .dashicons {
+	font-size: 16px;
+	width: 16px;
+	height: 16px;
+	margin: 0 2px 0 -2px;
+	vertical-align: text-bottom;
+}
+
+.lw-lms-muted {
+	color: #646970;
+}
+
 .lw-lms-content-list {
 	min-height: 100px;
 	border: 1px dashed #ccd0d4;

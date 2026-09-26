@@ -166,7 +166,12 @@ final class QuizResultsRenderer {
 			printf( '<td>%d</td>', (int) $row['answered'] );
 			printf( '<td>%d</td>', (int) $row['correct'] );
 			printf( '<td>%d</td>', (int) $row['wrong'] );
-			printf( '<td>%s</td>', null === $row['correct_ratio'] ? '&mdash;' : esc_html( $row['correct_ratio'] . '%' ) );
+			printf(
+				'<td>%s</td>',
+				null === $row['correct_ratio']
+					? '<span class="lw-lms-muted">' . esc_html__( 'Not scored', 'lw-lms' ) . '</span>'
+					: esc_html( $row['correct_ratio'] . '%' )
+			);
 			echo '</tr>';
 		}
 
