@@ -54,6 +54,7 @@ use LightweightPlugins\LMS\CLI\DripStatusCommand;
 use LightweightPlugins\LMS\CLI\DripSetStartCommand;
 use LightweightPlugins\LMS\Admin\UserProfile;
 use LightweightPlugins\LMS\Access\AccessGranter;
+use LightweightPlugins\LMS\Access\NewCourseDefaults;
 use LightweightPlugins\LMS\WooCommerce\WooCommerce;
 use LightweightPlugins\LMS\SiteManager\Integration as SiteManagerIntegration;
 use LightweightPlugins\LMS\LwCookie\Integration as LwCookieIntegration;
@@ -102,6 +103,9 @@ final class Plugin {
 		// A learner's drip clock starts at their first grant, whatever the
 		// source, even if the course only starts dripping later.
 		add_action( 'lw_lms_after_grant', [ CourseStart::class, 'on_grant' ], 10, 2 );
+
+		// New courses start with the configured default access type.
+		NewCourseDefaults::register();
 
 		// Completing a lesson can open the next one in the same request.
 		add_action( 'lw_lms_lesson_completed', [ LessonLocks::class, 'flush' ] );

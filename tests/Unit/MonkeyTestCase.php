@@ -34,6 +34,9 @@ abstract class MonkeyTestCase extends TestCase {
 	 * @return void
 	 */
 	protected function tearDown(): void {
+		// Count Brain Monkey / Mockery expectations (expect()->once(), …) as
+		// assertions, so a test that only sets expectations is not "risky".
+		$this->addToAssertionCount( \Mockery::getContainer()->mockery_getExpectationCount() );
 		Monkey\tearDown();
 		parent::tearDown();
 	}

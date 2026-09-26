@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\CLI;
 
 use LightweightPlugins\LMS\Access\AccessChecker;
+use LightweightPlugins\LMS\Access\NewCourseDefaults;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 
@@ -33,9 +34,9 @@ final class CourseCreateCommand {
 	 * : Course title (required).
 	 *
 	 * [--access-type=<type>]
-	 * : Access type. Allowed: open, free, paid.
+	 * : Access type. Allowed: open, free, paid. Defaults to the "Default access
+	 * type" setting.
 	 * ---
-	 * default: free
 	 * options:
 	 *   - open
 	 *   - free
@@ -74,7 +75,7 @@ final class CourseCreateCommand {
 			\WP_CLI::error( '--title is required.' );
 		}
 
-		$access_type = (string) ( $assoc_args['access-type'] ?? AccessChecker::ACCESS_FREE );
+		$access_type = (string) ( $assoc_args['access-type'] ?? NewCourseDefaults::access_type() );
 		if ( ! in_array( $access_type, self::ACCESS_TYPES, true ) ) {
 			\WP_CLI::error(
 				sprintf(
