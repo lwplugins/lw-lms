@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Drip;
 
+use LightweightPlugins\LMS\Access\PreviewLessons;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Progress\ProgressQueries;
@@ -146,8 +147,6 @@ final class CoursePlan {
 	 * @return array<int, int>
 	 */
 	private static function preview_lessons( int $course_id ): array {
-		$ids = Options::get_post_meta( $course_id, 'preview_lesson_ids', [] );
-
-		return is_array( $ids ) ? array_values( array_map( 'intval', $ids ) ) : [];
+		return PreviewLessons::active( $course_id );
 	}
 }

@@ -12,6 +12,7 @@ namespace LightweightPlugins\LMS\Api\Transformers;
 use LightweightPlugins\LMS\Api\DownloadLink;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\Access\AccessChecker;
+use LightweightPlugins\LMS\Access\PreviewLessons;
 use LightweightPlugins\LMS\Drip\DripSettings;
 use LightweightPlugins\LMS\Drip\DripTime;
 use LightweightPlugins\LMS\Drip\LessonLocks;
@@ -312,7 +313,7 @@ final class CourseTransformer {
 	 * @return array
 	 */
 	private static function transform_lessons_list( array $lessons, int $course_id, int $user_id, bool $has_access ): array {
-		$preview_ids = Options::get_post_meta( $course_id, 'preview_lesson_ids', [] );
+		$preview_ids = PreviewLessons::active( $course_id );
 
 		// Empty unless the course drips: see LessonLocks for the exemptions.
 		$locks = LessonLocks::for_course( $course_id, $user_id );

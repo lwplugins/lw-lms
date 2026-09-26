@@ -183,13 +183,7 @@ final class AccessChecker {
 	 * @return bool
 	 */
 	public static function is_preview_lesson( int $lesson_id, int $course_id ): bool {
-		$preview_lessons = Options::get_post_meta( $course_id, 'preview_lesson_ids', [] );
-
-		if ( ! is_array( $preview_lessons ) ) {
-			return false;
-		}
-
-		return in_array( $lesson_id, array_map( 'intval', $preview_lessons ), true );
+		return in_array( $lesson_id, PreviewLessons::active( $course_id ), true );
 	}
 
 	/**
