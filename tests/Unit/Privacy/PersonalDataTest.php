@@ -172,4 +172,40 @@ final class PersonalDataTest extends MonkeyTestCase {
 		$this->assertSame( [], $GLOBALS['wpdb']->tables['lms_progress'] );
 		$this->assertSame( [], $GLOBALS['wpdb']->tables['lms_quiz_attempts'] );
 	}
+
+	public function test_multisite_removal_from_one_site_cleans_only_that_site(): void {
+		Functions\when( 'is_multisite' )->justReturn( true );
+		Functions\when( 'get_userdata' )->justReturn( (object) [ 'ID' => 7 ] );
+		Functions\expect( 'get_sites' )->never();
+		Functions\expect( 'switch_to_blog' )->never();
+		$GLOBALS['wpdb'] = $this->site();
+
+		PersonalDataEraser::on_user_deleted( 7 );
+
+		$this->assertSame( [], $GLOBALS['wpdb']->tables['lms_access'] );
+		$this->assertSame( [], $GLOBALS['wpdb']->tables['lms_progress'] );
+		// The network-wide user meta stays: the user still exists elsewhere.
+		$this->assertSame( [], preg_grep( '/wp_usermeta/', $GLOBALS['wpdb']->deletes ) );
+	}
+
+	public function test_multisite_real_deletion_cleans_every_site(): void {
+		Functions\when( 'is_multisite' )->justReturn( true );
+		Functions\when( 'get_userdata' )->justReturn( false );
+		Functions\when( 'get_sites' )->justReturn( [ 1, 2 ] );
+		$switched = [];
+		Functions\when( 'switch_to_blog' )->alias(
+			static function ( int $id ) use ( &$switched ): bool {
+				$switched[] = $id;
+				return true;
+			}
+		);
+		Functions\expect( 'restore_current_blog' )->twice()->andReturn( true );
+		$GLOBALS['wpdb'] = $this->site();
+
+		PersonalDataEraser::on_user_deleted( 7 );
+
+		$this->assertSame( [ 1, 2 ], $switched );
+		$this->assertSame( [], $GLOBALS['wpdb']->tables['lms_access'] );
+		$this->assertNotSame( [], preg_grep( '/wp_usermeta/', $GLOBALS['wpdb']->deletes ) );
+	}
 }

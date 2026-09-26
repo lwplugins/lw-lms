@@ -63,14 +63,24 @@ final class PersonalDataEraser {
 	}
 
 	/**
-	 * Remove every LMS row of a deleted user (on every site of a network).
+	 * Remove the LMS rows of a user who was deleted or removed from a site.
+	 *
+	 * On multisite, wp_delete_user() only removes the user from the current
+	 * site and fires `deleted_user` while the account still exists, so only
+	 * this site's rows go (the network-wide user meta is kept). When the
+	 * account is really gone (wpmu_delete_user()), every site is cleaned.
 	 *
 	 * @param int $user_id Deleted user ID.
 	 * @return void
 	 */
 	public static function on_user_deleted( int $user_id ): void {
 		if ( ! is_multisite() ) {
-			self::delete_all( $user_id );
+			self::delete_all( $user_id, true );
+			return;
+		}
+
+		if ( false !== get_userdata( $user_id ) ) {
+			self::delete_all( $user_id, false );
 			return;
 		}
 
@@ -81,7 +91,7 @@ final class PersonalDataEraser {
 			]
 		) as $site_id ) {
 			switch_to_blog( (int) $site_id );
-			self::delete_all( $user_id );
+			self::delete_all( $user_id, true );
 			restore_current_blog();
 		}
 	}
@@ -89,11 +99,12 @@ final class PersonalDataEraser {
 	/**
 	 * Delete every LMS row of a user on the current site.
 	 *
-	 * @param int $user_id User ID.
+	 * @param int  $user_id        User ID.
+	 * @param bool $with_user_meta Also delete the (network-wide) user meta.
 	 * @return void
 	 */
-	private static function delete_all( int $user_id ): void {
-		PersonalDataQueries::delete_learning_data( $user_id );
+	private static function delete_all( int $user_id, bool $with_user_meta ): void {
+		PersonalDataQueries::delete_learning_data( $user_id, $with_user_meta );
 		PersonalDataQueries::delete_access( $user_id, false );
 	}
 

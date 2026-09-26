@@ -71,10 +71,12 @@ final class PersonalDataQueries {
 	 * Delete a user's progress, completion records and quiz attempts, and
 	 * the quiz summaries and drip start dates in their user meta.
 	 *
-	 * @param int $user_id User ID.
+	 * @param int  $user_id        User ID.
+	 * @param bool $with_user_meta Also delete the user meta, which is shared
+	 *                             by every site of a network.
 	 * @return int Rows removed.
 	 */
-	public static function delete_learning_data( int $user_id ): int {
+	public static function delete_learning_data( int $user_id, bool $with_user_meta = true ): int {
 		global $wpdb;
 
 		$removed = 0;
@@ -82,6 +84,10 @@ final class PersonalDataQueries {
 		foreach ( [ ProgressTable::get_table_name(), ProgressSnapshotTable::get_table_name(), QuizAttemptTable::get_table_name() ] as $table ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 			$removed += (int) $wpdb->delete( $table, [ 'user_id' => $user_id ], [ '%d' ] );
+		}
+
+		if ( ! $with_user_meta ) {
+			return $removed;
 		}
 
 		foreach ( [ 'quiz_', 'course_start_' ] as $suffix ) {
