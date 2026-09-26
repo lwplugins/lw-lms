@@ -100,12 +100,18 @@ export default function EnrollmentTable( { rows, onRevoke, busy } ) {
 								<td data-label={ __( 'Progress', 'lw-lms' ) }>
 									<ProgressBar progress={ row.progress } />
 								</td>
-								<td data-label={ __( 'Status', 'lw-lms' ) }>
+								<td
+									className="lw-lms-nowrap"
+									data-label={ __( 'Status', 'lw-lms' ) }
+								>
 									<StatusBadge status={ status.badge }>
 										{ status.label() }
 									</StatusBadge>
 								</td>
-								<td data-label={ __( 'Source', 'lw-lms' ) }>
+								<td
+									className="lw-lms-nowrap"
+									data-label={ __( 'Source', 'lw-lms' ) }
+								>
 									{ sourceLabel( row.source ) }
 								</td>
 								<td data-label={ __( 'Enrolled', 'lw-lms' ) }>

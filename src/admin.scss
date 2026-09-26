@@ -1123,18 +1123,18 @@ body.lw-lms-screen {
 // Lists: filters, toolbar, pager -------------------------------------------------------------
 
 .lw-lms-filters {
-	display: grid;
-	grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+	display: flex;
+	flex-wrap: wrap;
 	gap: $gap-md;
-	align-items: end;
+	align-items: flex-end;
 
-	.lw-lms-filter--search {
-		grid-column: span 2;
+	> * {
+		flex: 1 1 160px;
+		min-width: 0;
 	}
 
-	// SearchControl has no visible label: line it up with the labelled selects.
-	.components-search-control {
-		align-self: end;
+	> .lw-lms-filter--search {
+		flex: 2 1 260px;
 	}
 }
 
@@ -1166,7 +1166,14 @@ body.lw-lms-screen {
 .lw-lms-table {
 	td,
 	th {
-		overflow-wrap: anywhere;
+		overflow-wrap: break-word;
+	}
+
+	// Badges and short values never break mid-word.
+	.components-badge,
+	[class*="badge"],
+	.lw-lms-nowrap {
+		white-space: nowrap;
 	}
 
 	&__check {
@@ -1292,10 +1299,6 @@ body.lw-lms-screen {
 
 // Narrow screens: tables become one card per row, each cell labelled.
 @media (max-width: 782px) {
-	.lw-lms-filters .lw-lms-filter--search {
-		grid-column: auto;
-	}
-
 	.lw-lms-table.is-cards {
 		thead {
 			display: none;
@@ -1319,6 +1322,7 @@ body.lw-lms-screen {
 		td {
 			display: grid;
 			grid-template-columns: 110px minmax(0, 1fr);
+			justify-items: start;
 			gap: $gap-sm;
 			padding: 4px 0;
 			border: 0;
@@ -1349,5 +1353,13 @@ body.lw-lms-screen {
 	.lw-admin-kv__row {
 		grid-template-columns: 1fr;
 		gap: 2px;
+	}
+
+	.lw-admin-tiles {
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+
+	.lw-lms-progress {
+		width: 100%;
 	}
 }

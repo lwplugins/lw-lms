@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { Button, CheckboxControl } from '@wordpress/components';
+import { Button } from '@wordpress/components';
 import { __, sprintf } from '@wordpress/i18n';
 import { seen, trash } from '@wordpress/icons';
 
@@ -44,15 +44,16 @@ export default function AttemptTable( {
 				<thead>
 					<tr>
 						<td className="lw-lms-table__check">
-							<CheckboxControl
-								__nextHasNoMarginBottom
-								label={ __(
+							<input
+								type="checkbox"
+								aria-label={ __(
 									'Select all on this page',
 									'lw-lms'
 								) }
-								hideLabelFromVision
 								checked={ all }
-								onChange={ ( on ) => onSelect( on ? ids : [] ) }
+								onChange={ ( event ) =>
+									onSelect( event.target.checked ? ids : [] )
+								}
 							/>
 						</td>
 						<th scope="col">{ __( 'Learner', 'lw-lms' ) }</th>
@@ -71,16 +72,17 @@ export default function AttemptTable( {
 					{ rows.map( ( row ) => (
 						<tr key={ row.id }>
 							<td className="lw-lms-table__check">
-								<CheckboxControl
-									__nextHasNoMarginBottom
-									label={ sprintf(
+								<input
+									type="checkbox"
+									aria-label={ sprintf(
 										/* translators: %d: attempt ID. */
 										__( 'Select attempt %d', 'lw-lms' ),
 										row.id
 									) }
-									hideLabelFromVision
 									checked={ selected.includes( row.id ) }
-									onChange={ ( on ) => toggle( row.id, on ) }
+									onChange={ ( event ) =>
+										toggle( row.id, event.target.checked )
+									}
 								/>
 							</td>
 							<td data-label={ __( 'Learner', 'lw-lms' ) }>
