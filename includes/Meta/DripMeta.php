@@ -31,16 +31,17 @@ final class DripMeta {
 			Course::POST_TYPE,
 			Options::META_PREFIX . DripSettings::META_PROGRESSION,
 			[
-				'show_in_rest'  => [
+				'show_in_rest'      => [
 					'schema' => [
 						'type' => 'string',
 						'enum' => [ DripSettings::PROGRESSION_FREE, DripSettings::PROGRESSION_LINEAR ],
 					],
 				],
-				'single'        => true,
-				'type'          => 'string',
-				'default'       => DripSettings::PROGRESSION_FREE,
-				'auth_callback' => [ CourseMeta::class, 'can_edit' ],
+				'single'            => true,
+				'type'              => 'string',
+				'default'           => DripSettings::PROGRESSION_FREE,
+				'sanitize_callback' => [ MetaSanitizers::class, 'progression' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 
@@ -49,11 +50,12 @@ final class DripMeta {
 			Course::POST_TYPE,
 			Options::META_PREFIX . DripSettings::META_COURSE_DELAY,
 			[
-				'show_in_rest'  => [ 'schema' => self::rule_schema() ],
-				'single'        => true,
-				'type'          => 'object',
-				'default'       => [],
-				'auth_callback' => [ CourseMeta::class, 'can_edit' ],
+				'show_in_rest'      => [ 'schema' => self::rule_schema() ],
+				'single'            => true,
+				'type'              => 'object',
+				'default'           => [],
+				'sanitize_callback' => [ MetaSanitizers::class, 'course_delay' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 
@@ -62,11 +64,12 @@ final class DripMeta {
 			Lesson::POST_TYPE,
 			Options::META_PREFIX . DripSettings::META_LESSON_RULE,
 			[
-				'show_in_rest'  => [ 'schema' => self::rule_schema() ],
-				'single'        => true,
-				'type'          => 'object',
-				'default'       => [],
-				'auth_callback' => [ CourseMeta::class, 'can_edit' ],
+				'show_in_rest'      => [ 'schema' => self::rule_schema() ],
+				'single'            => true,
+				'type'              => 'object',
+				'default'           => [],
+				'sanitize_callback' => [ MetaSanitizers::class, 'drip_rule' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 	}

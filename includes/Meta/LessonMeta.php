@@ -28,11 +28,12 @@ final class LessonMeta {
 			Lesson::POST_TYPE,
 			Options::META_PREFIX . 'lesson_course_id',
 			[
-				'show_in_rest'  => true,
-				'single'        => true,
-				'type'          => 'integer',
-				'default'       => 0,
-				'auth_callback' => [ self::class, 'can_edit' ],
+				'show_in_rest'      => true,
+				'single'            => true,
+				'type'              => 'integer',
+				'default'           => 0,
+				'sanitize_callback' => [ MetaSanitizers::class, 'course_id' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 
@@ -41,11 +42,12 @@ final class LessonMeta {
 			Lesson::POST_TYPE,
 			Options::META_PREFIX . 'lesson_section_id',
 			[
-				'show_in_rest'  => true,
-				'single'        => true,
-				'type'          => 'string',
-				'default'       => '',
-				'auth_callback' => [ self::class, 'can_edit' ],
+				'show_in_rest'      => true,
+				'single'            => true,
+				'type'              => 'string',
+				'default'           => '',
+				'sanitize_callback' => [ MetaSanitizers::class, 'section_id' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 
@@ -54,11 +56,12 @@ final class LessonMeta {
 			Lesson::POST_TYPE,
 			Options::META_PREFIX . 'lesson_order',
 			[
-				'show_in_rest'  => true,
-				'single'        => true,
-				'type'          => 'integer',
-				'default'       => 0,
-				'auth_callback' => [ self::class, 'can_edit' ],
+				'show_in_rest'      => true,
+				'single'            => true,
+				'type'              => 'integer',
+				'default'           => 0,
+				'sanitize_callback' => [ MetaSanitizers::class, 'absint' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 
@@ -67,7 +70,7 @@ final class LessonMeta {
 			Lesson::POST_TYPE,
 			Options::META_PREFIX . 'video',
 			[
-				'show_in_rest'  => [
+				'show_in_rest'      => [
 					'schema' => [
 						'type'       => 'object',
 						'properties' => [
@@ -79,10 +82,11 @@ final class LessonMeta {
 						],
 					],
 				],
-				'single'        => true,
-				'type'          => 'object',
-				'default'       => [],
-				'auth_callback' => [ self::class, 'can_edit' ],
+				'single'            => true,
+				'type'              => 'object',
+				'default'           => [],
+				'sanitize_callback' => [ MetaSanitizers::class, 'video' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 
@@ -91,7 +95,7 @@ final class LessonMeta {
 			Lesson::POST_TYPE,
 			Options::META_PREFIX . 'attachments',
 			[
-				'show_in_rest'  => [
+				'show_in_rest'      => [
 					'schema' => [
 						'type'  => 'array',
 						'items' => [
@@ -104,10 +108,11 @@ final class LessonMeta {
 						],
 					],
 				],
-				'single'        => true,
-				'type'          => 'array',
-				'default'       => [],
-				'auth_callback' => [ self::class, 'can_edit' ],
+				'single'            => true,
+				'type'              => 'array',
+				'default'           => [],
+				'sanitize_callback' => [ MetaSanitizers::class, 'attachments' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 
@@ -116,21 +121,13 @@ final class LessonMeta {
 			Lesson::POST_TYPE,
 			Options::META_PREFIX . 'duration',
 			[
-				'show_in_rest'  => true,
-				'single'        => true,
-				'type'          => 'string',
-				'default'       => '',
-				'auth_callback' => [ self::class, 'can_edit' ],
+				'show_in_rest'      => true,
+				'single'            => true,
+				'type'              => 'string',
+				'default'           => '',
+				'sanitize_callback' => [ MetaSanitizers::class, 'text' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
-	}
-
-	/**
-	 * Auth callback for meta fields.
-	 *
-	 * @return bool
-	 */
-	public static function can_edit(): bool {
-		return current_user_can( 'edit_posts' );
 	}
 }

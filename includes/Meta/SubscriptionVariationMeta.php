@@ -27,7 +27,7 @@ final class SubscriptionVariationMeta {
 			Course::POST_TYPE,
 			Options::META_PREFIX . 'subscription_variation_ids',
 			[
-				'show_in_rest'  => [
+				'show_in_rest'      => [
 					'schema' => [
 						'type'  => 'array',
 						'items' => [
@@ -36,10 +36,11 @@ final class SubscriptionVariationMeta {
 						],
 					],
 				],
-				'single'        => true,
-				'type'          => 'array',
-				'default'       => [],
-				'auth_callback' => [ CourseMeta::class, 'can_edit' ],
+				'single'            => true,
+				'type'              => 'array',
+				'default'           => [],
+				'sanitize_callback' => [ MetaSanitizers::class, 'variation_pairs' ],
+				'auth_callback'     => [ MetaAuth::class, 'can_edit' ],
 			]
 		);
 	}
