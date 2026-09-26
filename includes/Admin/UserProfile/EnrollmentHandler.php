@@ -90,11 +90,23 @@ final class EnrollmentHandler {
 			// phpcs:ignore WordPress.Security.NonceVerification.Missing -- Verified in handle_save().
 			$date = sanitize_text_field( wp_unslash( $_POST['lw_lms_grant_expires'] ) );
 
-			if ( preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
-				$expires_at = $date . ' 23:59:59';
-			}
+			$expires_at = self::expiry_from_date( $date );
 		}
 
 		AccessRepository::grant( $user_id, $course_id, 'manual', null, $expires_at );
+	}
+
+	/**
+	 * Expiry (UTC) for an access that ends at the end of a day in site time.
+	 *
+	 * @param string $date Date as Y-m-d, in the site's time zone.
+	 * @return string|null UTC MySQL datetime, or null when the date is invalid.
+	 */
+	public static function expiry_from_date( string $date ): ?string {
+		if ( 1 !== preg_match( '/^\d{4}-\d{2}-\d{2}$/', $date ) ) {
+			return null;
+		}
+
+		return get_gmt_from_date( $date . ' 23:59:59' );
 	}
 }

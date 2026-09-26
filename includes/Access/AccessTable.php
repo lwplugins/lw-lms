@@ -11,6 +11,9 @@ namespace LightweightPlugins\LMS\Access;
 
 /**
  * Creates and manages the access database table.
+ *
+ * Times: granted_at is site-local (current_time( 'mysql' ), what the drip
+ * clock reads); expires_at is UTC.
  */
 final class AccessTable {
 

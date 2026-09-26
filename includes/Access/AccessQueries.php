@@ -32,7 +32,11 @@ final class AccessQueries {
 		global $wpdb;
 
 		$table = AccessTable::get_table_name();
-		$now   = current_time( 'mysql' );
+
+		// expires_at is stored in UTC (orders, CLI and profile grants alike),
+		// so compare against UTC: site-local time ended access early or late
+		// by the site's UTC offset.
+		$now = current_time( 'mysql', true );
 
 		if ( null === $source ) {
 			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
