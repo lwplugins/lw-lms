@@ -140,11 +140,10 @@ final class Plugin {
 		$rest_api = new RestApi();
 		$rest_api->init();
 
-		// Access granter (WC order hook).
-		new AccessGranter();
-
-		// WooCommerce integration (self-checks if WooCommerce is active).
-		new WooCommerce();
+		// Access granter (WC order hooks), only while the integration is on.
+		if ( WooCommerce::is_enabled() ) {
+			new AccessGranter();
+		}
 
 		// LW Site Manager integration (safe to call even if not active).
 		SiteManagerIntegration::init();

@@ -13,6 +13,7 @@ use LightweightPlugins\LMS\Api\StatusPermission;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
+use LightweightPlugins\LMS\WooCommerce\WooCommerce;
 
 /**
  * Handles access control for courses and lessons.
@@ -81,11 +82,14 @@ final class AccessChecker {
 		$has_access = false;
 
 		if ( self::ACCESS_PAID === $access_type ) {
+			// Steps 2-5 are the WooCommerce integration and follow its switch.
 			$has_access = AccessQueries::has_active_access( $user_id, $course_id )                 // 1. Access table.
-				|| WooCommerceChecker::has_active_subscription( $course_id, $user_id )             // 2. Parent subscription.
-				|| SubscriptionVariationChecker::has_active( $course_id, $user_id )                // 3. Variation subscription.
-				|| MembershipChecker::has_active( $course_id, $user_id )                           // 4. WC Membership.
-				|| WooCommerceChecker::has_legacy_purchase( $course_id, $user_id );                // 5. Legacy purchase.
+				|| ( WooCommerce::is_enabled() && (
+					WooCommerceChecker::has_active_subscription( $course_id, $user_id )            // 2. Parent subscription.
+					|| SubscriptionVariationChecker::has_active( $course_id, $user_id )            // 3. Variation subscription.
+					|| MembershipChecker::has_active( $course_id, $user_id )                       // 4. WC Membership.
+					|| WooCommerceChecker::has_legacy_purchase( $course_id, $user_id )             // 5. Legacy purchase.
+				) );
 		}
 
 		/**
@@ -227,11 +231,12 @@ final class AccessChecker {
 
 		// Add purchase info for paid courses without access.
 		if ( self::ACCESS_PAID === $access_type && ! $has_access ) {
+			$woo                             = WooCommerce::is_enabled();
 			$info['requires']                = 'purchase';
-			$info['products']                = WooCommerceChecker::get_products_info( $course_id );
-			$info['subscriptions']           = WooCommerceChecker::get_subscriptions_info( $course_id );
-			$info['subscription_variations'] = SubscriptionVariationChecker::get_info( $course_id );
-			$info['memberships']             = MembershipChecker::get_info( $course_id );
+			$info['products']                = $woo ? WooCommerceChecker::get_products_info( $course_id ) : [];
+			$info['subscriptions']           = $woo ? WooCommerceChecker::get_subscriptions_info( $course_id ) : [];
+			$info['subscription_variations'] = $woo ? SubscriptionVariationChecker::get_info( $course_id ) : [];
+			$info['memberships']             = $woo ? MembershipChecker::get_info( $course_id ) : [];
 		}
 
 		return $info;

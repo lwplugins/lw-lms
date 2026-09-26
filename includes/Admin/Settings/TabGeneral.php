@@ -187,7 +187,7 @@ final class TabGeneral implements TabInterface {
 					);
 					?>
 					<p class="description">
-						<?php esc_html_e( 'Requires WooCommerce. Enable to sell courses via WooCommerce products.', 'lw-lms' ); ?>
+						<?php esc_html_e( 'Requires WooCommerce. When off, orders no longer grant or revoke course access, and WooCommerce purchases, subscriptions and memberships are not checked. Access already granted by past orders is kept.', 'lw-lms' ); ?>
 					</p>
 				</td>
 			</tr>
