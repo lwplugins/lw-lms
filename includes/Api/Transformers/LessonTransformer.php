@@ -48,8 +48,8 @@ final class LessonTransformer {
 			'quiz'        => QuizPublicView::for_lesson( $post->ID, $user_id ),
 		];
 
-		// Raw content for editors.
-		if ( current_user_can( 'edit_posts' ) ) {
+		// Raw content for users who may edit this lesson.
+		if ( current_user_can( 'edit_post', $post->ID ) ) {
 			$data['content_raw'] = $post->post_content;
 		}
 
