@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Api;
 
+use LightweightPlugins\LMS\Api\Admin\QuizErrorController;
 use LightweightPlugins\LMS\Api\Controllers\CoursesController;
 use LightweightPlugins\LMS\Api\Controllers\LessonsController;
 use LightweightPlugins\LMS\Api\Controllers\ProgressController;
@@ -47,6 +48,7 @@ final class RestApi {
 			new ProgressController(),
 			new DownloadController(),
 			new QuizController(),
+			new QuizErrorController(),
 		];
 
 		foreach ( $controllers as $controller ) {

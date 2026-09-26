@@ -100,3 +100,73 @@ if ( ! class_exists( 'WC_Order_Item_Product' ) ) {
 		}
 	}
 }
+
+if ( ! class_exists( 'WP_REST_Request' ) ) {
+	/**
+	 * Stand-in for WP_REST_Request (parameters only).
+	 */
+	class WP_REST_Request {
+
+		/** @var array<string, mixed> */
+		private array $params;
+
+		private string $method;
+
+		private string $route;
+
+		/**
+		 * @param array<string, mixed> $params Parameters.
+		 * @param string               $method HTTP method.
+		 * @param string               $route  Route.
+		 */
+		public function __construct( array $params = [], string $method = 'GET', string $route = '' ) {
+			$this->params = $params;
+			$this->method = $method;
+			$this->route  = $route;
+		}
+
+		/**
+		 * @return mixed
+		 */
+		public function get_param( string $key ) {
+			return $this->params[ $key ] ?? null;
+		}
+
+		public function get_method(): string {
+			return $this->method;
+		}
+
+		public function get_route(): string {
+			return $this->route;
+		}
+	}
+}
+
+if ( ! class_exists( 'WP_REST_Response' ) ) {
+	/**
+	 * Stand-in for WP_REST_Response.
+	 */
+	class WP_REST_Response {
+
+		/** @var mixed */
+		public $data;
+
+		public int $status;
+
+		/**
+		 * @param mixed $data   Data.
+		 * @param int   $status Status.
+		 */
+		public function __construct( $data = null, int $status = 200 ) {
+			$this->data   = $data;
+			$this->status = $status;
+		}
+
+		/**
+		 * @return mixed
+		 */
+		public function get_data() {
+			return $this->data;
+		}
+	}
+}

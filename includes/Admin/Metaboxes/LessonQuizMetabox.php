@@ -10,6 +10,8 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS\Admin\Metaboxes;
 
 use LightweightPlugins\LMS\Admin\Quiz\QuizMetaboxRenderer;
+use LightweightPlugins\LMS\Admin\Quiz\QuizSaveError;
+use LightweightPlugins\LMS\Api\Admin\QuizErrorController;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Quiz\InvalidQuizException;
 use LightweightPlugins\LMS\Quiz\QuizNormalizer;
@@ -24,17 +26,13 @@ use LightweightPlugins\LMS\Quiz\QuizRepository;
 final class LessonQuizMetabox {
 
 	/**
-	 * Transient prefix for a rejected submission.
-	 */
-	private const ERROR_TRANSIENT = 'lw_lms_quiz_error_';
-
-	/**
 	 * Constructor.
 	 */
 	public function __construct() {
 		add_action( 'add_meta_boxes', [ $this, 'register' ] );
 		add_action( 'save_post_' . Lesson::POST_TYPE, [ $this, 'save' ] );
 		add_action( 'admin_notices', [ $this, 'render_error_notice' ] );
+		add_action( 'enqueue_block_editor_assets', [ $this, 'enqueue_editor_notice' ] );
 	}
 
 	/**
@@ -62,14 +60,14 @@ final class LessonQuizMetabox {
 	public function render( \WP_Post $post ): void {
 		wp_nonce_field( 'lw_lms_lesson_quiz', 'lw_lms_lesson_quiz_nonce' );
 
-		$rejected = get_transient( self::ERROR_TRANSIENT . $post->ID );
+		$rejected = QuizSaveError::get( $post->ID );
 		$quiz     = QuizRepository::get( $post->ID );
 
-		if ( is_array( $rejected ) ) {
-			delete_transient( self::ERROR_TRANSIENT . $post->ID );
+		if ( null !== $rejected ) {
+			QuizSaveError::clear( $post->ID );
 		}
 
-		QuizMetaboxRenderer::render( $quiz, is_array( $rejected ) ? $rejected : null );
+		QuizMetaboxRenderer::render( $quiz, $rejected );
 	}
 
 	/**
@@ -100,6 +98,7 @@ final class LessonQuizMetabox {
 		$raw = trim( (string) wp_unslash( $_POST['lw_lms_quiz_json'] ) ); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 
 		if ( '' === $raw ) {
+			QuizSaveError::clear( $post_id );
 			QuizRepository::delete( $post_id );
 			return;
 		}
@@ -114,6 +113,7 @@ final class LessonQuizMetabox {
 			return;
 		}
 
+		QuizSaveError::clear( $post_id );
 		QuizRepository::save( $post_id, $quiz );
 	}
 
@@ -130,16 +130,16 @@ final class LessonQuizMetabox {
 		}
 
 		$post_id  = (int) get_the_ID();
-		$rejected = $post_id ? get_transient( self::ERROR_TRANSIENT . $post_id ) : false;
+		$rejected = $post_id ? QuizSaveError::get( $post_id ) : null;
 
-		if ( ! is_array( $rejected ) ) {
+		if ( null === $rejected ) {
 			return;
 		}
 
 		printf(
 			'<div class="notice notice-error"><p><strong>%s</strong> %s</p></div>',
 			esc_html__( 'Quiz not saved:', 'lw-lms' ),
-			esc_html( (string) ( $rejected['message'] ?? '' ) )
+			esc_html( $rejected['message'] )
 		);
 	}
 
@@ -152,13 +152,36 @@ final class LessonQuizMetabox {
 	 * @return void
 	 */
 	private function reject( int $post_id, string $raw, string $message ): void {
-		set_transient(
-			self::ERROR_TRANSIENT . $post_id,
+		QuizSaveError::set( $post_id, $raw, $message );
+	}
+
+	/**
+	 * Block editor: report a rejected quiz after each metabox save.
+	 *
+	 * @return void
+	 */
+	public function enqueue_editor_notice(): void {
+		$screen = get_current_screen();
+
+		if ( ! $screen || Lesson::POST_TYPE !== $screen->post_type ) {
+			return;
+		}
+
+		wp_enqueue_script(
+			'lw-lms-quiz-error-notice',
+			LW_LMS_URL . 'assets/js/quiz-error-notice.js',
+			[ 'wp-api-fetch', 'wp-data', 'wp-dom-ready', 'wp-notices', 'wp-edit-post', 'wp-editor' ],
+			LW_LMS_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			'lw-lms-quiz-error-notice',
+			'lwLmsQuizNotice',
 			[
-				'json'    => $raw,
-				'message' => $message,
-			],
-			MINUTE_IN_SECONDS * 10
+				'path'   => '/' . QuizErrorController::NAMESPACE . '/admin/lessons/%d/quiz-error',
+				'prefix' => __( 'Quiz not saved:', 'lw-lms' ),
+			]
 		);
 	}
 }
