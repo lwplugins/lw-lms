@@ -33,10 +33,10 @@ final class Assets {
 	public function enqueue_assets( string $hook ): void {
 		$screen = get_current_screen();
 
-		// Load on LW Plugins pages.
+		// The LW Plugins overview (plugin cards). The LMS screen itself is
+		// the React app and brings its own styles (SettingsPage).
 		$lw_pages = [
 			'toplevel_page_' . ParentPage::SLUG,
-			ParentPage::SLUG . '_page_' . SettingsPage::SLUG,
 		];
 
 		// Load on course and lesson edit pages.

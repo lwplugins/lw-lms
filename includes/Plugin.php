@@ -22,7 +22,6 @@ use LightweightPlugins\LMS\Admin\Metaboxes\LessonDataMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\LessonQuizMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\CourseDripMetabox;
 use LightweightPlugins\LMS\Admin\Metaboxes\LessonDripMetabox;
-use LightweightPlugins\LMS\Admin\QuizResultsPage;
 use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Taxonomies\CourseCategory;
@@ -136,7 +135,6 @@ final class Plugin {
 			new LessonQuizMetabox();
 			new CourseDripMetabox();
 			new LessonDripMetabox();
-			new QuizResultsPage();
 			LessonListColumns::register();
 		}
 
