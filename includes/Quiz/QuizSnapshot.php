@@ -21,6 +21,12 @@ namespace LightweightPlugins\LMS\Quiz;
 final class QuizSnapshot {
 
 	/**
+	 * Longest open answer kept, in characters; the rest is cut off so one
+	 * submission cannot store megabytes in the attempt table.
+	 */
+	public const MAX_OPEN_ANSWER_LENGTH = 5000;
+
+	/**
 	 * Build the snapshot for a scored submission.
 	 *
 	 * @param array<string, mixed>                $quiz    Normalized quiz.
@@ -51,7 +57,8 @@ final class QuizSnapshot {
 	}
 
 	/**
-	 * Open questions keep the text only; they are never scored.
+	 * Open questions keep the text only (at most MAX_OPEN_ANSWER_LENGTH
+	 * characters); they are never scored.
 	 *
 	 * @param array<string, mixed> $entry  Entry so far.
 	 * @param mixed                $answer Submitted answer.
@@ -59,7 +66,7 @@ final class QuizSnapshot {
 	 */
 	private static function open_entry( array $entry, mixed $answer ): array {
 		if ( is_string( $answer ) && '' !== trim( $answer ) ) {
-			$entry['given_text'] = trim( $answer );
+			$entry['given_text'] = mb_substr( trim( $answer ), 0, self::MAX_OPEN_ANSWER_LENGTH );
 		}
 
 		$entry['scored'] = false;

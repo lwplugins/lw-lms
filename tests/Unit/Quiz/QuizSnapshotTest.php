@@ -135,6 +135,22 @@ final class QuizSnapshotTest extends TestCase {
 		);
 	}
 
+	public function test_open_answer_is_capped(): void {
+		$quiz = [
+			'questions' => [
+				[
+					'id'     => 'q_open',
+					'type'   => 'open',
+					'prompt' => 'Why?',
+				],
+			],
+		];
+
+		$snapshot = QuizSnapshot::build( $quiz, [ 'q_open' => str_repeat( 'é', 20000 ) ], [] );
+
+		$this->assertSame( QuizSnapshot::MAX_OPEN_ANSWER_LENGTH, mb_strlen( $snapshot[0]['given_text'] ) );
+	}
+
 	public function test_survives_json_round_trip(): void {
 		$snapshot = self::snapshot( [ 'q_single' => 0, 'q_open' => 'ékezetes "idézet"' ] );
 
