@@ -98,15 +98,6 @@ final class TabGeneral implements TabInterface {
 					<?php
 					$this->render_checkbox_field(
 						[
-							'name'  => 'show_progress_bar',
-							'label' => __( 'Show progress bar in course listings', 'lw-lms' ),
-						]
-					);
-					?>
-					<br><br>
-					<?php
-					$this->render_checkbox_field(
-						[
 							'name'  => 'enable_preview_lessons',
 							'label' => __( 'Enable preview lessons feature', 'lw-lms' ),
 						]

@@ -170,7 +170,6 @@ Get global LW LMS plugin settings.
   "success": true,
   "options": {
     "courses_per_page": 10,
-    "show_progress_bar": true,
     "enable_preview_lessons": true,
     "default_access_type": "free",
     "woo_enabled": true,

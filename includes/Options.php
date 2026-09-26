@@ -40,7 +40,6 @@ final class Options {
 		return [
 			// General.
 			'courses_per_page'         => 10,
-			'show_progress_bar'        => true,
 			'enable_preview_lessons'   => true,
 
 			// Access.
@@ -66,8 +65,12 @@ final class Options {
 	 */
 	public static function get_all(): array {
 		if ( null === self::$options ) {
-			$saved         = get_option( self::OPTION_NAME, [] );
-			self::$options = wp_parse_args( $saved, self::get_defaults() );
+			$saved    = get_option( self::OPTION_NAME, [] );
+			$defaults = self::get_defaults();
+
+			// Only known keys: values of removed settings (show_progress_bar)
+			// that are still stored are ignored instead of leaking out.
+			self::$options = array_intersect_key( wp_parse_args( $saved, $defaults ), $defaults );
 		}
 
 		return self::$options;
