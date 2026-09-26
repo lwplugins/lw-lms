@@ -202,7 +202,7 @@
 - `CourseContentMetabox` was split into a coordinator + `CourseContentRenderer` + `LessonAssignmentSaver` to keep each file under 200 lines
 
 ### Docs
-- `ProgressCalculator` class doc now explicitly states the known limitation that adding a lesson to a course mid-progress does not retroactively recalculate users' completion percentages (issue #7); LearnDash has the same behaviour
+- `ProgressCalculator` class doc now explicitly states the known limitation that adding a lesson to a course mid-progress does not retroactively recalculate users' completion percentages (issue #7)
 
 ## [1.2.12] - 2026-03-22
 
