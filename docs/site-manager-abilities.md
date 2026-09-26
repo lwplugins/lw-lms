@@ -93,7 +93,7 @@ Get full course details including lessons and sections.
 ### `lw-lms/get-progress`
 
 **Type:** readonly
-**Permission:** `can_edit_posts`
+**Permission:** `can_manage_lms` (the `manage_lms` or `manage_options` capability)
 
 Get user progress for a course, including per-lesson completion status.
 
@@ -130,7 +130,7 @@ Get user progress for a course, including per-lesson completion status.
 ### `lw-lms/set-progress`
 
 **Type:** write
-**Permission:** `can_edit_posts`
+**Permission:** `can_manage_lms` (the `manage_lms` or `manage_options` capability). The lesson must belong to `course_id`, otherwise the ability answers `lesson_not_in_course` (400).
 
 Update lesson completion status for a user. Upserts the progress record.
 

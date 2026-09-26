@@ -20,6 +20,12 @@ namespace LightweightPlugins\LMS\SiteManager\Abilities;
 final class AbilityPermissions {
 
 	/**
+	 * Permission key for abilities that read or change other learners' data:
+	 * the manage_lms capability (or manage_options).
+	 */
+	public const MANAGE_LMS = 'can_manage_lms';
+
+	/**
 	 * Site Manager PermissionManager instance, when available.
 	 *
 	 * @var object|null
@@ -42,6 +48,12 @@ final class AbilityPermissions {
 	 * @return callable
 	 */
 	public function callback( string $key ): callable {
+		// LMS-specific keys are unknown to Site Manager's PermissionManager,
+		// so they are always resolved here.
+		if ( self::MANAGE_LMS === $key ) {
+			return static fn(): bool => current_user_can( 'manage_lms' ) || current_user_can( 'manage_options' );
+		}
+
 		if ( $this->manager && method_exists( $this->manager, 'callback' ) ) {
 			return $this->manager->callback( $key );
 		}

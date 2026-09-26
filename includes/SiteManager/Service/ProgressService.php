@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\SiteManager\Service;
 
+use LightweightPlugins\LMS\Options;
+use LightweightPlugins\LMS\PostTypes\Course;
 use LightweightPlugins\LMS\PostTypes\Lesson;
 use LightweightPlugins\LMS\Progress\ProgressCalculator;
 use LightweightPlugins\LMS\Progress\ProgressQueries;
@@ -39,7 +41,7 @@ final class ProgressService {
 			return new \WP_Error( 'user_not_found', __( 'User not found.', 'lw-lms' ), [ 'status' => 404 ] );
 		}
 
-		if ( ! get_post( $course_id ) ) {
+		if ( ! self::is_course( $course_id ) ) {
 			return new \WP_Error( 'course_not_found', __( 'Course not found.', 'lw-lms' ), [ 'status' => 404 ] );
 		}
 
@@ -103,6 +105,16 @@ final class ProgressService {
 			return new \WP_Error( 'lesson_not_found', __( 'Lesson not found.', 'lw-lms' ), [ 'status' => 404 ] );
 		}
 
+		if ( ! self::is_course( $course_id ) ) {
+			return new \WP_Error( 'course_not_found', __( 'Course not found.', 'lw-lms' ), [ 'status' => 404 ] );
+		}
+
+		// The lesson must belong to the course, or progress rows would be
+		// written against a course the lesson is not part of.
+		if ( (int) Options::get_post_meta( $lesson_id, 'lesson_course_id', 0 ) !== $course_id ) {
+			return new \WP_Error( 'lesson_not_in_course', __( 'The lesson does not belong to this course.', 'lw-lms' ), [ 'status' => 400 ] );
+		}
+
 		$saved = ProgressRepository::upsert( $user_id, $course_id, $lesson_id, $status );
 
 		if ( ! $saved ) {
@@ -113,5 +125,17 @@ final class ProgressService {
 			'success' => true,
 			'message' => __( 'Progress updated.', 'lw-lms' ),
 		];
+	}
+
+	/**
+	 * Whether a post ID is a course.
+	 *
+	 * @param int $course_id Post ID.
+	 * @return bool
+	 */
+	private static function is_course( int $course_id ): bool {
+		$course = get_post( $course_id );
+
+		return $course instanceof \WP_Post && Course::POST_TYPE === $course->post_type;
 	}
 }

@@ -14,6 +14,10 @@ use LightweightPlugins\LMS\SiteManager\Service\ProgressService;
 
 /**
  * Registers get-progress and set-progress abilities.
+ *
+ * Both read or change any learner's progress (and completing a lesson fires
+ * the completion hooks), so they need manage_lms or manage_options, not the
+ * edit_posts every Contributor has.
  */
 final class ProgressAbilities {
 
@@ -42,7 +46,7 @@ final class ProgressAbilities {
 				'description'         => __( 'Get user progress for a course, including per-lesson completion status.', 'lw-lms' ),
 				'category'            => 'lms',
 				'execute_callback'    => [ ProgressService::class, 'get_progress' ],
-				'permission_callback' => $permissions->callback( 'can_edit_posts' ),
+				'permission_callback' => $permissions->callback( AbilityPermissions::MANAGE_LMS ),
 				'input_schema'        => [
 					'type'       => 'object',
 					'required'   => [ 'user_id', 'course_id' ],
@@ -77,7 +81,7 @@ final class ProgressAbilities {
 				'description'         => __( 'Update lesson completion status for a user. Reverting from completed loses the completion timestamp.', 'lw-lms' ),
 				'category'            => 'lms',
 				'execute_callback'    => [ ProgressService::class, 'set_progress' ],
-				'permission_callback' => $permissions->callback( 'can_edit_posts' ),
+				'permission_callback' => $permissions->callback( AbilityPermissions::MANAGE_LMS ),
 				'input_schema'        => [
 					'type'       => 'object',
 					'required'   => [ 'user_id', 'course_id', 'lesson_id', 'status' ],
