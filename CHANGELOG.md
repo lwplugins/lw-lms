@@ -1,5 +1,40 @@
 # Changelog
 
+## [2.0.0] - 2026-09-26
+
+### Added
+- Redesigned LMS screen under LW Plugins: Overview, Enrollments, Quiz results and the settings in one place, with a side menu, Save / Discard in the top bar, Ctrl/Cmd+S and an unsaved-changes warning.
+- Enrollments: every enrollment with filters, each learner's progress, enrolling a learner by hand with an optional end date, and revoking access.
+- Quiz results: all attempts with filters, one attempt's answers (only administrators see which were right), deleting attempts, CSV export without email addresses, per-question statistics.
+- Personal data export and erasure for enrollments, progress and quiz attempts; LMS records are removed when a user is deleted (multisite-aware).
+
+### Security
+- The file download endpoint serves only files that belong to a course or lesson the visitor may see and access. Before, anyone could download any Media Library file by guessing its ID.
+- Download links are signed and expire after one hour (lw_lms_download_link_ttl); the access check still runs on download, so revoking access stops handed-out links.
+- Lessons are not readable when their course is deleted, a draft, private or not a course; draft lessons can't be opened or completed by guessing their ID.
+- Draft and private courses and paid lesson content are no longer readable by Contributors, Authors or shop managers through the LMS REST API, /wp/v2/lesson or the Site Manager abilities.
+- The Site Manager progress abilities need manage_lms or administrator rights and check that the lesson belongs to the course.
+- Quiz answers are never given away after a submission; submissions are limited (15 seconds apart, 20 per day, filterable) and can't be raced in parallel; open answers are capped at 5,000 characters.
+- Learners' email addresses in the LMS screen are shown and searchable only for users who may list users.
+- Deleting the plugin keeps all data unless "Delete all data when the plugin is deleted" is on; on multisite, shared per-user data is deleted only when every site opted in.
+
+### Fixed
+- WooCommerce purchases now give access (orders never created an enrollment before, so time-limited courses gave no access at all). Access is granted while processing or completed, and revoked when the order is fully refunded, cancelled or failed, or when a course's order line is fully refunded.
+- Enrolling twice no longer duplicates the enrollment, and Revoke really ends access.
+- The Enable preview lessons, Default access type, Courses per page and Enable WooCommerce integration settings now take effect; preview checkboxes show their saved state.
+- The lesson's section list follows the chosen course, and section IDs with capital letters keep working.
+- Invalid quiz JSON in the block editor shows an error instead of being dropped silently.
+- Course and lesson settings saved through the REST API or the block editor get the same validation as the edit screen.
+- Time-limited access ends at the right moment regardless of the site time zone (existing profile expiry dates are not migrated).
+- Browsing the course list no longer enrolls the visitor in every free course.
+- Multisite: removing a user from one site removes only that site's LMS records.
+
+### Changed
+- LW LMS is documented as backend-only (headless): no frontend output; build the learner UI on the lms/v1 REST API.
+- Requires PHP 8.0 (was 8.2) and WordPress 6.6.
+- The settings stay administrator-only; LMS managers (manage_lms) get Overview, Enrollments and Quiz results. The old Quiz Results page redirects to the new screen.
+- Removed the Show progress bar setting (no effect), the lw_lms_settings_tabs filter and SettingsPage::get_settings_group() (the settings screen is a React app), and unused capabilities and rewrite rules.
+
 ## [1.9.2] - 2026-09-25
 
 ### Fixed

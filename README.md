@@ -185,7 +185,7 @@ Courses and lessons use the regular WordPress post capabilities (`capability_typ
 | Who | Can |
 |-----|-----|
 | Anyone who can edit a course or lesson (`edit_post` on it) | edit it, its LMS settings through core REST, and read it through `/wp/v2/lesson/{id}` |
-| `edit_posts` / `read_private_posts` | list draft / private courses and lessons through `GET /lms/v1/courses?status=…` |
+| `edit_posts` / `read_private_posts` | list draft / private courses and lessons through `GET /lms/v1/courses?status=…` — only the ones they may edit (drafts) or read (private) |
 | `edit_others_posts` | list lessons through `/wp/v2/lesson` |
 | `manage_lms` (administrators) | the Enrollments and Quiz results sections, enrollments on user profiles, the `lw-lms/get-progress` and `lw-lms/set-progress` abilities, staff access to every course (when enabled), every core lesson route |
 | `manage_options` or `manage_lms` | the LMS screen (overview and settings); `manage_options` also the `lw-lms/get-options` ability |

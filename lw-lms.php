@@ -3,7 +3,7 @@
  * Plugin Name:       LW LMS
  * Plugin URI:        https://github.com/lwplugins/lw-lms
  * Description:       Headless LMS backend: courses, lessons, access, progress, quizzes, drip and a REST API. No frontend output; build your own on the lms/v1 REST API.
- * Version:           1.9.2
+ * Version:           2.0.0
  * Requires at least: 6.6
  * Requires PHP:      8.0
  * Author:            LW Plugins
@@ -26,7 +26,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants.
-define( 'LW_LMS_VERSION', '1.9.2' );
+define( 'LW_LMS_VERSION', '2.0.0' );
 define( 'LW_LMS_FILE', __FILE__ );
 define( 'LW_LMS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'LW_LMS_URL', plugin_dir_url( __FILE__ ) );
