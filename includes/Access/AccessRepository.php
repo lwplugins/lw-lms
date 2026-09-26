@@ -60,13 +60,18 @@ final class AccessRepository {
 
 		$table = AccessTable::get_table_name();
 
+		// One row per user, course, source and source ID. Manual and free
+		// grants store source_id as NULL, and NULL never equals 0 in SQL, so
+		// the comparison goes through COALESCE: granting twice updates the
+		// existing row instead of adding a second one.
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
 		$existing = $wpdb->get_var(
 			$wpdb->prepare(
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
-				"SELECT id FROM {$table} WHERE user_id = %d AND course_id = %d AND source_id = %d LIMIT 1",
+				"SELECT id FROM {$table} WHERE user_id = %d AND course_id = %d AND source = %s AND COALESCE(source_id, 0) = %d ORDER BY id ASC LIMIT 1",
 				$user_id,
 				$course_id,
+				$source,
 				$source_id ? $source_id : 0
 			)
 		);
@@ -126,13 +131,16 @@ final class AccessRepository {
 	/**
 	 * Revoke access for a user and course.
 	 *
-	 * Fires lw_lms_after_revoke only when an active row was actually flipped.
+	 * Revokes every active row of the pair, whatever its source, so the
+	 * learner really loses access (a manual row next to an order row used to
+	 * keep it). Fires lw_lms_after_revoke once per revoked row.
 	 *
 	 * @since 1.3.0 Added lw_lms_after_revoke action.
+	 * @since 2.0.0 Revokes all active rows instead of the first one.
 	 *
 	 * @param int $user_id   User ID.
 	 * @param int $course_id Course ID.
-	 * @return bool
+	 * @return bool True when at least one active row was revoked.
 	 */
 	public static function revoke( int $user_id, int $course_id ): bool {
 		global $wpdb;
@@ -140,46 +148,51 @@ final class AccessRepository {
 		$table = AccessTable::get_table_name();
 
 		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$row = $wpdb->get_row(
+		$rows = $wpdb->get_results(
 			$wpdb->prepare(
 				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared -- Table name is safe.
-				"SELECT id, source FROM {$table} WHERE user_id = %d AND course_id = %d AND status = 'active' LIMIT 1",
+				"SELECT id, source FROM {$table} WHERE user_id = %d AND course_id = %d AND status = 'active' ORDER BY id ASC",
 				$user_id,
 				$course_id
 			)
 		);
 
-		if ( ! $row ) {
-			return false;
+		$revoked = false;
+
+		foreach ( is_array( $rows ) ? $rows : [] as $row ) {
+			// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
+			$result = $wpdb->update(
+				$table,
+				[ 'status' => 'revoked' ],
+				[
+					'id'     => (int) $row->id,
+					'status' => 'active',
+				],
+				[ '%s' ],
+				[ '%d', '%s' ]
+			);
+
+			if ( false === $result || 0 === (int) $result ) {
+				continue;
+			}
+
+			$revoked = true;
+
+			/**
+			 * Fires after access is revoked.
+			 *
+			 * Callers must register with $accepted_args = 3.
+			 *
+			 * @since 1.3.0
+			 *
+			 * @param int    $user_id   User ID.
+			 * @param int    $course_id Course ID.
+			 * @param string $source    Access source of the revoked row.
+			 */
+			do_action( 'lw_lms_after_revoke', $user_id, $course_id, (string) $row->source );
 		}
 
-		// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching
-		$result = $wpdb->update(
-			$table,
-			[ 'status' => 'revoked' ],
-			[ 'id' => (int) $row->id ],
-			[ '%s' ],
-			[ '%d' ]
-		);
-
-		if ( false === $result || 0 === (int) $result ) {
-			return false;
-		}
-
-		/**
-		 * Fires after access is revoked.
-		 *
-		 * Callers must register with $accepted_args = 3.
-		 *
-		 * @since 1.3.0
-		 *
-		 * @param int    $user_id   User ID.
-		 * @param int    $course_id Course ID.
-		 * @param string $source    Access source of the revoked row.
-		 */
-		do_action( 'lw_lms_after_revoke', $user_id, $course_id, (string) $row->source );
-
-		return true;
+		return $revoked;
 	}
 
 	/**
