@@ -57,6 +57,7 @@ LW LMS provides a simple yet powerful learning management system for WordPress. 
 * Drag-and-drop lesson ordering
 * Section management
 * Access control settings
+* One LMS screen: overview, enrollments with progress (grant and revoke), quiz results (answers, delete, CSV export) and settings
 
 = Requirements =
 
@@ -91,7 +92,7 @@ Go to **Courses → Add New** in your WordPress admin. Use the Gutenberg editor 
 
 = How do I track user progress? =
 
-User progress is automatically tracked when users complete lessons via the REST API. You can view progress in the admin or query it via the API.
+User progress is automatically tracked when users complete lessons via the REST API. You can see each learner's progress per course under **LW Plugins → LMS → Enrollments**, or query it via the API.
 
 == Screenshots ==
 

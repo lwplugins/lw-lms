@@ -153,12 +153,12 @@ wp lw-lms lesson delete-quiz <lesson>
 - An option may carry its own `id`. Recommended: without one it is addressed by position (`o0`, `o1`, …), so reordering options changes what a stored answer meant.
 - `pass_percentage` and `shuffle_options` are optional; the default threshold is set under **LW Plugins → LMS → General → Quizzes**.
 - Submit: `POST /lms/v1/lessons/{id}/quiz` with `{ "answers": { "<question id>": <option id | index | true/false | "text"> } }`. **Answer with the option id** — with `shuffle_options` on, the server sends the options in random order, and a positional index would mean something else.
-- The response says per question only whether the answer was right (`"correct": true|false`); it never contains the right answer, and neither does `GET` (including `last_attempt.review`). The full record, right answers included, stays in the attempt table for the Quiz Results page.
+- The response says per question only whether the answer was right (`"correct": true|false`); it never contains the right answer, and neither does `GET` (including `last_attempt.review`). The full record, right answers included, stays in the attempt table for **LW Plugins → LMS → Quiz results** (administrators see which answers were right; other LMS managers see the answers only).
 - `last_attempt` in `GET /lessons/{id}` carries `percentage`, `passed`, `attempts`, `best_percentage` and `review` — the stored snapshot of the last attempt, so a reload can show what was answered.
 - Submissions are throttled per learner and lesson: at least 15 seconds apart and at most 20 in any 24 hours. Beyond that the endpoint answers 429 `quiz_rate_limited` with `retry_after` (seconds) in the error data. Change the limits with the `lw_lms_quiz_attempt_cooldown` and `lw_lms_quiz_daily_attempt_limit` filters (`int $value, int $user_id, int $lesson_id`; 0 turns a limit off).
 - Hooks: `lw_lms_quiz_submitted( $lesson_id, $user_id, $percentage, $passed )`, `lw_lms_quiz_passed( $lesson_id, $user_id, $percentage )`.
 
-Editors get a validated JSON editor on the lesson screen and a **LW Plugins → Quiz Results** page (per-learner attempts and per-question statistics). Every submission is stored in `{prefix}lms_quiz_attempts` with its answer snapshot.
+Editors get a validated JSON editor on the lesson screen and the **LW Plugins → LMS → Quiz results** section (every attempt with filters, one attempt's answers, deleting attempts, CSV export, and per-question statistics per lesson). Every submission is stored in `{prefix}lms_quiz_attempts` with its answer snapshot.
 
 ## Privacy
 
@@ -173,8 +173,8 @@ Courses and lessons use the regular WordPress post capabilities (`capability_typ
 | Anyone who can edit a course or lesson (`edit_post` on it) | edit it, its LMS settings through core REST, and read it through `/wp/v2/lesson/{id}` |
 | `edit_posts` / `read_private_posts` | list draft / private courses and lessons through `GET /lms/v1/courses?status=…` |
 | `edit_others_posts` | list lessons through `/wp/v2/lesson` |
-| `manage_lms` (administrators) | quiz results, enrollments on user profiles, the `lw-lms/get-progress` and `lw-lms/set-progress` abilities, staff access to every course (when enabled), every core lesson route |
-| `manage_options` | the settings screen, the `lw-lms/get-options` ability |
+| `manage_lms` (administrators) | the Enrollments and Quiz results sections, enrollments on user profiles, the `lw-lms/get-progress` and `lw-lms/set-progress` abilities, staff access to every course (when enabled), every core lesson route |
+| `manage_options` or `manage_lms` | the LMS screen (overview and settings); `manage_options` also the `lw-lms/get-options` ability |
 
 `manage_lms` is the plugin's only custom capability.
 
