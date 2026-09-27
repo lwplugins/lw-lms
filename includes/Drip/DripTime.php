@@ -9,6 +9,8 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Drip;
 
+use DateTimeImmutable;
+
 /**
  * The bridge between WordPress time handling and the pure drip code:
  * the site clock, MySQL datetimes in, ISO 8601 out.
@@ -27,6 +29,11 @@ final class DripTime {
 	/**
 	 * Turn a MySQL datetime written in site-local time into a timestamp.
 	 *
+	 * The completed_at and granted_at columns hold current_time( 'mysql' ),
+	 * so they are read in the site timezone and turned into a real Unix
+	 * timestamp. Not mysql2date( 'U' ): that returns the timestamp plus the
+	 * site's UTC offset, which wp_date() and the clock then applied again.
+	 *
 	 * @param string|null $mysql Datetime such as "2026-09-19 08:30:00".
 	 * @return int|null Null when there is nothing usable to read.
 	 */
@@ -35,9 +42,19 @@ final class DripTime {
 			return null;
 		}
 
-		$timestamp = mysql2date( 'U', $mysql, false );
+		$datetime = date_create_immutable( $mysql, wp_timezone() );
 
-		return is_numeric( $timestamp ) ? (int) $timestamp : null;
+		return false === $datetime ? null : $datetime->getTimestamp();
+	}
+
+	/**
+	 * The site's UTC offset at a moment, in seconds.
+	 *
+	 * @param int $timestamp Unix timestamp.
+	 * @return int
+	 */
+	public static function offset_at( int $timestamp ): int {
+		return ( new DateTimeImmutable( '@' . $timestamp ) )->setTimezone( wp_timezone() )->getOffset();
 	}
 
 	/**

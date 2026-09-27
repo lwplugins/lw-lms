@@ -10,6 +10,7 @@ declare(strict_types=1);
 namespace LightweightPlugins\LMS;
 
 use LightweightPlugins\LMS\Access\AccessTable;
+use LightweightPlugins\LMS\Drip\CourseStartRepair;
 use LightweightPlugins\LMS\Progress\ProgressSnapshotMigration;
 use LightweightPlugins\LMS\Progress\ProgressSnapshotTable;
 use LightweightPlugins\LMS\Progress\ProgressTable;
@@ -24,7 +25,7 @@ final class Activator {
 	/**
 	 * DB version constant.
 	 */
-	public const DB_VERSION = '1.3.0';
+	public const DB_VERSION = '1.4.0';
 
 	/**
 	 * Activate the plugin.
@@ -68,6 +69,12 @@ final class Activator {
 		// 1.8.0 kept only a summary of the last quiz attempt in user meta;
 		// lift those into the attempt table so history does not start empty.
 		QuizAttemptMigration::backfill();
+
+		// 1.9.0 – 2.0.1 stored course clocks shifted by the site's UTC
+		// offset; correct them once, on the upgrade to DB version 1.4.0.
+		if ( version_compare( (string) get_option( 'lw_lms_db_version', '0' ), '1.4.0', '<' ) ) {
+			CourseStartRepair::run();
+		}
 
 		update_option( 'lw_lms_db_version', self::DB_VERSION );
 	}
