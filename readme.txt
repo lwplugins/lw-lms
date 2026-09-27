@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, headless, rest-api
 Requires at least: 6.6
 Tested up to: 7.1
-Stable tag: 2.0.1
+Stable tag: 2.0.2
 Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -138,6 +138,10 @@ Yes. `wp lw-lms migrate-learndash` copies LearnDash courses and lessons (with se
 4. REST API response example
 
 == Changelog ==
+
+= 2.0.2 =
+* Fix: on sites whose timezone isn't UTC, a lesson set to open after the previous lesson is completed no longer stays locked for extra hours (the site's UTC offset was applied twice).
+* Fix: "after enrollment" delays on sites whose timezone isn't UTC are counted from the real enrollment time again; learners' stored start times are corrected once on update (start times set with `wp lw-lms drip set-start --date` are not, set them again).
 
 = 2.0.1 =
 * Change: the LW Plugins overview page is now a searchable table showing each LW plugin's status and version, with one-click activation for installed plugins; it always uses the newest version shipped by any active LW plugin.

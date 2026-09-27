@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.0.2] - 2026-09-27
+
+### Fixed
+- On sites whose timezone isn't UTC, a lesson set to open after the previous lesson is completed no longer stays locked for extra hours (the site's UTC offset was applied twice).
+- "After enrollment" delays on sites whose timezone isn't UTC are counted from the real enrollment time again; learners' stored start times are corrected once on update (start times set with `wp lw-lms drip set-start --date` are not, set them again).
+
 ## [2.0.1] - 2026-09-26
 
 ### Changed
