@@ -6,7 +6,7 @@ const boot = window.lwLmsAdmin || {};
 export const VERSION = boot.version || '';
 export const NAMESPACE = boot.namespace || 'lw-lms/v1';
 export const DOCS_URL =
-	boot.docsUrl || 'https://github.com/lwplugins/lw-lms#readme';
+	boot.docsUrl || 'https://docs.lwplugins.com/en/plugins/lw-lms';
 // Enrollments and Quiz results need manage_lms (the REST routes check it too).
 export const CAN_MANAGE_LEARNERS = !! boot.canManageLearners;
 // The settings sections need manage_options (the REST route checks it too).

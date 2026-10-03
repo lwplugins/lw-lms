@@ -38,11 +38,6 @@ final class SettingsPage {
 	private const HANDLE = 'lw-lms-admin-app';
 
 	/**
-	 * Documentation URL.
-	 */
-	private const DOCS_URL = 'https://github.com/lwplugins/lw-lms#readme';
-
-	/**
 	 * Hook suffix returned by add_submenu_page().
 	 *
 	 * Assets are keyed on it rather than on a hard-coded
@@ -131,7 +126,7 @@ final class SettingsPage {
 		return [
 			'version'           => LW_LMS_VERSION,
 			'namespace'         => AdminRoutes::NAMESPACE,
-			'docsUrl'           => self::DOCS_URL,
+			'docsUrl'           => self::docs_url(),
 			'canManageLearners' => AdminRoutes::can_manage_learners(),
 			'canManageSettings' => AdminRoutes::can_manage_settings(),
 			'canSeeEmails'      => EmailVisibility::allowed(),
@@ -190,5 +185,17 @@ final class SettingsPage {
 		}
 
 		echo '<div id="lw-lms-root" class="lw-lms-root"></div>';
+	}
+
+	/**
+	 * Documentation URL: the plugin's page on docs.lwplugins.com, in Hungarian
+	 * for Hungarian admin users and in English otherwise.
+	 *
+	 * @return string
+	 */
+	public static function docs_url(): string {
+		$lang = str_starts_with( get_user_locale(), 'hu' ) ? 'hu' : 'en';
+
+		return 'https://docs.lwplugins.com/' . $lang . '/plugins/lw-lms';
 	}
 }
