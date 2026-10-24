@@ -28,6 +28,8 @@ final class LessonPlacementTest extends MonkeyTestCase {
 				? new \WP_Post( [ 'ID' => $id, 'post_type' => [ 42 => 'course', 43 => 'course', 7 => 'page' ][ $id ] ] )
 				: null
 		);
+		// The user may edit course 42 only.
+		Functions\when( 'current_user_can' )->alias( static fn ( string $cap, int $id = 0 ): bool => 'edit_post' === $cap && 42 === $id );
 		Functions\when( 'get_post_meta' )->alias(
 			static fn ( int $id ): mixed => [
 				42 => [ [ 'id' => 'Sec_A', 'title' => 'Intro' ] ],
@@ -52,5 +54,9 @@ final class LessonPlacementTest extends MonkeyTestCase {
 		$this->assertSame( 42, LessonPlacement::course( 42 ) );
 		$this->assertSame( 0, LessonPlacement::course( 7 ) );
 		$this->assertSame( 0, LessonPlacement::course( 999 ) );
+	}
+
+	public function test_course_the_user_may_not_edit_is_refused(): void {
+		$this->assertSame( 0, LessonPlacement::course( 43 ) );
 	}
 }

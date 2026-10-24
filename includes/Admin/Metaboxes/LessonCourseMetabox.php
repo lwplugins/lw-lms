@@ -157,10 +157,16 @@ final class LessonCourseMetabox {
 		// The section ID keeps its case: sanitize_key() lowercased it, which
 		// detached lessons from sections whose IDs contain capitals.
 		if ( isset( $_POST['lw_lms_lesson_course_id'] ) ) {
-			$course_id = LessonPlacement::course( absint( $_POST['lw_lms_lesson_course_id'] ) );
+			// An unchanged course is kept even when the user may not edit it
+			// (an Author re-saving a lesson an administrator placed there).
+			$submitted = absint( $_POST['lw_lms_lesson_course_id'] );
+			$stored    = (int) Options::get_post_meta( $post_id, 'lesson_course_id', 0 );
+			$course_id = $submitted === $stored ? $stored : LessonPlacement::course( $submitted );
 			$section   = isset( $_POST['lw_lms_lesson_section_id'] ) ? sanitize_text_field( wp_unslash( $_POST['lw_lms_lesson_section_id'] ) ) : '';
 
-			Options::set_post_meta( $post_id, 'lesson_course_id', $course_id );
+			if ( $course_id !== $stored ) {
+				Options::set_post_meta( $post_id, 'lesson_course_id', $course_id );
+			}
 			Options::set_post_meta( $post_id, 'lesson_section_id', LessonPlacement::section( $section, $course_id ) );
 		}
 

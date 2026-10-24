@@ -9,6 +9,7 @@ declare(strict_types=1);
 
 namespace LightweightPlugins\LMS\Admin\Metaboxes;
 
+use LightweightPlugins\LMS\Meta\MetaPermission;
 use LightweightPlugins\LMS\Options;
 use LightweightPlugins\LMS\PostTypes\Course;
 
@@ -22,7 +23,7 @@ use LightweightPlugins\LMS\PostTypes\Course;
 final class LessonPlacement {
 
 	/**
-	 * The course ID when it is a course, else 0.
+	 * The course ID when it is a course the user may edit, else 0.
 	 *
 	 * @param int $course_id Submitted course ID.
 	 * @return int
@@ -34,7 +35,11 @@ final class LessonPlacement {
 
 		$course = get_post( $course_id );
 
-		return $course instanceof \WP_Post && Course::POST_TYPE === $course->post_type ? $course_id : 0;
+		if ( ! $course instanceof \WP_Post || Course::POST_TYPE !== $course->post_type ) {
+			return 0;
+		}
+
+		return MetaPermission::can_edit( $course_id ) ? $course_id : 0;
 	}
 
 	/**

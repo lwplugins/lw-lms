@@ -100,6 +100,8 @@ final class MetaSanitizers {
 	/**
 	 * Attachments list: [{id, title, description}].
 	 *
+	 * Only files the saving user may attach are kept (MetaPermission).
+	 *
 	 * @param mixed $value Value.
 	 * @return array<int, array{id: int, title: string, description: string}>
 	 */
@@ -109,7 +111,7 @@ final class MetaSanitizers {
 		foreach ( is_array( $value ) ? $value : [] as $item ) {
 			$id = is_array( $item ) && isset( $item['id'] ) && is_numeric( $item['id'] ) ? absint( $item['id'] ) : 0;
 
-			if ( $id > 0 ) {
+			if ( $id > 0 && MetaPermission::can_attach( $id ) ) {
 				$clean[] = [
 					'id'          => $id,
 					'title'       => sanitize_text_field( (string) ( $item['title'] ?? '' ) ),

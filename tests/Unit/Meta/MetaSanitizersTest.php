@@ -55,6 +55,8 @@ final class MetaSanitizersTest extends MonkeyTestCase {
 	}
 
 	public function test_attachments_keep_known_fields_only(): void {
+		Functions\when( 'current_user_can' )->justReturn( true );
+
 		$this->assertSame(
 			[
 				[
@@ -74,6 +76,29 @@ final class MetaSanitizersTest extends MonkeyTestCase {
 				]
 			)
 		);
+	}
+
+	public function test_attachments_drop_files_the_user_may_not_attach(): void {
+		// Attachment 8 is editable; 9 is someone else's and listed nowhere.
+		Functions\when( 'current_user_can' )->alias( static fn ( string $cap, int $id = 0 ): bool => 8 === $id );
+		$GLOBALS['wpdb'] = new class() { // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited
+			public string $postmeta = 'wp_postmeta';
+			public string $posts    = 'wp_posts';
+			public function esc_like( string $v ): string {
+				return $v;
+			}
+			public function prepare( string $query, mixed ...$args ): string {
+				return $query;
+			}
+			public function get_results( string $query ): array {
+				return [];
+			}
+		};
+
+		$ids = array_column( MetaSanitizers::attachments( [ [ 'id' => 8 ], [ 'id' => 9 ] ] ), 'id' );
+		unset( $GLOBALS['wpdb'] );
+
+		$this->assertSame( [ 8 ], $ids );
 	}
 
 	public function test_video_is_rederived_from_its_url(): void {

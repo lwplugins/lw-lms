@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.4] - 2026-10-24
+
+### Fixed
+- Course and lesson files: only files you may edit, or that already belong to a course or lesson you may edit, are kept when saving.
+- A lesson can only be placed into a course you may edit (an unchanged placement is kept; WP-CLI is not restricted).
+- The REST course response respects the course password: protected courses return empty `content` with `content_protected: true` until the password is entered, and `content_raw` needs edit rights on that course.
+
 ## [2.0.3] - 2026-10-03
 
 ### Fixed

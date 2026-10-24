@@ -54,7 +54,7 @@ final class CourseTransformer {
 				// Only asks: listing courses never enrolls the viewer.
 				'has_access' => AccessChecker::has_course_access( $post->ID, $user_id, false ),
 			],
-		];
+		] + CourseContent::list_item( $post );
 
 		/**
 		 * Filter a course item of GET /lms/v1/courses.
@@ -108,12 +108,12 @@ final class CourseTransformer {
 		// Course post_content is the public marketing/about description for the
 		// course as a whole — separate from per-lesson content, which lives on
 		// Lesson posts and is independently gated by the `accessible` flag and
-		// the lessons REST endpoint. Always public so frontends can render a
-		// real course detail page for prospective students.
-		$data['content'] = apply_filters( 'the_content', $post->post_content ); // phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- Using WordPress core filter.
+		// the lessons REST endpoint. Public so frontends can render a course
+		// detail page, except on a password-protected course (CourseContent).
+		$data += CourseContent::full( $post );
 
-		// content_raw (unfiltered source) stays editor-only.
-		if ( current_user_can( 'edit_posts' ) ) {
+		// content_raw (unfiltered source) stays with those who may edit it.
+		if ( current_user_can( 'edit_post', $post->ID ) ) {
 			$data['content_raw'] = $post->post_content;
 		}
 

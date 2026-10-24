@@ -3,7 +3,7 @@ Contributors: lwplugins
 Tags: lms, courses, lessons, headless, rest-api
 Requires at least: 6.6
 Tested up to: 7.1
-Stable tag: 2.0.3
+Stable tag: 2.0.4
 Requires PHP: 8.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -138,6 +138,11 @@ Yes. `wp lw-lms migrate-learndash` copies LearnDash courses and lessons (with se
 4. REST API response example
 
 == Changelog ==
+
+= 2.0.4 =
+* Fix: Course and lesson files: only files you may edit, or that already belong to a course or lesson you may edit, are kept when saving.
+* Fix: A lesson can only be placed into a course you may edit (an unchanged placement is kept; WP-CLI is not restricted).
+* Fix: The REST course response respects the course password: protected courses return empty `content` with `content_protected: true` until the password is entered, and `content_raw` needs edit rights on that course.
 
 = 2.0.3 =
 * Fix: The admin Docs link now opens the plugin's page on docs.lwplugins.com, in Hungarian for Hungarian admin users.

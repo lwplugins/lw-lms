@@ -29,6 +29,8 @@ if ( ! class_exists( 'WP_Post' ) ) {
 
 		public string $post_content = '';
 
+		public string $post_password = '';
+
 		public int $post_parent = 0;
 
 		/**
